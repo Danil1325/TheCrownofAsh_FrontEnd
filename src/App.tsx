@@ -2,13 +2,14 @@ import { useReducer, useState } from 'react'
 import { CategoryMenu } from './components/CategoryMenu'
 import { ItemCard } from './components/ItemCard'
 import { itemCategories, marketItems, type ItemCategory, type MarketItem } from './data/marketItems'
+import { addItemToInventory, getInventoryQuantity, type Inventory } from './state/inventory'
 import './App.css'
 
 type MarketView = 'shop' | 'sell'
 type PurchaseMessage = { tone: 'success' | 'error'; text: string } | null
 interface PlayerState {
   gold: number
-  inventory: Record<string, number>
+  inventory: Inventory
   purchaseMessage: PurchaseMessage
 }
 
@@ -23,10 +24,7 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
 
   return {
     gold: state.gold - item.buyPrice,
-    inventory: {
-      ...state.inventory,
-      [item.id]: (state.inventory[item.id] ?? 0) + 1,
-    },
+    inventory: addItemToInventory(state.inventory, item.id),
     purchaseMessage: { tone: 'success', text: `${item.name} added to your inventory.` },
   }
 }
@@ -41,7 +39,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory>('weapons')
   const [player, dispatchPlayerAction] = useReducer(playerReducer, {
     gold: 1250,
-    inventory: {},
+    inventory: [],
     purchaseMessage: null,
   })
   const visibleItems = marketItems.filter((item) => item.category === selectedCategory)
@@ -126,7 +124,7 @@ function App() {
                     <ItemCard
                       item={item}
                       key={item.id}
-                      ownedQuantity={player.inventory[item.id] ?? 0}
+                      ownedQuantity={getInventoryQuantity(player.inventory, item.id)}
                       onBuy={handleBuy}
                     />
                   ))}
