@@ -1,10 +1,35 @@
-import { useState } from 'react'
+import { useReducer, useState } from 'react'
 import { CategoryMenu } from './components/CategoryMenu'
 import { ItemCard } from './components/ItemCard'
-import { itemCategories, marketItems, type ItemCategory } from './data/marketItems'
+import { itemCategories, marketItems, type ItemCategory, type MarketItem } from './data/marketItems'
 import './App.css'
 
 type MarketView = 'shop' | 'sell'
+type PurchaseMessage = { tone: 'success' | 'error'; text: string } | null
+interface PlayerState {
+  gold: number
+  inventory: Record<string, number>
+  purchaseMessage: PurchaseMessage
+}
+
+type PlayerAction = { type: 'buy'; item: MarketItem }
+
+function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
+  const { item } = action
+
+  if (state.gold < item.buyPrice) {
+    return { ...state, purchaseMessage: { tone: 'error', text: 'Not enough gold' } }
+  }
+
+  return {
+    gold: state.gold - item.buyPrice,
+    inventory: {
+      ...state.inventory,
+      [item.id]: (state.inventory[item.id] ?? 0) + 1,
+    },
+    purchaseMessage: { tone: 'success', text: `${item.name} added to your inventory.` },
+  }
+}
 
 const navigation: ReadonlyArray<{ id: MarketView; label: string; icon: string }> = [
   { id: 'shop', label: 'Shop', icon: '⚔' },
@@ -14,7 +39,16 @@ const navigation: ReadonlyArray<{ id: MarketView; label: string; icon: string }>
 function App() {
   const [activeView, setActiveView] = useState<MarketView>('shop')
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory>('weapons')
+  const [player, dispatchPlayerAction] = useReducer(playerReducer, {
+    gold: 1250,
+    inventory: {},
+    purchaseMessage: null,
+  })
   const visibleItems = marketItems.filter((item) => item.category === selectedCategory)
+
+  function handleBuy(item: MarketItem) {
+    dispatchPlayerAction({ type: 'buy', item })
+  }
 
   const content =
     activeView === 'shop'
@@ -42,9 +76,9 @@ function App() {
             <span className="heading-star" aria-hidden="true">✦</span>
           </div>
           <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
-          <div className="gold-balance" aria-label="Current gold balance: 1,250 gold">
+          <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
             <span className="gold-coin" aria-hidden="true">◉</span>
-            <strong>1,250</strong>
+            <strong>{player.gold.toLocaleString()}</strong>
             <span className="gold-label">Gold</span>
           </div>
         </header>
@@ -82,8 +116,20 @@ function App() {
                   onSelect={setSelectedCategory}
                 />
                 <p className="shop-category-description">{content.description}</p>
+                {player.purchaseMessage && (
+                  <p className={`purchase-message is-${player.purchaseMessage.tone}`} role="status">
+                    {player.purchaseMessage.text}
+                  </p>
+                )}
                 <div className="item-grid" aria-live="polite">
-                  {visibleItems.map((item) => <ItemCard item={item} key={item.id} />)}
+                  {visibleItems.map((item) => (
+                    <ItemCard
+                      item={item}
+                      key={item.id}
+                      ownedQuantity={player.inventory[item.id] ?? 0}
+                      onBuy={handleBuy}
+                    />
+                  ))}
                 </div>
               </div>
             ) : (

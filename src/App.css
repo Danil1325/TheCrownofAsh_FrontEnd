@@ -61,6 +61,9 @@
 .category-button:focus-visible { box-shadow: 0 0 0 3px #75501c; }
 .category-button.is-selected { border-color: #4b2a11; background: linear-gradient(180deg, #efd082, #be8338); box-shadow: 1px 2px 0 #71421d, inset 0 0 8px rgb(91 48 12 / 30%); transform: translateY(-1px); }
 .shop-category-description { margin: 15px 0 17px; color: #6e4823; font-size: 1.04rem; font-style: italic; text-align: center; }
+.purchase-message { margin: -3px 0 15px; padding: 8px 12px; border: 1px solid; border-radius: 3px; font-family: Cinzel, Georgia, serif; font-size: .7rem; font-weight: 800; letter-spacing: .04em; text-align: center; text-transform: uppercase; }
+.purchase-message.is-success { border-color: #466127; background: rgb(214 230 153 / 54%); color: #314719; }
+.purchase-message.is-error { border-color: #842e1c; background: rgb(244 195 144 / 53%); color: #6a2115; }
 .item-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 13px; }
 .market-item-card { display: grid; grid-template-rows: 110px auto 1fr auto auto; min-width: 0; padding: 11px 11px 10px; border: 1px solid #573214; border-radius: 3px; background: radial-gradient(circle at 50% 0, #fae2a6, #e2bd78); box-shadow: 2px 3px 0 rgb(89 49 18 / 66%), inset 0 0 13px rgb(101 56 19 / 18%); text-align: center; }
 .item-image-frame { display: grid; place-items: center; overflow: hidden; margin-bottom: 8px; border-bottom: 1px solid rgb(91 51 19 / 40%); }
@@ -71,6 +74,7 @@
 .item-price { white-space: nowrap; }
 .item-price b { color: #a66a16; font-size: .9rem; }
 .item-stock { color: #73502a; text-align: right; }
+.item-owned { color: #426123; text-align: right; }
 .buy-button { width: min(118px, 100%); justify-self: center; margin-top: 11px; padding: 6px 12px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 1px 2px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: default; }
 .market-footer { position: relative; z-index: 1; margin-top: clamp(30px, 5vw, 60px); padding-top: 13px; border-top: 2px solid rgb(75 45 18 / 55%); }
 
