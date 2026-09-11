@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CategoryMenu } from './components/CategoryMenu'
+import { ItemCard } from './components/ItemCard'
 import { itemCategories, marketItems, type ItemCategory } from './data/marketItems'
 import './App.css'
 
@@ -82,26 +83,7 @@ function App() {
                 />
                 <p className="shop-category-description">{content.description}</p>
                 <div className="item-grid" aria-live="polite">
-                  {visibleItems.map((item) => (
-                    <article className="market-item-card" key={item.id}>
-                      <div className="item-image-frame" aria-hidden="true">
-                        <img
-                          src={item.image}
-                          alt=""
-                          onError={(event) => {
-                            event.currentTarget.hidden = true
-                          }}
-                        />
-                        <span>✦</span>
-                      </div>
-                      <h3>{item.name}</h3>
-                      <p>{item.description}</p>
-                      <div className="item-card-footer">
-                        <span className="item-price"><b aria-hidden="true">◉</b> {item.buyPrice} gold</span>
-                        <span className="item-stock">{item.quantity} in stock</span>
-                      </div>
-                    </article>
-                  ))}
+                  {visibleItems.map((item) => <ItemCard item={item} key={item.id} />)}
                 </div>
               </div>
             ) : (
