@@ -1,105 +1,124 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { CategoryMenu } from './components/CategoryMenu'
+import { itemCategories, marketItems, type ItemCategory } from './data/marketItems'
 import './App.css'
 
+type MarketView = 'shop' | 'sell'
+
+const navigation: ReadonlyArray<{ id: MarketView; label: string; icon: string }> = [
+  { id: 'shop', label: 'Shop', icon: '⚔' },
+  { id: 'sell', label: 'Sell Items', icon: '⚖' },
+]
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeView, setActiveView] = useState<MarketView>('shop')
+  const [selectedCategory, setSelectedCategory] = useState<ItemCategory>('weapons')
+  const visibleItems = marketItems.filter((item) => item.category === selectedCategory)
+
+  const content =
+    activeView === 'shop'
+      ? {
+          eyebrow: 'The merchant’s wares',
+          title: 'Shop',
+          description: 'Browse wares and prepare for the road ahead.',
+        }
+      : {
+          eyebrow: 'Your adventurer’s pack',
+          title: 'Sell Items',
+          description: 'Choose unused equipment to trade for gold.',
+        }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((currentCount) => currentCount + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className="market-page">
+      <div className="market-frame">
+        <header className="market-header">
+          <div className="rune-line" aria-hidden="true">
+            ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ
+          </div>
+          <div className="market-heading-wrap">
+            <span className="heading-star" aria-hidden="true">✦</span>
+            <h1>Market</h1>
+            <span className="heading-star" aria-hidden="true">✦</span>
+          </div>
+          <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
+          <div className="gold-balance" aria-label="Current gold balance: 1,250 gold">
+            <span className="gold-coin" aria-hidden="true">◉</span>
+            <strong>1,250</strong>
+            <span className="gold-label">Gold</span>
+          </div>
+        </header>
 
-      <div className="ticks" />
+        <section className="market-workspace" aria-label="Market">
+          <nav className="market-navigation" aria-label="Market sections">
+            <p className="navigation-title">Market Menu</p>
+            <div className="navigation-options">
+              {navigation.map((item) => (
+                <button
+                  className={activeView === item.id ? 'market-nav-button is-active' : 'market-nav-button'}
+                  type="button"
+                  key={item.id}
+                  aria-pressed={activeView === item.id}
+                  onClick={() => setActiveView(item.id)}
+                >
+                  <span aria-hidden="true">{item.icon}</span>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </nav>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon" />
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank" rel="noreferrer">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank" rel="noreferrer">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon" />
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank" rel="noreferrer">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#github-icon" />
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#discord-icon" />
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#x-icon" />
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noreferrer">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#bluesky-icon" />
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <section className="market-content" aria-labelledby="market-content-title">
+            <div className="content-heading">
+              <p>{content.eyebrow}</p>
+              <h2 id="market-content-title">{content.title}</h2>
+              <span aria-hidden="true">✦</span>
+            </div>
+            {activeView === 'shop' ? (
+              <div className="shop-panel">
+                <CategoryMenu
+                  categories={itemCategories}
+                  selectedCategory={selectedCategory}
+                  onSelect={setSelectedCategory}
+                />
+                <p className="shop-category-description">{content.description}</p>
+                <div className="item-grid" aria-live="polite">
+                  {visibleItems.map((item) => (
+                    <article className="market-item-card" key={item.id}>
+                      <div className="item-image-frame" aria-hidden="true">
+                        <img
+                          src={item.image}
+                          alt=""
+                          onError={(event) => {
+                            event.currentTarget.hidden = true
+                          }}
+                        />
+                        <span>✦</span>
+                      </div>
+                      <h3>{item.name}</h3>
+                      <p>{item.description}</p>
+                      <div className="item-card-footer">
+                        <span className="item-price"><b aria-hidden="true">◉</b> {item.buyPrice} gold</span>
+                        <span className="item-stock">{item.quantity} in stock</span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="content-placeholder">
+                <span className="placeholder-mark" aria-hidden="true">♜</span>
+                <p>{content.description}</p>
+                <small>Your sellable items will appear here.</small>
+              </div>
+            )}
+          </section>
+        </section>
 
-      <div className="ticks" />
-      <section id="spacer" />
-    </>
+        <footer className="market-footer" aria-hidden="true">
+          ᚱ ᚢ ᚾ ᛖ ᛊ &nbsp; • &nbsp; ᚷ ᛟ ᛚ ᛞ &nbsp; • &nbsp; ᚹ ᚨ ᚱ ᛖ ᛊ
+        </footer>
+      </div>
+    </main>
   )
 }
 
