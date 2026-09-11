@@ -1,0 +1,108 @@
+.main-menu {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.menu-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: clamp(1rem, 2.5vh, 2rem) 1rem;
+  box-sizing: border-box;
+}
+
+.game-logo {
+  display: block;
+  width: min(42vw, 43rem);
+  height: auto;
+  object-fit: contain;
+}
+
+.main-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.35rem, 1.8vh, 1.25rem);
+  width: min(25vw, 25rem);
+  margin-top: clamp(0.75rem, 2vh, 1.5rem);
+}
+
+.menu-button {
+  width: 100%;
+}
+
+.menu-button img,
+.options-button img,
+.logout-button img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.corner-actions {
+  position: absolute;
+  inset: auto clamp(1rem, 2.5vw, 2.5rem) clamp(0.75rem, 2vh, 1.5rem);
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.corner-actions .game-button {
+  pointer-events: auto;
+}
+
+.options-button {
+  width: clamp(4.25rem, 8vw, 7rem);
+}
+
+.logout-button {
+  width: clamp(10rem, 16vw, 15rem);
+}
+
+.action-feedback {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 2;
+  transform: translateX(-50%);
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(63, 27, 11, 0.8);
+  border-radius: 0.35rem;
+  color: #321609;
+  background: rgba(245, 207, 141, 0.94);
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.28);
+  font: 700 0.85rem/1.2 Georgia, serif;
+}
+
+@media (max-aspect-ratio: 4 / 5) {
+  .main-menu {
+    overflow-y: auto;
+  }
+
+  .menu-content {
+    position: relative;
+    min-height: 100svh;
+    justify-content: center;
+    padding: 1rem 1.5rem 7rem;
+  }
+
+  .game-logo {
+    width: min(82vw, 30rem);
+  }
+
+  .main-actions {
+    width: min(70vw, 22rem);
+  }
+
+  .corner-actions {
+    bottom: 1rem;
+  }
+}
