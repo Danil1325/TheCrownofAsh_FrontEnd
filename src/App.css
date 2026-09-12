@@ -3,19 +3,20 @@
 .market-page {
   min-height: 100svh;
   padding: clamp(10px, 2vw, 28px);
-  background: radial-gradient(ellipse at 12% 82%, rgb(40 57 35 / 45%), transparent 28%), radial-gradient(ellipse at 87% 18%, rgb(96 68 36 / 38%), transparent 30%), linear-gradient(135deg, #283827, #805a31 48%, #2c3b2b);
+  /*background: radial-gradient(ellipse at 12% 82%, rgb(40 57 35 / 45%), transparent 28%), radial-gradient(ellipse at 87% 18%, rgb(96 68 36 / 38%), transparent 30%), linear-gradient(135deg, #283827, #805a31 48%, #2c3b2b);*/
+  background: #45392c url('./assets/ui/MarketBackground.png') center / cover fixed no-repeat;
 }
 
 .market-frame {
   position: relative; isolation: isolate; width: min(1440px, 100%); min-height: calc(100svh - clamp(20px, 4vw, 56px)); margin: 0 auto; padding: clamp(26px, 4vw, 58px) clamp(16px, 4vw, 62px) 20px; overflow: hidden;
   border: 3px solid #38220f; outline: 2px solid #c6a362; outline-offset: -10px;
-  background-color: #dfc184; background-image: repeating-linear-gradient(0deg, rgb(86 54 24 / 6%) 0 1px, transparent 1px 4px), radial-gradient(circle at 10% 10%, rgb(255 245 198 / 70%), transparent 20%), radial-gradient(circle at 90% 90%, rgb(93 58 27 / 18%), transparent 35%);
-  box-shadow: inset 0 0 70px rgb(69 38 15 / 50%), 0 18px 45px rgb(18 15 8 / 45%);
+  /*background-color: #dfc184; background-image: repeating-linear-gradient(0deg, rgb(86 54 24 / 6%) 0 1px, transparent 1px 4px), radial-gradient(circle at 10% 10%, rgb(255 245 198 / 70%), transparent 20%), radial-gradient(circle at 90% 90%, rgb(93 58 27 / 18%), transparent 35%);*/
+  /* box-shadow: inset 0 0 70px rgb(69 38 15 / 50%), 0 18px 45px rgb(18 15 8 / 45%); */
 }
 
-.market-frame::before, .market-frame::after { position: absolute; z-index: -1; color: rgb(58 35 16 / 25%); font-size: clamp(100px, 18vw, 240px); line-height: 1; content: '✧'; }
+/* .market-frame::before, .market-frame::after { position: absolute; z-index: -1; color: rgb(58 35 16 / 25%); font-size: clamp(100px, 18vw, 240px); line-height: 1; content: '✧'; }
 .market-frame::before { top: 15%; left: -3%; }
-.market-frame::after { right: -4%; bottom: 2%; content: '✦'; }
+.market-frame::after { right: -4%; bottom: 2%; content: '✦'; } */
 
 .market-header { position: relative; z-index: 1; display: grid; justify-items: center; padding-bottom: clamp(24px, 4vw, 44px); }
 .rune-line, .market-footer { width: 100%; color: #5f3a19; font-family: Georgia, serif; font-size: clamp(11px, 1.25vw, 17px); font-weight: 700; letter-spacing: clamp(3px, .8vw, 11px); text-align: center; white-space: nowrap; overflow: hidden; }
