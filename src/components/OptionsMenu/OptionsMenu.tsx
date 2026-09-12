@@ -74,7 +74,7 @@ function OptionsMenu({ onClose }: OptionsMenuProps) {
   const [isClosing, setIsClosing] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
-  const [isFullscreenOn, setIsFullscreenOn] = useState(true)
+  const [isFullscreenOn, setIsFullscreenOn] = useState(false)
   const [areTutorialHintsOn, setAreTutorialHintsOn] = useState(true)
 
   const closeMenu = useCallback(() => {
@@ -92,8 +92,31 @@ function OptionsMenu({ onClose }: OptionsMenuProps) {
     }
 
     window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
+
+    const syncFullscreenState = () => {
+      setIsFullscreenOn(document.fullscreenElement !== null)
+    }
+
+    syncFullscreenState()
+    document.addEventListener('fullscreenchange', syncFullscreenState)
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape)
+      document.removeEventListener('fullscreenchange', syncFullscreenState)
+    }
   }, [closeMenu])
+
+  const toggleFullscreen = async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen()
+      } else if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen()
+      }
+    } catch {
+      setIsFullscreenOn(false)
+    }
+  }
 
   return (
     <div
@@ -121,7 +144,7 @@ function OptionsMenu({ onClose }: OptionsMenuProps) {
               type="button"
               aria-label={`Fullscreen ${isFullscreenOn ? 'On' : 'Off'}`}
               aria-pressed={isFullscreenOn}
-              onClick={() => setIsFullscreenOn((isOn) => !isOn)}
+              onClick={() => void toggleFullscreen()}
             >
               <img src={isFullscreenOn ? fullscreenOn : fullscreenOff} alt="" />
             </button>
