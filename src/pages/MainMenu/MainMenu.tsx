@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import '../../styles/game-ui.css'
 import './MainMenu.css'
+import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
@@ -20,6 +21,7 @@ const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
 
 function MainMenu() {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false)
 
   return (
     <main className="main-menu" style={{ backgroundImage: 'url("' + background + '")' }}>
@@ -46,7 +48,8 @@ function MainMenu() {
           className="game-button options-button"
           type="button"
           aria-label="Options"
-          onClick={() => setSelectedAction('options')}
+          aria-expanded={isOptionsOpen}
+          onClick={() => setIsOptionsOpen((isOpen) => !isOpen)}
         >
           <img src={options} alt="" />
         </button>
@@ -61,14 +64,17 @@ function MainMenu() {
         </button>
       </div>
 
-      {selectedAction && (
+      {selectedAction && selectedAction !== 'options' && (
         <div className="action-feedback" role="status" aria-live="polite">
           {selectedAction === 'new-game' && 'New Game selected'}
           {selectedAction === 'load-game' && 'Load Game selected'}
           {selectedAction === 'credits' && 'Credits selected'}
-          {selectedAction === 'options' && 'Options selected'}
           {selectedAction === 'log-out' && 'Log Out selected'}
         </div>
+      )}
+
+      {isOptionsOpen && (
+        <OptionsMenu onClose={() => setIsOptionsOpen(false)} />
       )}
     </main>
   )

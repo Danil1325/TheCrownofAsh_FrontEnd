@@ -5,7 +5,7 @@
   isolation: isolate;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% 100%;
 }
 
 .menu-content {
@@ -20,7 +20,7 @@
 
 .game-logo {
   display: block;
-  width: min(42vw, 43rem);
+  width: min(55vw, 70vh, 55rem);
   height: auto;
   object-fit: contain;
 }
@@ -30,7 +30,7 @@
   flex-direction: column;
   align-items: center;
   gap: clamp(0.35rem, 1.8vh, 1.25rem);
-  width: min(25vw, 25rem);
+  width: min(25vw, 44vh, 25rem);
   margin-top: clamp(0.75rem, 2vh, 1.5rem);
 }
 
@@ -60,11 +60,13 @@
 }
 
 .options-button {
-  width: clamp(4.25rem, 8vw, 7rem);
+  width: min(8vw, 12vh, 7rem);
+  position: relative;
+  top: -10px;
 }
 
 .logout-button {
-  width: clamp(10rem, 16vw, 15rem);
+  width: min(24vw, 29vh, 24rem);
 }
 
 .action-feedback {
@@ -105,4 +107,5 @@
   .corner-actions {
     bottom: 1rem;
   }
+
 }
