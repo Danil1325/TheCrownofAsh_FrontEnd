@@ -7,16 +7,16 @@ import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
 import newGame from '../../assets/MainMenu/Buttons/New Game.png'
 import loadGame from '../../assets/MainMenu/Buttons/Load Game.png'
-import credits from '../../assets/MainMenu/Buttons/Credits.png'
+import skills from '../../assets/MainMenu/Buttons/Skills.png'
 import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
 
-type MenuAction = 'new-game' | 'load-game' | 'credits' | 'options' | 'log-out'
+type MenuAction = 'new-game' | 'load-game' | 'skills' | 'options' | 'log-out'
 
 const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'new-game', image: newGame, label: 'New Game' },
   { action: 'load-game', image: loadGame, label: 'Load Game' },
-  { action: 'credits', image: credits, label: 'Credits' },
+  { action: 'skills', image: skills, label: 'Skills' },
 ]
 
 function MainMenu() {
@@ -68,7 +68,7 @@ function MainMenu() {
         <div className="action-feedback" role="status" aria-live="polite">
           {selectedAction === 'new-game' && 'New Game selected'}
           {selectedAction === 'load-game' && 'Load Game selected'}
-          {selectedAction === 'credits' && 'Credits selected'}
+          {selectedAction === 'skills' && 'Skills selected'}
           {selectedAction === 'log-out' && 'Log Out selected'}
         </div>
       )}
