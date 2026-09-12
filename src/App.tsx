@@ -1,3 +1,5 @@
+import shopHeader from './assets/ui/ShopHeader.png'
+import shopMenu from './assets/ui/ShopMenu.png'
 import { useReducer, useState } from 'react'
 import { CategoryMenu } from './components/CategoryMenu'
 import { InventoryItemCard } from './components/InventoryItemCard'
@@ -141,9 +143,7 @@ function App() {
             ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ
           </div>
           <div className="market-heading-wrap">
-            <span className="heading-star" aria-hidden="true">✦</span>
-            <h1>Market</h1>
-            <span className="heading-star" aria-hidden="true">✦</span>
+            <img className="shop-header-image" src={shopHeader} alt="Market" />
           </div>
           <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
           <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
