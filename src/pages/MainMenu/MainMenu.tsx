@@ -2,6 +2,7 @@ import { useState } from 'react'
 import '../../styles/game-ui.css'
 import './MainMenu.css'
 import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
+import LoadingScreen from '../LoadingScreen/LoadingScreen'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
@@ -19,9 +20,21 @@ const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'skills', image: skills, label: 'Skills' },
 ]
 
-function MainMenu() {
+type MainMenuProps = {
+  musicVolume: number
+  sfxVolume: number
+  onMusicVolumeChange: (value: number) => void
+  onSfxVolumeChange: (value: number) => void
+  onPlayButtonSound: () => void
+}
+
+function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
+
+  if (selectedAction === 'new-game' || selectedAction === 'load-game') {
+    return <LoadingScreen musicVolume={musicVolume} />
+  }
 
   return (
     <main className="main-menu" style={{ backgroundImage: 'url("' + background + '")' }}>
@@ -35,7 +48,10 @@ function MainMenu() {
               key={item.action}
               type="button"
               aria-label={item.label}
-              onClick={() => setSelectedAction(item.action)}
+              onClick={() => {
+                onPlayButtonSound()
+                setSelectedAction(item.action)
+              }}
             >
               <img src={item.image} alt="" />
             </button>
@@ -49,7 +65,10 @@ function MainMenu() {
           type="button"
           aria-label="Options"
           aria-expanded={isOptionsOpen}
-          onClick={() => setIsOptionsOpen((isOpen) => !isOpen)}
+          onClick={() => {
+            onPlayButtonSound()
+            setIsOptionsOpen((isOpen) => !isOpen)
+          }}
         >
           <img src={options} alt="" />
         </button>
@@ -58,7 +77,10 @@ function MainMenu() {
           className="game-button logout-button"
           type="button"
           aria-label="Log out"
-          onClick={() => setSelectedAction('log-out')}
+          onClick={() => {
+            onPlayButtonSound()
+            setSelectedAction('log-out')
+          }}
         >
           <img src={logOut} alt="" />
         </button>
@@ -66,15 +88,20 @@ function MainMenu() {
 
       {selectedAction && selectedAction !== 'options' && (
         <div className="action-feedback" role="status" aria-live="polite">
-          {selectedAction === 'new-game' && 'New Game selected'}
-          {selectedAction === 'load-game' && 'Load Game selected'}
           {selectedAction === 'skills' && 'Skills selected'}
           {selectedAction === 'log-out' && 'Log Out selected'}
         </div>
       )}
 
       {isOptionsOpen && (
-        <OptionsMenu onClose={() => setIsOptionsOpen(false)} />
+        <OptionsMenu
+          musicVolume={musicVolume}
+          sfxVolume={sfxVolume}
+          onMusicVolumeChange={onMusicVolumeChange}
+          onSfxVolumeChange={onSfxVolumeChange}
+          onPlayButtonSound={onPlayButtonSound}
+          onClose={() => setIsOptionsOpen(false)}
+        />
       )}
     </main>
   )
