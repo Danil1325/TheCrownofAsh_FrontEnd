@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react'
 import MainMenu from './pages/MainMenu/MainMenu'
 import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
+import LoginPage from './pages/Login/LoginPage'
 import buttonPressSound from './assets/Button Press.mp3'
 
 function App() {
-  const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isInitialLoading, setIsInitialLoading] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
@@ -18,6 +20,10 @@ function App() {
 
   if (isInitialLoading) {
     return <LoadingScreen onComplete={finishInitialLoading} musicVolume={musicVolume} />
+  }
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={() => { setIsAuthenticated(true); setIsInitialLoading(true) }} />
   }
 
   return (

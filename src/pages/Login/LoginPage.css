@@ -1,0 +1,191 @@
+.login-page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  color: #27160f;
+}
+
+.login-parchment {
+  position: relative;
+  width: min(36vw, 70vh, 34rem);
+  aspect-ratio: 1216 / 1294;
+  flex: 0 0 auto;
+}
+
+.login-parchment-image {
+  position: absolute;
+  inset: 0;
+  width: 110%;
+  height: 100%;
+}
+
+.login-form {
+  position: absolute;
+  inset: 20% 17% 21%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  transform: translateX(29px);
+}
+
+.login-form h1 {
+  margin: 0;
+  color: #24130d;
+  font: 700 clamp(1.05rem, 1.65vw, 1.5rem)/1 Garamond, Georgia, serif;
+  text-align: center;
+}
+
+.login-heading-line {
+  display: block;
+  flex: 0 0 2px;
+  align-self: center;
+  width: 38%;
+  height: 2px;
+  min-height: 2px;
+  margin: 0.45rem auto 0.85rem;
+  z-index: 1;
+  background: #4a170f;
+}
+
+.login-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(1.9rem, 3.8vh, 2.35rem);
+  margin-bottom: 0.58rem;
+  border: 1px solid rgba(61, 35, 22, 0.85);
+  border-radius: 0.35rem;
+  background: rgba(255, 245, 220, 0.16);
+}
+
+.login-field input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.42rem 2.25rem;
+  border: 0;
+  outline: 0;
+  color: #29170f;
+  background: transparent;
+  font: 400 clamp(0.78rem, 1.15vw, 0.95rem) Garamond, Georgia, serif;
+}
+
+.login-field input::placeholder {
+  color: #3e2a20;
+  opacity: 1;
+}
+
+.field-icon {
+  position: absolute;
+  z-index: 1;
+  color: #24130d;
+  pointer-events: none;
+}
+
+.field-icon {
+  left: 0.55rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.25rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  color: #24130d;
+  background: transparent;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: #711b10;
+}
+
+.login-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.1rem 0 0.35rem;
+  font-size: clamp(0.68rem, 1vw, 0.82rem);
+}
+
+.remember-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+}
+
+.remember-option input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #59170f;
+}
+
+.login-options-row a,
+.create-account a {
+  color: #3f1710;
+  text-decoration: underline;
+}
+
+.login-error {
+  margin: 0.2rem 0;
+  color: #7a160e;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: 0.45rem;
+}
+
+.login-submit img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.login-divider {
+  margin-top: 0.7rem;
+  overflow: hidden;
+  color: #5d4431;
+  font-size: clamp(0.55rem, 1.1vw, 0.8rem);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.create-account {
+  margin: 0.65rem 0 0;
+  font-size: clamp(0.68rem, 1vw, 0.82rem);
+  text-align: center;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-aspect-ratio: 4 / 5) {
+  .login-page {
+    padding: 1rem 0;
+  }
+
+  .login-parchment {
+    width: min(90vw, 42rem);
+  }
+}
