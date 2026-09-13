@@ -15,6 +15,11 @@ import fullscreenOff from '../../assets/Options/Off.png'
 
 type OptionsMenuProps = {
   onClose: () => void
+  musicVolume: number
+  sfxVolume: number
+  onMusicVolumeChange: (value: number) => void
+  onSfxVolumeChange: (value: number) => void
+  onPlayButtonSound: () => void
 }
 
 type VolumeSliderProps = {
@@ -70,10 +75,8 @@ function VolumeSlider({ label, value, onChange }: VolumeSliderProps) {
   )
 }
 
-function OptionsMenu({ onClose }: OptionsMenuProps) {
+function OptionsMenu({ onClose, musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound }: OptionsMenuProps) {
   const [isClosing, setIsClosing] = useState(false)
-  const [musicVolume, setMusicVolume] = useState(70)
-  const [sfxVolume, setSfxVolume] = useState(70)
   const [isFullscreenOn, setIsFullscreenOn] = useState(false)
   const [areTutorialHintsOn, setAreTutorialHintsOn] = useState(true)
 
@@ -133,8 +136,8 @@ function OptionsMenu({ onClose }: OptionsMenuProps) {
         <img className="options-inscription" src={optionsInscription} alt="Options" />
         <div className="options-settings">
           <div className="volume-settings">
-            <VolumeSlider label="Music" value={musicVolume} onChange={setMusicVolume} />
-            <VolumeSlider label="Sound FX" value={sfxVolume} onChange={setSfxVolume} />
+            <VolumeSlider label="Music" value={musicVolume} onChange={onMusicVolumeChange} />
+            <VolumeSlider label="Sound FX" value={sfxVolume} onChange={onSfxVolumeChange} />
           </div>
 
           <div className="fullscreen-setting">
@@ -144,7 +147,10 @@ function OptionsMenu({ onClose }: OptionsMenuProps) {
               type="button"
               aria-label={`Fullscreen ${isFullscreenOn ? 'On' : 'Off'}`}
               aria-pressed={isFullscreenOn}
-              onClick={() => void toggleFullscreen()}
+              onClick={() => {
+                onPlayButtonSound()
+                void toggleFullscreen()
+              }}
             >
               <img src={isFullscreenOn ? fullscreenOn : fullscreenOff} alt="" />
             </button>
@@ -157,7 +163,10 @@ function OptionsMenu({ onClose }: OptionsMenuProps) {
               type="button"
               aria-label={`Tutorial Hints ${areTutorialHintsOn ? 'On' : 'Off'}`}
               aria-pressed={areTutorialHintsOn}
-              onClick={() => setAreTutorialHintsOn((isOn) => !isOn)}
+              onClick={() => {
+                onPlayButtonSound()
+                setAreTutorialHintsOn((isOn) => !isOn)
+              }}
             >
               <img src={areTutorialHintsOn ? fullscreenOn : fullscreenOff} alt="" />
             </button>
@@ -167,7 +176,10 @@ function OptionsMenu({ onClose }: OptionsMenuProps) {
           className="game-button options-exit-button"
           type="button"
           aria-label="Exit options menu"
-          onClick={closeMenu}
+          onClick={() => {
+            onPlayButtonSound()
+            closeMenu()
+          }}
         >
           <img src={exitIcon} alt="" />
         </button>
