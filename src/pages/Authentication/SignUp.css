@@ -1,0 +1,71 @@
+.signup-page .login-parchment {
+  width: min(36vw, 70vh, 34rem);
+}
+
+.signup-form {
+  inset: 17% 17% 16%;
+}
+
+.signup-form .login-heading-line {
+  margin-bottom: 0.7rem;
+}
+
+.signup-form .login-field {
+  min-height: clamp(2.5rem, 3.8vh, 2.35rem);
+  margin-bottom: 0.42rem;
+}
+
+.signup-form .login-field input {
+  font-size: var(--login-text-size);
+}
+
+.terms-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+  font-size: var(--login-text-size);
+  line-height: 1.2;
+}
+
+.terms-option input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: #59170f;
+}
+
+.terms-option a {
+  color: #3f1710;
+  text-decoration: underline;
+}
+
+.signup-form .login-error {
+  font-size: var(--login-text-size);
+  margin: 0.15rem 0;
+}
+
+.signup-form .login-submit {
+  margin-top: 0.15rem;
+  transform: translate(0, 10px);
+}
+
+.signup-form .login-submit:hover {
+  transform: translate(0, 10px) scale(1.035);
+}
+
+.signup-form .login-submit:active {
+  transform: translate(0, 10px) scale(0.98);
+}
+
+.signup-login-link {
+  margin-top: 0.8rem;
+  transform: translate(0, 10px);
+}
+
+@media (max-aspect-ratio: 4 / 5) {
+  .signup-page .login-parchment {
+    width: min(90vw, 42rem);
+  }
+}

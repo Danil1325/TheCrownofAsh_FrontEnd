@@ -31,6 +31,9 @@
   flex-direction: column;
   align-items: stretch;
   transform: translateX(29px);
+  --login-text-size: clamp(0.78rem, 1.15vw, 0.95rem);
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: var(--login-text-size);
 }
 
 .login-form h1 {
@@ -56,7 +59,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  min-height: clamp(1.9rem, 3.8vh, 2.35rem);
+  min-height: clamp(2.5rem, 3.8vh, 2.35rem);
   margin-bottom: 0.58rem;
   border: 1px solid rgba(61, 35, 22, 0.85);
   border-radius: 0.35rem;
@@ -71,7 +74,7 @@
   outline: 0;
   color: #29170f;
   background: transparent;
-  font: 400 clamp(0.78rem, 1.15vw, 0.95rem) Garamond, Georgia, serif;
+  font: 400 var(--login-text-size)/1.2 Garamond, Georgia, serif;
 }
 
 .login-field input::placeholder {
@@ -114,7 +117,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   margin: 0.1rem 0 0.35rem;
-  font-size: clamp(0.68rem, 1vw, 0.82rem);
+  font-size: var(--login-text-size);
 }
 
 .remember-option {
@@ -137,15 +140,22 @@
 }
 
 .login-error {
+  min-height: 1.1em;
   margin: 0.2rem 0;
   color: #7a160e;
-  font-size: 0.78rem;
+  font-size: var(--login-text-size);
   text-align: center;
+  visibility: hidden;
+}
+
+.login-error--visible {
+  visibility: visible;
 }
 
 .login-submit {
   width: 100%;
   margin-top: 0.45rem;
+  order: 1;
 }
 
 .login-submit img {
@@ -155,6 +165,7 @@
 }
 
 .login-divider {
+  order: 3;
   margin-top: 0.7rem;
   overflow: hidden;
   color: #5d4431;
@@ -164,9 +175,14 @@
 }
 
 .create-account {
+  order: 2;
   margin: 0.65rem 0 0;
-  font-size: clamp(0.68rem, 1vw, 0.82rem);
+  font-size: var(--login-text-size);
   text-align: center;
+}
+
+.login-form:not(.signup-form) .create-account {
+  transform: translate(0, 50px);
 }
 
 .visually-hidden {

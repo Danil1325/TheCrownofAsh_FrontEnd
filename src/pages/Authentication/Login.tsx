@@ -1,14 +1,15 @@
 import { useState, type FormEvent } from 'react'
 import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react'
 import '../../styles/game-ui.css'
-import './LoginPage.css'
+import './Login.css'
 
 import background from '../../assets/Log In Sign Up/Log In Sign Up Background.png'
 import parchment from '../../assets/Log In Sign Up/Log In Sign Up Pergament.png'
 import loginButton from '../../assets/Log In Sign Up/Log In.png'
 
-type LoginPageProps = {
+type LoginProps = {
   onLogin: () => void
+  onCreateAccount: () => void
 }
 
 function MailIcon() {
@@ -23,7 +24,7 @@ function EyeIcon({ hidden }: { hidden: boolean }) {
   return <span className="eye-icon" aria-hidden="true">{hidden ? '◉' : '◌'}</span>
 }
 
-function LoginPage({ onLogin }: LoginPageProps) {
+function Login({ onLogin, onCreateAccount }: LoginProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -97,7 +98,13 @@ function LoginPage({ onLogin }: LoginPageProps) {
             </a>
           </div>
 
-          {hasError && <p className="login-error">Enter an email and password to continue.</p>}
+          <p
+            className={`login-error${hasError ? ' login-error--visible' : ''}`}
+            role="alert"
+            aria-live="polite"
+          >
+            {hasError ? 'Enter an email and password to continue.' : '\u00a0'}
+          </p>
 
           <button className="game-button login-submit" type="submit">
             <img src={loginButton} alt="Log In" />
@@ -106,7 +113,13 @@ function LoginPage({ onLogin }: LoginPageProps) {
           <div className="login-divider" aria-hidden="true">✦ ───────── ✦ ───────── ✦</div>
           <p className="create-account">
             New to our realm?{' '}
-            <a href="#create-account" onClick={(event) => event.preventDefault()}>
+            <a
+              href="#create-account"
+              onClick={(event) => {
+                event.preventDefault()
+                onCreateAccount()
+              }}
+            >
               Create an account
             </a>
           </p>
@@ -116,4 +129,4 @@ function LoginPage({ onLogin }: LoginPageProps) {
   )
 }
 
-export default LoginPage
+export default Login

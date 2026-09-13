@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react'
 import MainMenu from './pages/MainMenu/MainMenu'
 import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
-import LoginPage from './pages/Login/LoginPage'
+import Login from './pages/Authentication/Login'
+import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authenticationPage, setAuthenticationPage] = useState<'login' | 'signup'>('login')
   const [isInitialLoading, setIsInitialLoading] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
@@ -23,7 +25,21 @@ function App() {
   }
 
   if (!isAuthenticated) {
-    return <LoginPage onLogin={() => { setIsAuthenticated(true); setIsInitialLoading(true) }} />
+    if (authenticationPage === 'signup') {
+      return (
+        <SignUp
+          onSignUp={() => { setIsAuthenticated(true); setIsInitialLoading(true) }}
+          onBackToLogin={() => setAuthenticationPage('login')}
+        />
+      )
+    }
+
+    return (
+      <Login
+        onLogin={() => { setIsAuthenticated(true); setIsInitialLoading(true) }}
+        onCreateAccount={() => setAuthenticationPage('signup')}
+      />
+    )
   }
 
   return (
