@@ -1,0 +1,188 @@
+.item-card-container {
+  width: 180px;
+  height: 250px;
+  perspective: 1000px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.item-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.item-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid #333;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-family: 'Cinzel', serif; /* Assuming a fantasy font, falling back to serif */
+}
+
+/* Rarity Borders/Glows */
+.rarity-common { border-color: #7a7a7a; box-shadow: 0 0 10px rgba(122, 122, 122, 0.2); }
+.rarity-uncommon { border-color: #2da144; box-shadow: 0 0 10px rgba(45, 161, 68, 0.4); }
+.rarity-rare { border-color: #2d6aa1; box-shadow: 0 0 15px rgba(45, 106, 161, 0.5); }
+.rarity-epic { border-color: #922da1; box-shadow: 0 0 15px rgba(146, 45, 161, 0.6); }
+.rarity-legendary { border-color: #a1782d; box-shadow: 0 0 20px rgba(161, 120, 45, 0.8); }
+
+.card-front {
+  background: linear-gradient(135deg, #2a2a2a 0%, #111 100%);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+  padding: 15px;
+  align-items: center;
+}
+
+/* Front specific styles */
+.card-header {
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.item-quantity {
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.card-image-placeholder {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%);
+}
+
+.category-icon {
+  font-size: 1.2rem;
+  color: #888;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.card-footer {
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+/* Back specific styles */
+.card-back .card-header {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 10px;
+  background: transparent;
+  padding: 5px 0 10px 0;
+}
+
+.card-stats {
+  flex-grow: 1;
+  width: 100%;
+  font-size: 0.8rem;
+  overflow-y: auto;
+}
+
+/* Scrollbar for back stats */
+.card-stats::-webkit-scrollbar {
+  width: 4px;
+}
+.card-stats::-webkit-scrollbar-track {
+  background: transparent;
+}
+.card-stats::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+}
+
+.item-description {
+  font-style: italic;
+  color: #aaa;
+  margin-bottom: 15px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.stats-list, .item-effects ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+}
+
+.stats-list li, .item-effects li {
+  padding: 4px 0;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+  color: #ddd;
+}
+
+.item-effects strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.card-actions {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  font-weight: bold;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Glassmorphism glare effect */
+.card-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.05) 25%, transparent 30%);
+  pointer-events: none;
+}
