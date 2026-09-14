@@ -82,6 +82,7 @@ const navigation: ReadonlyArray<{ id: MarketView; label: string; icon: string }>
 
 function App() {
   const [activeView, setActiveView] = useState<MarketView>('shop')
+  const [isShopCategoriesOpen, setIsShopCategoriesOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory>('weapons')
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
   const [player, dispatchPlayerAction] = useReducer(playerReducer, {
@@ -101,6 +102,11 @@ function App() {
 
   function handleBuy(item: MarketItem) {
     dispatchPlayerAction({ type: 'buy', item })
+  }
+
+  function handleShopNavigation() {
+    setIsShopCategoriesOpen((isOpen) => (activeView === 'shop' ? !isOpen : true))
+    setActiveView('shop')
   }
 
   function toggleSellSelection(itemId: string) {
@@ -159,16 +165,26 @@ function App() {
               <p className="navigation-title">Market Menu</p>
               <div className="navigation-options">
                 {navigation.map((item) => (
-                  <button
-                    className={activeView === item.id ? 'market-nav-button is-active' : 'market-nav-button'}
-                    type="button"
-                    key={item.id}
-                    aria-pressed={activeView === item.id}
-                    onClick={() => setActiveView(item.id)}
-                  >
-                    <span aria-hidden="true">{item.icon}</span>
-                    {item.label}
-                  </button>
+                  <div className="market-nav-group" key={item.id}>
+                    <button
+                      className={activeView === item.id ? 'market-nav-button is-active' : 'market-nav-button'}
+                      type="button"
+                      aria-pressed={activeView === item.id}
+                      aria-expanded={item.id === 'shop' ? isShopCategoriesOpen : undefined}
+                      onClick={() => item.id === 'shop' ? handleShopNavigation() : setActiveView(item.id)}
+                    >
+                      <span aria-hidden="true">{item.icon}</span>
+                      {item.label}
+                      {item.id === 'shop' && <b className="shop-disclosure" aria-hidden="true">{isShopCategoriesOpen ? '−' : '+'}</b>}
+                    </button>
+                    {item.id === 'shop' && isShopCategoriesOpen && (
+                      <CategoryMenu
+                        categories={itemCategories}
+                        selectedCategory={selectedCategory}
+                        onSelect={setSelectedCategory}
+                      />
+                    )}
+                  </div>
                 ))}
               </div>
             </nav>
@@ -178,10 +194,10 @@ function App() {
               <div className="navigation-options">
                 <p className="market-nav-label"><span aria-hidden="true">🎒</span> Inventory</p>
                 <p className="market-nav-label is-active"><span aria-hidden="true">⚖</span> Sell Items</p>
-                <button className="market-nav-button" type="button" onClick={() => setActiveView('shop')}>
+                <button className="market-nav-button" type="button" onClick={handleShopNavigation}>
                   <span aria-hidden="true">◉</span> Buy Items
                 </button>
-                <button className="market-nav-button" type="button" onClick={() => setActiveView('shop')}>
+                <button className="market-nav-button" type="button" onClick={handleShopNavigation}>
                   <span aria-hidden="true">↩</span> Back
                 </button>
               </div>
@@ -196,11 +212,6 @@ function App() {
             </div>
             {activeView === 'shop' ? (
               <div className="shop-panel">
-                <CategoryMenu
-                  categories={itemCategories}
-                  selectedCategory={selectedCategory}
-                  onSelect={setSelectedCategory}
-                />
                 <p className="shop-category-description">{content.description}</p>
                 {player.marketMessage && (
                   <p className={`purchase-message is-${player.marketMessage.tone}`} role="status">

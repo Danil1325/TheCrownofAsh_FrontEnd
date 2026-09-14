@@ -15,7 +15,7 @@ const categoryLabels: Record<ItemCategory, string> = {
 
 export function CategoryMenu({ categories, selectedCategory, onSelect }: CategoryMenuProps) {
   return (
-    <nav className="category-menu" aria-label="Shop categories">
+    <div className="category-menu" role="group" aria-label="Shop categories">
       {categories.map((category) => {
         const isSelected = category === selectedCategory
 
@@ -31,6 +31,6 @@ export function CategoryMenu({ categories, selectedCategory, onSelect }: Categor
           </button>
         )
       })}
-    </nav>
+    </div>
   )
 }

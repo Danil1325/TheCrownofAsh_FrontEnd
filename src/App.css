@@ -42,12 +42,37 @@
 .gold-coin { display: grid; width: 29px; height: 29px; place-items: center; border: 2px solid #5c3512; border-radius: 50%; background: #e3af38; box-shadow: inset 0 0 0 3px #f4d46f; color: #70410f; font-size: 16px; }
 
 .market-workspace { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(195px, 250px) minmax(0, 1fr); gap: clamp(18px, 3vw, 45px); align-items: stretch; max-width: 1180px; margin: 0 auto; }
-.market-navigation, .market-content { border: 2px solid #4a2b14; background: repeating-linear-gradient(-45deg, transparent 0 6px, rgb(107 66 27 / 3%) 6px 7px), radial-gradient(circle at 50% 0, #f9dfa0, #e6c889 75%, #cba765); box-shadow: 4px 5px 0 rgb(73 38 14 / 75%), inset 0 0 22px rgb(89 49 18 / 27%); }
-.market-navigation { min-height: 300px; padding: 22px 14px; }
+/* .market-navigation, .market-content { border: 2px solid #4a2b14; background: repeating-linear-gradient(-45deg, transparent 0 6px, rgb(107 66 27 / 3%) 6px 7px), radial-gradient(circle at 50% 0, #f9dfa0, #e6c889 75%, #cba765); box-shadow: 4px 5px 0 rgb(73 38 14 / 75%), inset 0 0 22px rgb(89 49 18 / 27%); } */
+/* .market-navigation { min-height: 300px; padding: 22px 14px; } */
+.market-content {
+  border: 2px solid #4a2b14;
+  background: repeating-linear-gradient(
+      -45deg,
+      transparent 0 6px,
+      rgb(107 66 27 / 3%) 6px 7px
+    ),
+    radial-gradient(circle at 50% 0, #f9dfa0, #e6c889 75%, #cba765);
+  box-shadow: 4px 5px 0 rgb(73 38 14 / 75%),
+    inset 0 0 22px rgb(89 49 18 / 27%);
+}
+.market-navigation {
+  min-height: 300px;
+  padding: 22px 14px;
+
+  background-image: url('./assets/ui/ShopMenu.png');
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
 .navigation-title { margin: 0 8px 15px; padding-bottom: 12px; border-bottom: 1px solid rgb(64 34 13 / 50%); color: #492710; font-size: .88rem; font-weight: 800; letter-spacing: .08em; text-align: center; }
 .navigation-options { display: grid; gap: 9px; }
+.market-nav-group { display: grid; gap: 7px; }
+.market-nav-group .category-menu { display: grid; gap: 6px; margin: 0 0 3px 27px; }
+.market-nav-group .category-button { padding-block: 7px; font-size: .61rem; text-align: left; }
+.market-navigation .category-button { width: 100%; text-align: left; }
 .market-nav-button { display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px 13px; border: 1px solid transparent; border-radius: 3px; background: transparent; color: #49260f; font-size: .95rem; font-weight: 700; letter-spacing: .045em; text-align: left; cursor: pointer; transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease; }
 .market-nav-button span { width: 23px; color: #6b3c19; font-family: Georgia, serif; font-size: 1.55rem; text-align: center; }
+.shop-disclosure { margin-left: auto; font-size: 1.1rem; }
 .market-nav-button:hover, .market-nav-button:focus-visible { background: rgb(119 73 28 / 12%); outline: none; }
 .market-nav-button:focus-visible { box-shadow: 0 0 0 3px #75501c; }
 .market-nav-button.is-active { border-color: #593314; background: linear-gradient(90deg, #b7823f, #f1d083 54%, #b98442); box-shadow: 2px 3px 0 #66401e, inset 0 0 10px rgb(95 52 15 / 35%); transform: translate(-2px, -1px); }
@@ -125,6 +150,8 @@
   .market-navigation { min-height: 0; padding: 15px; }
   .navigation-title { margin-bottom: 10px; }
   .navigation-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .market-nav-group .category-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-left: 0; }
+  .market-nav-group .category-button { text-align: center; }
   .market-nav-button { justify-content: center; padding: 11px 7px; font-size: .73rem; }
   .market-nav-button span { width: auto; font-size: 1.25rem; }
   .market-nav-label { justify-content: center; padding: 11px 7px; font-size: .73rem; }
