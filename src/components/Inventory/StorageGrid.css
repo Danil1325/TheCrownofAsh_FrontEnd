@@ -2,56 +2,9 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  background: rgba(20, 20, 20, 0.85);
-  backdrop-filter: blur(10px);
+  background: transparent;
   padding: 20px;
   overflow: hidden;
-}
-
-.storage-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-}
-
-.search-input {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 10px 15px;
-  border-radius: 4px;
-  width: 300px;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #e0d0b0;
-  box-shadow: 0 0 5px rgba(224, 208, 176, 0.5);
-}
-
-.sort-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #e0d0b0;
-  font-family: 'Cinzel', serif;
-}
-
-.sort-select {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-family: inherit;
-  cursor: pointer;
 }
 
 .grid-scroll-area {
@@ -77,10 +30,10 @@
 }
 
 .items-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 180px);
+  gap: 20px;
+  justify-content: start;
 }
 
 .no-items-message {

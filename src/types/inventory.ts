@@ -33,4 +33,5 @@ export interface Equipment {
   Weapon: Item | null;
   Armor: Item | null;
   Amulet: Item | null;
+  Amulet2: Item | null;
 }

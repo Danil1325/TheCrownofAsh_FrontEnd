@@ -23,51 +23,52 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 2px solid #333;
-  background-color: #1a1a1a;
-  color: #fff;
-  font-family: 'Cinzel', serif; /* Assuming a fantasy font, falling back to serif */
+  border: none;
+  background-color: transparent;
+  background-image: url('../../assets/Inventory/Card.png');
+  background-size: 100% 100%;
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
 }
 
 /* Rarity Borders/Glows */
-.rarity-common { border-color: #7a7a7a; box-shadow: 0 0 10px rgba(122, 122, 122, 0.2); }
-.rarity-uncommon { border-color: #2da144; box-shadow: 0 0 10px rgba(45, 161, 68, 0.4); }
-.rarity-rare { border-color: #2d6aa1; box-shadow: 0 0 15px rgba(45, 106, 161, 0.5); }
-.rarity-epic { border-color: #922da1; box-shadow: 0 0 15px rgba(146, 45, 161, 0.6); }
-.rarity-legendary { border-color: #a1782d; box-shadow: 0 0 20px rgba(161, 120, 45, 0.8); }
-
-.card-front {
-  background: linear-gradient(135deg, #2a2a2a 0%, #111 100%);
-}
+.rarity-common { }
+.rarity-uncommon { }
+.rarity-rare { }
+.rarity-epic { }
+.rarity-legendary { box-shadow: 0 0 20px rgba(140, 35, 35, 0.8); }
 
 .card-back {
   transform: rotateY(180deg);
-  background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
-  padding: 15px;
+  padding: 10px;
   align-items: center;
 }
 
 /* Front specific styles */
 .card-header {
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.6);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  background: transparent;
+  border-bottom: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px #000;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #24130d;
 }
 
 .item-quantity {
-  font-size: 0.8rem;
-  color: #ccc;
+  font-size: 0.9rem;
+  color: #24130d;
+  background: rgba(255, 245, 220, 0.5);
+  padding: 2px 6px;
+  border-radius: 50%;
+  border: none;
 }
 
 .card-image-placeholder {
@@ -75,24 +76,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%);
+  background: transparent;
 }
 
 .category-icon {
-  font-size: 1.2rem;
-  color: #888;
+  font-size: 1.8rem;
+  color: #24130d;
   letter-spacing: 2px;
   text-transform: uppercase;
+  font-weight: bold;
 }
 
 .card-footer {
   padding: 8px 10px;
-  background: rgba(0, 0, 0, 0.6);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border-top: none;
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
-  color: #aaa;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #24130d;
 }
 
 /* Back specific styles */
@@ -100,17 +103,17 @@
   width: 100%;
   text-align: center;
   justify-content: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid #711b10;
   margin-bottom: 10px;
-  background: transparent;
-  padding: 5px 0 10px 0;
+  padding: 2px 0 6px 0;
 }
 
 .card-stats {
   flex-grow: 1;
   width: 100%;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   overflow-y: auto;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
 }
 
 /* Scrollbar for back stats */
@@ -121,68 +124,67 @@
   background: transparent;
 }
 .card-stats::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(61, 35, 22, 0.5);
   border-radius: 2px;
 }
 
 .item-description {
   font-style: italic;
-  color: #aaa;
-  margin-bottom: 15px;
+  color: #3e2a20;
+  margin-bottom: 10px;
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.3;
+  font-size: 0.95rem;
 }
 
 .stats-list, .item-effects ul {
   list-style: none;
   padding: 0;
-  margin: 0 0 15px 0;
+  margin: 0 0 10px 0;
 }
 
 .stats-list li, .item-effects li {
-  padding: 4px 0;
-  border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
-  color: #ddd;
+  padding: 2px 0;
+  color: #24130d;
+  display: flex;
+  justify-content: space-between;
 }
 
 .item-effects strong {
   display: block;
-  margin-bottom: 5px;
-  color: #fff;
+  margin-bottom: 3px;
+  color: #711b10;
 }
 
 .card-actions {
   width: 100%;
   margin-top: auto;
   padding-top: 10px;
+  display: flex;
+  justify-content: center;
 }
 
-.action-btn {
-  width: 100%;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  border-radius: 4px;
+.action-btn-img {
+  background: transparent;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-  font-weight: bold;
+  transition: transform 0.2s;
+  display: flex;
+  justify-content: center;
 }
 
-.action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-}
-
-/* Glassmorphism glare effect */
-.card-glare {
-  position: absolute;
-  top: 0;
-  left: 0;
+.action-btn-img img {
   width: 100%;
-  height: 100%;
-  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.05) 25%, transparent 30%);
-  pointer-events: none;
+  max-width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+.action-btn-img:hover {
+  transform: scale(1.05);
+}
+
+.card-glare {
+  display: none; 
 }

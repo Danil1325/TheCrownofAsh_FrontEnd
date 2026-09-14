@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Item, Equipment } from '../../types/inventory';
+import { useState, useMemo } from 'react';
+import { Item, Equipment, ItemCategory } from '../../types/inventory';
 import EquipmentSlots from './EquipmentSlots';
 import StorageGrid from './StorageGrid';
 import './Inventory.css';
@@ -25,76 +25,130 @@ const Inventory = ({ onClose }: InventoryProps) => {
   const [equipment, setEquipment] = useState<Equipment>({
     Weapon: null,
     Armor: null,
-    Amulet: null
+    Amulet: null,
+    Amulet2: null
   });
+  const [selectedCategory, setSelectedCategory] = useState<ItemCategory | 'All'>('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<'Name' | 'Rarity' | 'Value'>('Rarity');
+
+  const categories: (ItemCategory | 'All')[] = ['All', 'Weapon', 'Armor', 'Amulet', 'Potion', 'Material'];
 
   const handleEquip = (itemToEquip: Item) => {
-    // Only allow equipping Weapon, Armor, Amulet
     if (itemToEquip.category !== 'Weapon' && itemToEquip.category !== 'Armor' && itemToEquip.category !== 'Amulet') {
-      return; // Cannot equip potions or materials directly into these slots
+      return;
     }
 
-    const category = itemToEquip.category as keyof Equipment;
-    const currentlyEquipped = equipment[category];
+    setEquipment(prev => {
+      const newEquipment = { ...prev };
+      let targetSlot = itemToEquip.category as keyof Equipment;
 
-    // Remove the item being equipped from storage
-    let newStoredItems = storedItems.filter(i => i.id !== itemToEquip.id);
+      if (itemToEquip.category === 'Amulet') {
+        if (!prev.Amulet) targetSlot = 'Amulet';
+        else if (!prev.Amulet2) targetSlot = 'Amulet2';
+        else targetSlot = 'Amulet'; 
+      }
 
-    // If there is an item currently in the slot, put it back in storage
-    if (currentlyEquipped) {
-      newStoredItems = [...newStoredItems, currentlyEquipped];
-    }
+      const currentlyEquipped = prev[targetSlot];
+      newEquipment[targetSlot] = itemToEquip;
+      
+      let newStoredItems = storedItems.filter(i => i.id !== itemToEquip.id);
+      if (currentlyEquipped) {
+        newStoredItems = [...newStoredItems, currentlyEquipped];
+      }
+      setStoredItems(newStoredItems);
 
-    setEquipment({
-      ...equipment,
-      [category]: itemToEquip
+      return newEquipment;
     });
-    setStoredItems(newStoredItems);
   };
 
   const handleUnequip = (itemToUnequip: Item) => {
-    const category = itemToUnequip.category as keyof Equipment;
+    // Find which slot it is in
+    const entries = Object.entries(equipment) as [keyof Equipment, Item | null][];
+    const slotEntry = entries.find(([_, item]) => item?.id === itemToUnequip.id);
     
-    setEquipment({
-      ...equipment,
-      [category]: null
-    });
-    
-    setStoredItems([...storedItems, itemToUnequip]);
-  };
-
-  // Calculate derived stats for display
-  const totalStats = {
-    hp: (equipment.Armor?.stats?.hp || 0) + (equipment.Amulet?.stats?.hp || 0) + (equipment.Weapon?.stats?.hp || 0),
-    damage: (equipment.Weapon?.stats?.damage || 0) + (equipment.Armor?.stats?.damage || 0) + (equipment.Amulet?.stats?.damage || 0),
-    defense: (equipment.Armor?.stats?.defense || 0) + (equipment.Weapon?.stats?.defense || 0) + (equipment.Amulet?.stats?.defense || 0)
+    if (slotEntry) {
+      const targetSlot = slotEntry[0];
+      setEquipment(prev => ({
+        ...prev,
+        [targetSlot]: null
+      }));
+      setStoredItems(prev => [...prev, itemToUnequip]);
+    }
   };
 
   return (
     <div className="inventory-overlay">
       <div className="inventory-container">
-        
-        <div className="inventory-header">
-          <h2>Inventory</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+
+        <div className="inventory-body">
+          {/* Left Sidebar - Filters & Search */}
+          <div className="inventory-sidebar-left">
+            <div className="sidebar-scroll-block">
+              <div className="inventory-controls-header">
+                <h2>Inventory</h2>
+                <button className="close-btn" onClick={onClose}>×</button>
+              </div>
+              <div className="sidebar-title">Categories</div>
+              <div className="sidebar-search-box">
+                <input
+                  type="text"
+                  placeholder="Search items..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+                <div className="sort-controls">
+                  <label htmlFor="sort-select">Sort by:</label>
+                  <select
+                    id="sort-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as 'Name' | 'Rarity' | 'Value')}
+                    className="sort-select"
+                  >
+                    <option value="Rarity">Rarity</option>
+                    <option value="Name">Name</option>
+                    <option value="Value">Value</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div className="sidebar-scroll-block filters-block">
+              <div className="category-filters">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    className={`category-btn ${selectedCategory === cat ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Center - Storage Grid */}
+          <div className="inventory-center">
+            <StorageGrid
+              items={storedItems.filter(item => selectedCategory === 'All' || item.category === selectedCategory)}
+              onEquip={handleEquip}
+              searchTerm={searchTerm}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+            />
+          </div>
+
+          {/* Right Sidebar - Equipment Slots */}
+          <div className="inventory-sidebar-right">
+            <EquipmentSlots
+              equipment={equipment}
+              onUnequip={handleUnequip}
+            />
+          </div>
         </div>
 
-        <div className="inventory-stats-bar">
-          <div className="stat-item"><span>HP Bonus:</span> <span className="stat-value">+{totalStats.hp}</span></div>
-          <div className="stat-item"><span>Damage Bonus:</span> <span className="stat-value">+{totalStats.damage}</span></div>
-          <div className="stat-item"><span>Defense Bonus:</span> <span className="stat-value">+{totalStats.defense}</span></div>
-        </div>
-
-        <EquipmentSlots 
-          equipment={equipment} 
-          onUnequip={handleUnequip} 
-        />
-        
-        <StorageGrid 
-          items={storedItems} 
-          onEquip={handleEquip} 
-        />
-        
       </div>
     </div>
   );

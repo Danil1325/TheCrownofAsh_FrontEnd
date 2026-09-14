@@ -6,6 +6,9 @@ import './StorageGrid.css';
 interface StorageGridProps {
   items: Item[];
   onEquip: (item: Item) => void;
+  searchTerm: string;
+  sortBy: SortOption;
+  onSortChange: (sort: SortOption) => void;
 }
 
 type SortOption = 'Name' | 'Rarity' | 'Value';
@@ -18,9 +21,7 @@ const rarityOrder = {
   'Common': 1
 };
 
-const StorageGrid = ({ items, onEquip }: StorageGridProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<SortOption>('Rarity');
+const StorageGrid = ({ items, onEquip, searchTerm, sortBy, onSortChange }: StorageGridProps) => {
 
   const filteredAndSortedItems = useMemo(() => {
     let result = items.filter(item => 
@@ -44,29 +45,7 @@ const StorageGrid = ({ items, onEquip }: StorageGridProps) => {
 
   return (
     <div className="storage-grid-container">
-      <div className="storage-toolbar">
-        <input 
-          type="text" 
-          placeholder="Search by name or type..." 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        
-        <div className="sort-controls">
-          <label htmlFor="sort-select">Sort by:</label>
-          <select 
-            id="sort-select" 
-            value={sortBy} 
-            onChange={(e) => setSortBy(e.target.value as SortOption)}
-            className="sort-select"
-          >
-            <option value="Rarity">Rarity</option>
-            <option value="Name">Name</option>
-            <option value="Value">Value</option>
-          </select>
-        </div>
-      </div>
+
       
       <div className="grid-scroll-area">
         <div className="items-grid">

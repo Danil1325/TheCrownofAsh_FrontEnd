@@ -8,38 +8,33 @@ interface EquipmentSlotsProps {
 }
 
 const EquipmentSlots = ({ equipment, onUnequip }: EquipmentSlotsProps) => {
+  const slots: (keyof Equipment)[] = ['Weapon', 'Armor', 'Amulet', 'Amulet2'];
+
   return (
     <div className="equipment-slots-container">
       <div className="equipment-header">
         <h3>Equipped Items</h3>
       </div>
       <div className="slots-wrapper">
-        <div className="equipment-slot">
-          <div className="slot-label">Armor</div>
-          {equipment.Armor ? (
-            <ItemCard item={equipment.Armor} onUnequip={onUnequip} isEquipped={true} />
-          ) : (
-            <div className="empty-slot">Empty</div>
-          )}
-        </div>
-        
-        <div className="equipment-slot">
-          <div className="slot-label">Weapon</div>
-          {equipment.Weapon ? (
-            <ItemCard item={equipment.Weapon} onUnequip={onUnequip} isEquipped={true} />
-          ) : (
-            <div className="empty-slot">Empty</div>
-          )}
-        </div>
-        
-        <div className="equipment-slot">
-          <div className="slot-label">Amulet</div>
-          {equipment.Amulet ? (
-            <ItemCard item={equipment.Amulet} onUnequip={onUnequip} isEquipped={true} />
-          ) : (
-            <div className="empty-slot">Empty</div>
-          )}
-        </div>
+        {slots.map(slotName => {
+          const item = equipment[slotName];
+          return (
+            <div key={slotName} className="equipment-slot">
+              {item ? (
+                <ItemCard 
+                  item={item} 
+                  isEquipped={true} 
+                  onUnequip={() => onUnequip(item)} 
+                />
+              ) : (
+                <div className="empty-slot">
+                  Empty
+                </div>
+              )}
+              <div className="slot-label">{slotName.replace('2', '')}</div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

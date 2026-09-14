@@ -79,10 +79,13 @@ const ItemCard = ({ item, onEquip, onUnequip, isEquipped }: ItemCardProps) => {
           <div className="card-actions">
             {(onEquip || onUnequip) && (
               <button 
-                className="action-btn" 
+                className="action-btn-img" 
                 onClick={handleAction}
               >
-                {isEquipped ? 'Unequip' : 'Equip'}
+                <img 
+                  src={isEquipped ? new URL('../../assets/Inventory/Unequip.png', import.meta.url).href : new URL('../../assets/Inventory/Equip.png', import.meta.url).href} 
+                  alt={isEquipped ? 'Unequip' : 'Equip'} 
+                />
               </button>
             )}
           </div>
