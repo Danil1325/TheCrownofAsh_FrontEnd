@@ -13,7 +13,17 @@ const MOCK_ITEMS: Item[] = [
   { id: '5', name: 'Mithril Chainmail', category: 'Armor', rarity: 'Epic', description: 'Lightweight and incredibly strong.', stats: { defense: 25, hp: 50 }, value: 200 },
   { id: '6', name: 'Ruby Amulet', category: 'Amulet', rarity: 'Rare', description: 'A glowing red amulet.', stats: { hp: 100 }, effects: ['HP Regen +1/s'], value: 150 },
   { id: '7', name: 'Health Potion', category: 'Potion', rarity: 'Common', description: 'Restores 50 HP.', effects: ['Restore 50 HP'], quantity: 5, value: 5 },
-  { id: '8', name: 'Wolf Pelt', category: 'Material', rarity: 'Common', description: 'Can be sold or crafted.', quantity: 12, value: 3 }
+  { id: '8', name: 'Wolf Pelt', category: 'Material', rarity: 'Common', description: 'Can be sold or crafted.', quantity: 12, value: 3 },
+  { id: '9', name: 'Wooden Bow', category: 'Weapon', rarity: 'Common', description: 'A simple hunting bow.', stats: { damage: 8 }, value: 15 },
+  { id: '10', name: 'Elven Dagger', category: 'Weapon', rarity: 'Rare', description: 'Light and incredibly sharp.', stats: { damage: 22 }, effects: ['Attack Speed +10%'], value: 120 },
+  { id: '11', name: 'Iron Shield', category: 'Armor', rarity: 'Uncommon', description: 'Sturdy iron shield.', stats: { defense: 15 }, value: 40 },
+  { id: '12', name: 'Obsidian Plate', category: 'Armor', rarity: 'Legendary', description: 'Armor made from volcanic glass.', stats: { defense: 60, hp: 150 }, effects: ['Reflect 5% Damage'], value: 850 },
+  { id: '13', name: 'Silver Ring', category: 'Amulet', rarity: 'Uncommon', description: 'A faintly glowing silver ring.', stats: { hp: 25 }, effects: ['Mana Regen +0.5/s'], value: 65 },
+  { id: '14', name: 'Staff of Frost', category: 'Weapon', rarity: 'Epic', description: 'Radiates a chilling aura.', stats: { damage: 38 }, effects: ['Frost Damage +15', 'Slows Enemies'], value: 400 },
+  { id: '15', name: 'Mana Potion', category: 'Potion', rarity: 'Common', description: 'Restores 30 Mana.', effects: ['Restore 30 Mana'], quantity: 10, value: 8 },
+  { id: '16', name: 'Greater Health Potion', category: 'Potion', rarity: 'Rare', description: 'Restores 200 HP.', effects: ['Restore 200 HP'], quantity: 3, value: 35 },
+  { id: '17', name: 'Iron Ore', category: 'Material', rarity: 'Common', description: 'Used for crafting basic weapons.', quantity: 25, value: 2 },
+  { id: '18', name: 'Gold Ingot', category: 'Material', rarity: 'Rare', description: 'Highly valuable material.', quantity: 5, value: 150 }
 ];
 
 interface InventoryProps {

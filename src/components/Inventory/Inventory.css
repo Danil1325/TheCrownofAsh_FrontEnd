@@ -21,7 +21,7 @@
   animation: fade-in 0.3s ease-out;
   font-family: Garamond, Georgia, 'Times New Roman', serif;
   color: #27160f;
-  padding-top: 50px;
+  padding-top: 0px;
   padding-bottom: 20px;
 }
 
@@ -60,7 +60,7 @@
   cursor: pointer;
   transition: transform 0.2s, color 0.2s;
   line-height: 1;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .close-btn:hover {
@@ -204,7 +204,7 @@
 }
 
 .inventory-sidebar-right {
-  width: 400px;
+  width: 500px;
   background: transparent;
   border-left: none;
   display: flex;

@@ -3,7 +3,7 @@
   height: 250px;
   perspective: 1000px;
   cursor: pointer;
-  margin: 10px;
+  /* margin: 10px; */
 }
 
 .item-card {
@@ -37,11 +37,17 @@
 }
 
 /* Rarity Borders/Glows */
-.rarity-common { }
-.rarity-uncommon { }
-.rarity-rare { }
-.rarity-epic { }
-.rarity-legendary { box-shadow: 0 0 20px rgba(140, 35, 35, 0.8); }
+.rarity-common {}
+
+.rarity-uncommon {}
+
+.rarity-rare {}
+
+.rarity-epic {}
+
+.rarity-legendary {
+  box-shadow: 0 0 20px rgba(140, 35, 35, 0.8);
+}
 
 .card-back {
   transform: rotateY(180deg);
@@ -120,9 +126,11 @@
 .card-stats::-webkit-scrollbar {
   width: 4px;
 }
+
 .card-stats::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .card-stats::-webkit-scrollbar-thumb {
   background: rgba(61, 35, 22, 0.5);
   border-radius: 2px;
@@ -137,13 +145,15 @@
   font-size: 0.95rem;
 }
 
-.stats-list, .item-effects ul {
+.stats-list,
+.item-effects ul {
   list-style: none;
   padding: 0;
   margin: 0 0 10px 0;
 }
 
-.stats-list li, .item-effects li {
+.stats-list li,
+.item-effects li {
   padding: 2px 0;
   color: #24130d;
   display: flex;
@@ -186,5 +196,5 @@
 }
 
 .card-glare {
-  display: none; 
+  display: none;
 }
