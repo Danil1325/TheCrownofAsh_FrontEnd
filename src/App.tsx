@@ -77,9 +77,9 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
   }
 }
 
-const navigation: ReadonlyArray<{ id: MarketView; label: string; icon: string }> = [
-  { id: 'shop', label: 'Buy', icon: '⚔' },
-  { id: 'sell', label: 'Sell Items', icon: '⚖' },
+const navigation: ReadonlyArray<{ id: MarketView; label: string }> = [
+  { id: 'shop', label: 'Buy' },
+  { id: 'sell', label: 'Sell Items' },
 ]
 
 function App() {
@@ -160,53 +160,36 @@ function App() {
         </header>
 
         <section className="market-workspace" aria-label="Market">
-          {activeView === 'shop' ? (
-            <nav className="market-navigation" aria-label="Market sections">
-              {/* <p className="navigation-title">Market Menu</p> */}
-              <div className="navigation-options">
-                {navigation.map((item) => (
-                  <div className="market-nav-group" key={item.id}>
-                    <button
-                      className={activeView === item.id ? 'market-nav-button market-nav-image-button is-active' : 'market-nav-button market-nav-image-button'}
-                      type="button"
-                      aria-pressed={activeView === item.id}
-                      aria-expanded={item.id === 'shop' ? true : undefined}
-                      aria-label={item.label}
-                      onClick={() => item.id === 'shop' ? handleShopNavigation() : setActiveView(item.id)}
-                    >
-                      <img
-                        className="market-nav-button-image"
-                        src={item.id === 'shop' ? buyButton : sellButton}
-                        alt=""
-                      />
-                      {item.id === 'shop' && <b className="shop-disclosure" aria-hidden="true">−</b>}
-                    </button>
-                    {item.id === 'shop' && (
-                      <CategoryMenu
-                        categories={itemCategories}
-                        selectedCategory={selectedCategory}
-                        onSelect={setSelectedCategory}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </nav>
-          ) : (
-            <nav className="market-navigation sell-navigation" aria-label="Inventory sections">
-              <p className="navigation-title">Inventory</p>
-              <div className="navigation-options">
-                <p className="market-nav-label"><span aria-hidden="true">🎒</span> Inventory</p>
-                <p className="market-nav-label is-active"><span aria-hidden="true">⚖</span> Sell Items</p>
-                <button className="market-nav-button" type="button" onClick={handleShopNavigation}>
-                  <span aria-hidden="true">◉</span> Buy Items
-                </button>
-                <button className="market-nav-button" type="button" onClick={handleShopNavigation}>
-                  <span aria-hidden="true">↩</span> Back
-                </button>
-              </div>
-            </nav>
-          )}
+          <nav className="market-navigation" aria-label="Market sections">
+            <div className="navigation-options">
+              {navigation.map((item) => (
+                <div className="market-nav-group" key={item.id}>
+                  <button
+                    className={activeView === item.id ? 'market-nav-button market-nav-image-button is-active' : 'market-nav-button market-nav-image-button'}
+                    type="button"
+                    aria-pressed={activeView === item.id}
+                    aria-expanded={item.id === 'shop' ? true : undefined}
+                    aria-label={item.label}
+                    onClick={() => item.id === 'shop' ? handleShopNavigation() : setActiveView(item.id)}
+                  >
+                    <img
+                      className="market-nav-button-image"
+                      src={item.id === 'shop' ? buyButton : sellButton}
+                      alt=""
+                    />
+                    {item.id === 'shop' && <b className="shop-disclosure" aria-hidden="true">−</b>}
+                  </button>
+                  {item.id === 'shop' && (
+                    <CategoryMenu
+                      categories={itemCategories}
+                      selectedCategory={selectedCategory}
+                      onSelect={setSelectedCategory}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </nav>
 
           <section className="market-content" aria-labelledby="market-content-title">
             <div className="content-heading">

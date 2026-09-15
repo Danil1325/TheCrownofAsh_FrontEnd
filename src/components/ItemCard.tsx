@@ -10,15 +10,35 @@ interface ItemCardProps {
 export function ItemCard({ item, ownedQuantity, onBuy }: ItemCardProps) {
   return (
     <article className="market-item-card">
-      <div className="item-image-frame">
-        <img src={item.image} alt={item.name} />
-      </div>
-      <h3>{item.name}</h3>
-      <p>{item.description}</p>
-      <div className="item-card-footer">
-        <span className="item-price"><b aria-hidden="true">◉</b> {item.buyPrice} gold</span>
-        {item.quantity > 0 && <span className="item-stock">{item.quantity} in stock</span>}
-        {ownedQuantity > 0 && <span className="item-owned">Owned: {ownedQuantity}</span>}
+      <div className="market-card-flip">
+        <div className="market-card-flip-inner">
+          <div className="market-card-face market-card-front">
+            <img src={item.image} alt={item.name} />
+          </div>
+
+          <div className="market-card-face market-card-back">
+            <h3>{item.name}</h3>
+            <p>{item.description}</p>
+            <dl className="market-card-details">
+              <div>
+                <dt>Price</dt>
+                <dd><span aria-hidden="true">◉</span> {item.buyPrice} gold</dd>
+              </div>
+              {item.quantity > 0 && (
+                <div>
+                  <dt>Stock</dt>
+                  <dd>{item.quantity}</dd>
+                </div>
+              )}
+              {ownedQuantity > 0 && (
+                <div>
+                  <dt>Owned</dt>
+                  <dd>{ownedQuantity}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        </div>
       </div>
       <button className="buy-button" type="button" onClick={() => onBuy(item)}>Buy</button>
     </article>
