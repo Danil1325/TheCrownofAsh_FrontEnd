@@ -162,7 +162,7 @@ function App() {
         <section className="market-workspace" aria-label="Market">
           {activeView === 'shop' ? (
             <nav className="market-navigation" aria-label="Market sections">
-              <p className="navigation-title">Market Menu</p>
+              {/* <p className="navigation-title">Market Menu</p> */}
               <div className="navigation-options">
                 {navigation.map((item) => (
                   <div className="market-nav-group" key={item.id}>
