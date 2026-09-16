@@ -7,7 +7,7 @@ import { CategoryMenu } from './components/CategoryMenu'
 import { InventoryItemCard } from './components/InventoryItemCard'
 import { ItemCard } from './components/ItemCard'
 import { itemCategories, marketItems, type ItemCategory, type MarketItem } from './data/marketItems'
-import { addItemToInventory, getInventoryQuantity, type Inventory } from './state/inventory'
+import { addItemToInventory, type Inventory } from './state/inventory'
 import './App.css'
 
 type MarketView = 'shop' | 'sell'
@@ -210,7 +210,6 @@ function App() {
                     <ItemCard
                       item={item}
                       key={item.id}
-                      ownedQuantity={getInventoryQuantity(player.inventory, item.id)}
                       onBuy={handleBuy}
                     />
                   ))}
@@ -256,7 +255,7 @@ function App() {
                     {selectedItems.length > 0 ? (
                       selectedItems.map(({ item, quantity }) => (
                         <div className="selected-item" key={item.id}>
-                          <img src={item.image} alt="" />
+                          <img src={item.frontImage} alt="" />
                           <span>{item.name}</span>
                           <b>×{quantity}</b>
                         </div>

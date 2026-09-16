@@ -1,27 +1,47 @@
-import cloakOfEclipse from './armor/TheCloakOfEclipse.png'
-import lotus from './artifacts/Lotus.png'
-import gaseousForm from './potions/GaseousForm.png'
-import theSword from './weapons/TheSword.png'
+export type CardCategory = 'weapons' | 'armor' | 'potions' | 'artifacts'
 
-/**
- * Central image paths for market items.
- *
- * Add each new item to its category folder and export it here so game code has
- * one stable place from which to import item artwork.
- */
-export const itemImages = {
-  weapons: {
-    theSword,
-  },
-  armor: {
-    cloakOfEclipse,
-  },
-  potions: {
-    gaseousForm,
-  },
-  artifacts: {
-    lotus,
-  },
-} as const
+export interface CardImagePair {
+  id: string
+  category: CardCategory
+  name: string
+  frontImage: string
+  backImage: string
+}
 
-export type ItemImageCategory = keyof typeof itemImages
+const frontImages = import.meta.glob<string>('./**/*_front*.png', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+})
+const backImages = import.meta.glob<string>('./**/*_back.png', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+})
+
+function titleFromSlug(slug: string) {
+  return slug.replaceAll('_', ' ').replace(/\b\w/g, (character) => character.toUpperCase())
+}
+
+/** Every complete front/back pair supplied in the item-asset folders. */
+export const cardImagePairs: readonly CardImagePair[] = Object.entries(frontImages)
+  .flatMap(([frontPath, frontImage]) => {
+    const backPath = frontPath.replace(/_front\s*\.png$/, '_back.png')
+    const backImage = backImages[backPath]
+
+    if (!backImage) {
+      return []
+    }
+
+    const [, category, , filename] = frontPath.split('/')
+    const slug = filename.replace(/_front\s*\.png$/, '')
+
+    return [{
+      id: `${category}-${slug.replaceAll('_', '-')}`,
+      category: category as CardCategory,
+      name: titleFromSlug(slug),
+      frontImage,
+      backImage,
+    }]
+  })
+  .sort((first, second) => first.name.localeCompare(second.name))

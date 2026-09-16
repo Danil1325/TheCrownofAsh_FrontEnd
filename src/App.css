@@ -115,23 +115,14 @@
 .purchase-message.is-success { border-color: #466127; background: rgb(214 230 153 / 54%); color: #314719; }
 .purchase-message.is-error { border-color: #842e1c; background: rgb(244 195 144 / 53%); color: #6a2115; }
 .item-grid { --market-card-width: 172px; display: grid; grid-template-columns: repeat(auto-fit, var(--market-card-width)); justify-content: center; gap: 16px; }
-.market-item-card { display: grid; grid-template-rows: auto auto; gap: 9px; width: var(--market-card-width); text-align: center; }
-.market-card-flip { width: 100%; aspect-ratio: 1038 / 1515; perspective: 1000px; }
+.market-item-card { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 7px; width: var(--market-card-width); aspect-ratio: 1038 / 1515; padding: 12% 11% 11%; background: url('./assets/ui/ShopCardBackground.png') center / 100% 100% no-repeat; text-align: center; }
+.market-card-flip { justify-self: center; width: 82%; aspect-ratio: 309 / 387; perspective: 1000px; }
 .market-card-flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .6s ease; }
 .market-item-card:hover .market-card-flip-inner, .market-item-card:focus-within .market-card-flip-inner { transform: rotateY(180deg); }
-.market-card-face { position: absolute; inset: 0; display: grid; min-width: 0; overflow: hidden; padding: 12% 11%; backface-visibility: hidden; background: url('./assets/ui/ShopCardBackground.png') center / 100% 100% no-repeat; color: #43240f; }
-.market-card-front { place-items: center; }
-.market-card-front img { display: block; max-width: 78%; max-height: 66%; object-fit: contain; filter: drop-shadow(2px 3px 2px rgb(49 26 9 / 45%)); }
-.market-card-back { grid-template-rows: auto minmax(0, 1fr) auto; align-items: start; }
-.market-card-back h3 { margin: 12% 0 0; color: #45230e; font-family: Cinzel, Georgia, serif; font-size: .78rem; font-weight: 800; line-height: 1.25; letter-spacing: .03em; text-transform: uppercase; }
-.market-card-back > p { align-self: center; margin: 8px 0; color: #63421f; font-size: .78rem; font-style: italic; line-height: 1.2; }
-.market-card-details { display: grid; gap: 4px; margin: 0 0 9%; padding-top: 7px; border-top: 1px solid rgb(91 51 19 / 38%); color: #4d2b13; font-family: Cinzel, Georgia, serif; font-size: .62rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; }
-.market-card-details div { display: flex; justify-content: space-between; gap: 8px; }
-.market-card-details dt, .market-card-details dd { margin: 0; }
-.market-card-details dd { color: #416027; }
-.market-card-details dd span { color: #a66a16; font-size: .9rem; }
+.market-card-face { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; backface-visibility: hidden; }
 .market-card-back { transform: rotateY(180deg); }
-.buy-button { width: min(118px, 100%); justify-self: center; margin: 0; padding: 5px 12px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 1px 2px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.buy-button { width: min(126px, 100%); justify-self: center; margin: 0; padding: 5px 9px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 1px 2px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
+.buy-button span { color: #80500f; }
 .sell-panel { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(230px, .85fr); gap: 20px; padding-top: 19px; }
 .sell-message { grid-column: 1 / -1; margin: 0; }
 .your-items-panel, .sell-selection-panel { min-width: 0; padding: 16px; border: 1px solid #5a3518; background: rgb(247 218 157 / 33%); box-shadow: inset 0 0 16px rgb(101 57 19 / 19%); }

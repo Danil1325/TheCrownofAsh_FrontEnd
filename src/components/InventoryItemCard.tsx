@@ -17,7 +17,7 @@ export function InventoryItemCard({ item, quantity, selected, onSelect }: Invent
       onClick={() => onSelect(item.id)}
     >
       <span className="inventory-item-art">
-        <img src={item.image} alt="" />
+        <img src={item.frontImage} alt="" />
       </span>
       <span className="inventory-item-name">{item.name}</span>
       <span className="inventory-item-quantity">×{quantity}</span>
