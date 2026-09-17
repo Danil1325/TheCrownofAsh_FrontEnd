@@ -28,6 +28,7 @@ type MainMenuProps = {
   onSfxVolumeChange: (value: number) => void
   onPlayButtonSound: () => void
   onOpenSkills: () => void
+  onNewGame: () => void
 }
 
 function MainMenu({
@@ -37,12 +38,13 @@ function MainMenu({
   onSfxVolumeChange,
   onPlayButtonSound,
   onOpenSkills,
+  onNewGame,
 }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<SelectedAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
 
   if (selectedAction === 'new-game' || selectedAction === 'load-game') {
-    return <LoadingScreen musicVolume={musicVolume} />
+    return <LoadingScreen musicVolume={musicVolume} onComplete={onNewGame} />
   }
 
   return (

@@ -5,6 +5,7 @@ import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
 import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
+import MockGameplay from './pages/MockGameplay/MockGameplay'
 
 type ApplicationPage = 'main-menu' | 'skill-tree'
 
@@ -15,6 +16,7 @@ function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
+  const [gameState, setGameState] = useState<'menu' | 'playing'>('menu')
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
   const playButtonSound = useCallback(() => {
     if (sfxVolume === 0) return
@@ -35,6 +37,7 @@ function App() {
           onSignUp={() => {
             setIsAuthenticated(true)
             setApplicationPage('main-menu')
+            setGameState('menu')
             setIsInitialLoading(true)
           }}
           onBackToLogin={() => setAuthenticationPage('login')}
@@ -47,6 +50,7 @@ function App() {
         onLogin={() => {
           setIsAuthenticated(true)
           setApplicationPage('main-menu')
+          setGameState('menu')
           setIsInitialLoading(true)
         }}
         onCreateAccount={() => setAuthenticationPage('signup')}
@@ -54,18 +58,22 @@ function App() {
     )
   }
 
-  const authenticatedPage = applicationPage === 'skill-tree' ? (
-    <SkillTreePage onBackToMainMenu={() => setApplicationPage('main-menu')} />
-  ) : (
-    <MainMenu
-      musicVolume={musicVolume}
-      sfxVolume={sfxVolume}
-      onMusicVolumeChange={setMusicVolume}
-      onSfxVolumeChange={setSfxVolume}
-      onPlayButtonSound={playButtonSound}
-      onOpenSkills={() => setApplicationPage('skill-tree')}
-    />
-  )
+  const authenticatedPage =
+    applicationPage === 'skill-tree' ? (
+      <SkillTreePage onBackToMainMenu={() => setApplicationPage('main-menu')} />
+    ) : gameState === 'playing' ? (
+      <MockGameplay />
+    ) : (
+      <MainMenu
+        musicVolume={musicVolume}
+        sfxVolume={sfxVolume}
+        onMusicVolumeChange={setMusicVolume}
+        onSfxVolumeChange={setSfxVolume}
+        onPlayButtonSound={playButtonSound}
+        onOpenSkills={() => setApplicationPage('skill-tree')}
+        onNewGame={() => setGameState('playing')}
+      />
+    )
 
   return (
     <div className="app-page-enter">
