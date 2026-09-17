@@ -1,0 +1,56 @@
+.battle-left.parchment-panel,
+.battle-right.parchment-panel {
+  align-self: stretch;
+  height: 100svh;
+  margin: 0;
+  position: relative;
+  isolation: isolate;
+  padding: clamp(3.8rem, 7.25vh, 5rem) clamp(2.8rem, 4.1vw, 4.5rem) clamp(3rem, 5vh, 4.25rem);
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* The visible frame is rendered by the pseudo-element below, wider than the
+     content column so its parchment area contains the controls. */
+  background-size: 0 0 !important;
+  background-origin: border-box;
+  background-clip: border-box;
+  box-shadow: none;
+}
+
+.battle-left.parchment-panel::before,
+.battle-right.parchment-panel::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background-image: inherit;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+.battle-left.parchment-panel > *,
+.battle-right.parchment-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1050px) {
+  .battle-left.parchment-panel,
+  .battle-right.parchment-panel {
+    margin: 0;
+    padding: clamp(3.1rem, 6.5vh, 4.4rem) clamp(2.4rem, 3.5vw, 3.5rem) clamp(2.6rem, 4vh, 3.4rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .battle-left.parchment-panel,
+  .battle-right.parchment-panel {
+    min-height: 0;
+    padding: 4.75rem 3.7rem 4.5rem;
+    background-size: 100% 100%;
+  }
+}

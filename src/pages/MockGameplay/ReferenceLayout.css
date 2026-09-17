@@ -1,0 +1,215 @@
+/* Desktop proportions measured from the supplied 1672 × 941 reference. */
+.battle-screen {
+  height: 100svh;
+  min-height: 100svh;
+  grid-template-columns: 25.8% minmax(0, 1fr) 21.1%;
+  overflow: hidden;
+}
+
+.battle-left.parchment-panel,
+.battle-right.parchment-panel {
+  box-sizing: border-box;
+  align-self: stretch;
+  width: 100%;
+  height: 100svh !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: clamp(2rem, 4.25vh, 2.5rem) clamp(1.2rem, 1.5vw, 1.75rem) clamp(1.5rem, 3vh, 2rem) !important;
+  background-color: #eac084 !important;
+  background-image: none !important;
+  background-size: 100% 100% !important;
+}
+
+/* The artwork itself is the panel background; it must not be extended beyond
+   the section or duplicated by a pseudo-element. */
+.battle-left.parchment-panel::before,
+.battle-right.parchment-panel::before {
+  display: none;
+}
+
+.battle-right.parchment-panel {
+  container-type: size;
+  display: grid;
+  grid-template-rows: minmax(0, 7fr) minmax(0, 56fr) minmax(0, 37fr);
+  gap: 1.2svh;
+  padding-block: 3svh 2svh !important;
+  overflow: visible;
+}
+
+.battle-right .menu-heading {
+  display: grid;
+  place-content: center;
+  min-height: 0;
+  margin: 0;
+  font-size: min(9cqw, 4.2cqh, 2rem);
+  white-space: nowrap;
+}
+
+.battle-right .battle-menu {
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+  gap: 0.8svh;
+}
+
+.battle-right .battle-menu .battle-menu-button {
+  position: relative;
+  container-type: size;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+  padding: 0;
+  background: none;
+}
+
+.battle-menu-button .battle-menu-frame {
+  display: grid;
+  grid-template-columns: calc(100cqh * 92 / 146) minmax(0, 1fr) calc(100cqh * 92 / 146);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.battle-menu-frame svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.battle-menu-button .battle-menu-content {
+  position: absolute;
+  inset: 21% 40cqh 23% 52cqh;
+  display: grid;
+  grid-template-columns: min(18cqw, 54cqh) minmax(0, 1fr);
+  align-items: center;
+  gap: min(4cqw, 14cqh);
+  pointer-events: none;
+}
+
+.battle-right .battle-menu .battle-menu-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  margin: 0;
+}
+
+.battle-right .battle-menu .battle-menu-copy {
+  display: grid;
+  align-content: center;
+  justify-self: stretch;
+  min-width: 0;
+  gap: 0.08em;
+  text-align: left;
+}
+
+.battle-right .battle-menu-copy b {
+  font-size: min(5.1cqw, 24cqh, 1.15rem);
+  line-height: 1.05;
+}
+
+.battle-right .battle-menu-copy small {
+  font-size: min(4cqw, 19cqh, 0.9rem);
+  line-height: 1.1;
+}
+
+.battle-right .dice-system {
+  container-type: size;
+  display: grid;
+  grid-template-rows: minmax(0, 10fr) minmax(0, 31fr) minmax(0, 9fr) minmax(0, 25fr) minmax(0, 25fr);
+  gap: 0.6svh;
+  min-height: 0;
+  margin: 0;
+  padding-top: 0.7svh;
+}
+
+.battle-right .dice-system h2,
+.battle-right .dice-system p {
+  display: grid;
+  place-content: center;
+  min-height: 0;
+  margin: 0;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.battle-right .dice-system h2 {
+  font-size: min(6.5cqw, 7.5cqh, 1.4rem);
+}
+
+.battle-right .dice-system p {
+  font-size: min(4.1cqw, 5.4cqh, 0.95rem);
+}
+
+.battle-right .dice-row {
+  min-height: 0;
+  padding: 0.3svh;
+}
+
+.battle-right .die {
+  min-height: 0;
+  height: 100%;
+}
+
+.battle-right .die img {
+  height: 100%;
+  object-fit: contain;
+}
+
+.battle-right .die b {
+  font-size: min(9cqw, 12cqh, 2rem);
+}
+
+.battle-right .image-button {
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  font-size: min(7.5cqw, 8.5cqh, 1.5rem);
+  line-height: 1;
+}
+
+.battle-right .roll-button small {
+  font-size: min(4cqw, 4.5cqh, 0.8rem);
+  line-height: 1;
+}
+
+@media (max-width: 1050px) {
+  .battle-screen {
+    grid-template-columns: 27% minmax(0, 1fr) 22%;
+  }
+
+  .battle-left.parchment-panel,
+  .battle-right.parchment-panel {
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .battle-screen {
+    height: auto;
+    min-height: 100svh;
+    display: block;
+    overflow: auto;
+  }
+
+  .battle-left.parchment-panel,
+  .battle-right.parchment-panel {
+    height: auto !important;
+    min-height: 100svh !important;
+    padding: 3.8rem 3.6rem 3.4rem !important;
+  }
+
+  .battle-right.parchment-panel {
+    height: 100svh !important;
+    min-height: 0 !important;
+    padding: 3svh 5vw 2svh !important;
+  }
+}

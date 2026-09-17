@@ -44,6 +44,10 @@ function App() {
     )
   }
 
+  if (gameState === 'playing') {
+    return <MockGameplay />
+  }
+
   return (
     <div className="app-page-enter">
       <MainMenu

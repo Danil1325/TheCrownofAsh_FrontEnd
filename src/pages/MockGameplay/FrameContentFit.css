@@ -1,0 +1,63 @@
+/* On narrow screens the decorative frame consumes a larger share of the
+   viewport. Keep every content group inside its parchment opening. */
+.battle-left.parchment-panel,
+.battle-right.parchment-panel {
+  box-sizing: border-box;
+  align-self: stretch;
+  width: 100%;
+  height: 100svh !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: clamp(3.8rem, 7.25vh, 5rem) clamp(2.8rem, 4.1vw, 4.5rem) clamp(3rem, 5vh, 4.25rem) !important;
+}
+
+.battle-left .hero-overview,
+.battle-left .hero-stats,
+.battle-left .inventory-grid,
+.battle-right .battle-menu,
+.battle-right .dice-system {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.battle-left .hero-overview {
+  align-items: flex-start;
+}
+
+.battle-left .portrait,
+.battle-left .hero-stats {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .battle-left.parchment-panel,
+  .battle-right.parchment-panel {
+    padding: clamp(3.5rem, 6.5vh, 4.5rem) clamp(2.6rem, 8vw, 4.5rem) clamp(2.75rem, 5vh, 3.75rem) !important;
+  }
+
+  .battle-left .hero-overview {
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .battle-left .portrait {
+    width: 54%;
+    min-width: 0;
+    flex: 0 1 54%;
+  }
+
+  .battle-left .hero-stats {
+    min-width: 0;
+    padding-top: 0.5rem;
+  }
+
+  .battle-left .hero-stats b {
+    white-space: normal;
+    font-size: clamp(0.72rem, 3.2vw, 0.95rem);
+  }
+
+  .battle-right {
+    --menu-icon-size: 2.25rem;
+    --menu-button-height: 3rem;
+  }
+}
