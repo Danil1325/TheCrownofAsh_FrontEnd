@@ -1,0 +1,214 @@
+.inventory-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.inventory-container {
+  width: 100%;
+  height: 100%;
+  background: url('../../assets/Inventory/Pergament type B.png') center/cover, #27160f;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fade-in 0.3s ease-out;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  color: #27160f;
+  padding-top: 0px;
+  padding-bottom: 20px;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.inventory-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.inventory-controls-header h2 {
+  margin: 0;
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #711b10;
+  font-size: 2.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+  line-height: 1;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn:hover {
+  color: #a82616;
+  transform: scale(1.1);
+}
+
+.inventory-body {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.inventory-sidebar-left {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  gap: 20px;
+  height: max-content;
+  flex-shrink: 0;
+}
+
+.sidebar-scroll-block {
+  background-image: url('../../assets/Inventory/pergament.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 25px 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filters-block {
+  padding: 30px 30px;
+}
+
+.sidebar-title {
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #3d2316;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  text-align: center;
+}
+
+.sidebar-search-box {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  background: rgba(255, 245, 220, 0.5);
+  border: 1px solid rgba(61, 35, 22, 0.85);
+  color: #24130d;
+  padding: 8px 12px;
+  border-radius: 2px;
+  width: 100%;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #711b10;
+  box-shadow: 0 0 5px rgba(113, 27, 16, 0.8);
+}
+
+.search-input::placeholder {
+  color: #3e2a20;
+  font-style: italic;
+  font-weight: normal;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-weight: bold;
+}
+
+.sort-select {
+  background: rgba(255, 245, 220, 0.5);
+  border: 1px solid rgba(61, 35, 22, 0.85);
+  color: #24130d;
+  padding: 6px 10px;
+  border-radius: 2px;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-weight: bold;
+  cursor: pointer;
+  flex-grow: 1;
+}
+
+.category-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.category-btn {
+  background: rgba(255, 245, 220, 0.5);
+  border: 1px solid #3d2316;
+  padding: 12px 10px;
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.category-btn:hover {
+  transform: scale(1.02);
+  background: rgba(255, 245, 220, 0.8);
+}
+
+.category-btn.active {
+  border-color: #711b10;
+  background: rgba(255, 245, 220, 0.9);
+  box-shadow: inset 0 0 10px rgba(113, 27, 16, 0.2), 0 2px 5px rgba(0, 0, 0, 0.4);
+  color: #711b10;
+}
+
+.inventory-center {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.inventory-sidebar-right {
+  width: 500px;
+  background: transparent;
+  border-left: none;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 0 10px;
+}
