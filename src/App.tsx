@@ -10,6 +10,7 @@ import { addItemToInventory, type Inventory } from './state/inventory'
 import './App.css'
 
 type MarketView = 'shop' | 'sell'
+type MarketCategory = ItemCategory | 'all'
 type MarketMessage = { tone: 'success' | 'error'; text: string } | null
 type ResolvedInventoryItem = { item: MarketItem; quantity: number }
 interface PlayerState {
@@ -83,16 +84,16 @@ const navigation: ReadonlyArray<{ id: MarketView; label: string }> = [
 
 function App() {
   const [activeView, setActiveView] = useState<MarketView>('shop')
-  const [selectedCategory, setSelectedCategory] = useState<ItemCategory | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<MarketCategory>('all')
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
   const [player, dispatchPlayerAction] = useReducer(playerReducer, {
     gold: 1250,
     inventory: [],
     marketMessage: null,
   })
-  const visibleItems = selectedCategory
-    ? marketItems.filter((item) => item.category === selectedCategory)
-    : marketItems
+  const visibleItems = selectedCategory === 'all'
+    ? marketItems
+    : marketItems.filter((item) => item.category === selectedCategory)
   const ownedItems = player.inventory
     .map((entry) => {
       const item = marketItems.find((marketItem) => marketItem.id === entry.itemId)
@@ -100,7 +101,7 @@ function App() {
     })
     .filter((entry): entry is ResolvedInventoryItem => entry !== null)
   const selectedItems = ownedItems.filter(({ item }) => selectedItemIds.includes(item.id))
-  const availableOwnedItems = ownedItems.filter(({ item }) => !selectedItemIds.includes(item.id))
+  const availableItems = ownedItems.filter(({ item }) => !selectedItemIds.includes(item.id))
   const estimatedSellValue = calculateSellValue(selectedItems)
 
   function handleBuy(item: MarketItem) {
@@ -109,7 +110,7 @@ function App() {
 
   function handleShopNavigation() {
     setActiveView('shop')
-    setSelectedCategory(null)
+    setSelectedCategory('all')
   }
 
   function toggleSellSelection(itemId: string) {
@@ -231,9 +232,9 @@ function App() {
                     <h3 id="your-items-heading">Your Items</h3>
                     <span aria-hidden="true">✦</span>
                   </div>
-                  {availableOwnedItems.length > 0 ? (
+                  {availableItems.length > 0 ? (
                     <div className="inventory-item-grid">
-                      {availableOwnedItems.map(({ item, quantity }) => (
+                      {availableItems.map(({ item, quantity }) => (
                         <InventoryItemCard
                           item={item}
                           key={item.id}
@@ -245,9 +246,9 @@ function App() {
                     </div>
                   ) : (
                     <p className="empty-inventory">
-                      {ownedItems.length > 0
-                        ? 'Your selected cards are ready to sell.'
-                        : 'Your pack is empty. Visit the shop to acquire wares.'}
+                      {ownedItems.length === 0
+                        ? 'Your pack is empty. Visit the shop to acquire wares.'
+                        : 'All of your items are in the sell selection.'}
                     </p>
                   )}
                 </section>

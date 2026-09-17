@@ -44,16 +44,7 @@
 .market-motto { margin: clamp(4px, .7vw, 8px) 0 0; padding: 4px clamp(16px, 2vw, 32px); border-block: 2px solid #4b2a13; color: #43240f; font-family: Cinzel, Georgia, serif; font-size: clamp(.65rem, 1vw, .86rem); font-weight: 700; letter-spacing: .04em; text-align: center; }
 .market-motto span { padding: 0 .45em; color: #94702b; }
 
-.gold-balance { position: absolute; 
-  top: clamp(34px, 4.2vw, 56px); 
-  right: clamp(0px, 1vw, 12px); 
-  display: grid; 
-  width: clamp(84px, 8vw, 112px); 
-  max-width: 24%; 
-  aspect-ratio: 1950 / 807; 
-  place-items: center; padding: 0 8% 0 10%; 
-  background: url('./assets/ui/GoldBalance.png') center / contain no-repeat; 
-  color: #fff1ad; font-family: Cinzel, Georgia, serif; text-shadow: 0 1px 2px #251308, 0 0 4px #5d2808; }
+.gold-balance { position: absolute; top: clamp(34px, 4.2vw, 56px); right: clamp(0px, 1vw, 12px); display: grid; width: clamp(84px, 8vw, 112px); max-width: 24%; aspect-ratio: 1950 / 807; place-items: center; padding: 0 8% 0 10%; background: url('./assets/ui/GoldBalance.png') center / contain no-repeat; color: #fff1ad; font-family: Cinzel, Georgia, serif; text-shadow: 0 1px 2px #251308, 0 0 4px #5d2808; }
 .gold-balance strong { font-size: clamp(.57rem, .82vw, .76rem); line-height: 1; }
 
 .market-workspace { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(195px, 250px) minmax(0, 1fr); gap: clamp(18px, 3vw, 45px); min-height: 0; max-width: 1180px; width: 100%; margin: 0 auto; overflow: hidden; }
@@ -145,7 +136,7 @@
 .market-card-flip { justify-self: center; width: 86%; aspect-ratio: 309 / 387; margin-top: 4%; perspective: 1000px; }
 .market-card-flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .6s ease; }
 .market-item-card:hover .market-card-flip-inner, .market-item-card:focus-within .market-card-flip-inner { transform: rotateY(180deg); }
-.market-card-face { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; backface-visibility: hidden; }
+.market-card-face { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border-radius: 9%; object-fit: contain; backface-visibility: hidden; }
 .market-card-back { transform: rotateY(180deg); }
 .buy-button { width: min(126px, 100%); justify-self: center; margin: 0; padding: 5px 9px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 1px 2px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
 .buy-button span { color: #80500f; }
