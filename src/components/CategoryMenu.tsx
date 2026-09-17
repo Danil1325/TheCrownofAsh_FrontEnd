@@ -2,7 +2,7 @@ import type { ItemCategory } from '../data/marketItems'
 
 interface CategoryMenuProps {
   categories: readonly ItemCategory[]
-  selectedCategory: ItemCategory
+  selectedCategory: ItemCategory | 'all'
   onSelect: (category: ItemCategory) => void
 }
 

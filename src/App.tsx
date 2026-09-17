@@ -11,6 +11,7 @@ import { addItemToInventory, type Inventory } from './state/inventory'
 import './App.css'
 
 type MarketView = 'shop' | 'sell'
+type MarketCategory = ItemCategory | 'all'
 type MarketMessage = { tone: 'success' | 'error'; text: string } | null
 type ResolvedInventoryItem = { item: MarketItem; quantity: number }
 interface PlayerState {
@@ -84,14 +85,16 @@ const navigation: ReadonlyArray<{ id: MarketView; label: string }> = [
 
 function App() {
   const [activeView, setActiveView] = useState<MarketView>('shop')
-  const [selectedCategory, setSelectedCategory] = useState<ItemCategory>('weapons')
+  const [selectedCategory, setSelectedCategory] = useState<MarketCategory>('all')
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
   const [player, dispatchPlayerAction] = useReducer(playerReducer, {
     gold: 1250,
     inventory: [],
     marketMessage: null,
   })
-  const visibleItems = marketItems.filter((item) => item.category === selectedCategory)
+  const visibleItems = selectedCategory === 'all'
+    ? marketItems
+    : marketItems.filter((item) => item.category === selectedCategory)
   const ownedItems = player.inventory
     .map((entry) => {
       const item = marketItems.find((marketItem) => marketItem.id === entry.itemId)
@@ -99,6 +102,7 @@ function App() {
     })
     .filter((entry): entry is ResolvedInventoryItem => entry !== null)
   const selectedItems = ownedItems.filter(({ item }) => selectedItemIds.includes(item.id))
+  const availableItems = ownedItems.filter(({ item }) => !selectedItemIds.includes(item.id))
   const estimatedSellValue = calculateSellValue(selectedItems)
 
   function handleBuy(item: MarketItem) {
@@ -107,6 +111,7 @@ function App() {
 
   function handleShopNavigation() {
     setActiveView('shop')
+    setSelectedCategory('all')
   }
 
   function toggleSellSelection(itemId: string) {
@@ -153,9 +158,7 @@ function App() {
           </div>
           <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
           <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
-            <span className="gold-coin" aria-hidden="true">◉</span>
             <strong>{player.gold.toLocaleString()}</strong>
-            <span className="gold-label">Gold</span>
           </div>
         </header>
 
@@ -228,20 +231,24 @@ function App() {
                     <h3 id="your-items-heading">Your Items</h3>
                     <span aria-hidden="true">✦</span>
                   </div>
-                  {ownedItems.length > 0 ? (
+                  {availableItems.length > 0 ? (
                     <div className="inventory-item-grid">
-                      {ownedItems.map(({ item, quantity }) => (
+                      {availableItems.map(({ item, quantity }) => (
                         <InventoryItemCard
                           item={item}
                           key={item.id}
                           quantity={quantity}
-                          selected={selectedItemIds.includes(item.id)}
+                          selected={false}
                           onSelect={toggleSellSelection}
                         />
                       ))}
                     </div>
                   ) : (
-                    <p className="empty-inventory">Your pack is empty. Visit the shop to acquire wares.</p>
+                    <p className="empty-inventory">
+                      {ownedItems.length === 0
+                        ? 'Your pack is empty. Visit the shop to acquire wares.'
+                        : 'All of your items are in the sell selection.'}
+                    </p>
                   )}
                 </section>
 
@@ -254,11 +261,17 @@ function App() {
                   <div className="selected-items-list">
                     {selectedItems.length > 0 ? (
                       selectedItems.map(({ item, quantity }) => (
-                        <div className="selected-item" key={item.id}>
+                        <button
+                          className="selected-item"
+                          key={item.id}
+                          type="button"
+                          onClick={() => toggleSellSelection(item.id)}
+                          aria-label={`Remove ${item.name} from sell selection`}
+                        >
                           <img src={item.frontImage} alt="" />
                           <span>{item.name}</span>
                           <b>×{quantity}</b>
-                        </div>
+                        </button>
                       ))
                     ) : (
                       <p><span aria-hidden="true">✧</span> Select items to offer</p>
