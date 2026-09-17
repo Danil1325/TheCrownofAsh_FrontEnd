@@ -1,7 +1,7 @@
 import shopHeader from './assets/ui/ShopHeader.png'
 import buyButton from './assets/Buttons/Buy.png'
 import sellButton from './assets/Buttons/Sell.png'
-import { useReducer, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { CategoryMenu } from './components/CategoryMenu'
 import { InventoryItemCard } from './components/InventoryItemCard'
 import { ItemCard } from './components/ItemCard'
@@ -22,12 +22,17 @@ interface PlayerState {
 type PlayerAction =
   | { type: 'buy'; item: MarketItem }
   | { type: 'sell'; items: Inventory }
+  | { type: 'clearMarketMessage' }
 
 function calculateSellValue(items: readonly ResolvedInventoryItem[]): number {
   return items.reduce((total, { item, quantity }) => total + item.sellPrice * quantity, 0)
 }
 
 function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
+  if (action.type === 'clearMarketMessage') {
+    return { ...state, marketMessage: null }
+  }
+
   if (action.type === 'sell') {
     const quantitiesToSell = action.items.reduce<Map<string, number>>((quantities, entry) => {
       quantities.set(entry.itemId, (quantities.get(entry.itemId) ?? 0) + entry.quantity)
@@ -91,6 +96,19 @@ function App() {
     inventory: [],
     marketMessage: null,
   })
+
+  useEffect(() => {
+    if (!player.marketMessage) {
+      return undefined
+    }
+
+    const messageTimer = window.setTimeout(() => {
+      dispatchPlayerAction({ type: 'clearMarketMessage' })
+    }, 3000)
+
+    return () => window.clearTimeout(messageTimer)
+  }, [player.marketMessage])
+
   const visibleItems = selectedCategory === 'all'
     ? marketItems
     : marketItems.filter((item) => item.category === selectedCategory)
@@ -156,9 +174,6 @@ function App() {
             <img className="shop-header-image" src={shopHeader} alt="Market" />
           </div>
           <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
-          <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
-            <strong>{player.gold.toLocaleString()}</strong>
-          </div>
         </header>
 
         <section className="market-workspace" aria-label="Market">
@@ -194,6 +209,9 @@ function App() {
           </nav>
 
           <section className="market-content" aria-labelledby="market-content-title">
+            <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
+              <strong>{player.gold.toLocaleString()}</strong>
+            </div>
             {/* <div className="content-heading">
               <p>{content.eyebrow}</p>
               <h2 id="market-content-title">{content.title}</h2>
@@ -289,9 +307,9 @@ function App() {
           </section>
         </section>
 
-        <footer className="market-footer" aria-hidden="true">
+        {/* <footer className="market-footer" aria-hidden="true">
           ᚱ ᚢ ᚾ ᛖ ᛊ &nbsp; • &nbsp; ᚷ ᛟ ᛚ ᛞ &nbsp; • &nbsp; ᚹ ᚨ ᚱ ᛖ ᛊ
-        </footer>
+        </footer> */}
       </div>
     </main>
   )

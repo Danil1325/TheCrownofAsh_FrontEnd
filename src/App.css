@@ -29,7 +29,7 @@
 .market-frame::before { top: 15%; left: -3%; }
 .market-frame::after { right: -4%; bottom: 2%; content: '✦'; } */
 /* .market-header { background: url('./assets/ui/ShopHeader.png');} */
-.market-header { position: relative; z-index: 1; display: grid; justify-items: center; padding-bottom: clamp(7px, 1vw, 12px); }
+.market-header { position: relative; z-index: 2; display: grid; justify-items: center; padding-bottom: clamp(7px, 1vw, 12px); }
 .rune-line, .market-footer { width: 100%; color: #5f3a19; font-family: Georgia, serif; font-size: clamp(11px, 1.25vw, 17px); font-weight: 700; letter-spacing: clamp(3px, .8vw, 11px); text-align: center; white-space: nowrap; overflow: hidden; }
 .rune-line { padding: 3px 0 7px; border-bottom: 2px solid rgb(76 46 20 / 55%); }
 
@@ -44,15 +44,26 @@
 .market-motto { margin: clamp(4px, .7vw, 8px) 0 0; padding: 4px clamp(16px, 2vw, 32px); border-block: 2px solid #4b2a13; color: #43240f; font-family: Cinzel, Georgia, serif; font-size: clamp(.65rem, 1vw, .86rem); font-weight: 700; letter-spacing: .04em; text-align: center; }
 .market-motto span { padding: 0 .45em; color: #94702b; }
 
-.gold-balance { position: absolute; top: clamp(34px, 4.2vw, 56px); right: clamp(0px, 1vw, 12px); display: grid; width: clamp(84px, 8vw, 112px); max-width: 24%; aspect-ratio: 1950 / 807; place-items: center; padding: 0 8% 0 10%; background: url('./assets/ui/GoldBalance.png') center / contain no-repeat; color: #fff1ad; font-family: Cinzel, Georgia, serif; text-shadow: 0 1px 2px #251308, 0 0 4px #5d2808; }
-.gold-balance strong { font-size: clamp(.57rem, .82vw, .76rem); line-height: 1; }
+.gold-balance { 
+  position: absolute; 
+  z-index: 3; top: clamp(10px, 1.5vw, 18px); 
+  right: clamp(12px, 1vw, 64px); 
+  display: grid; width: clamp(84px, 8vw, 112px); 
+  max-width: 24%; 
+  aspect-ratio: 1950 / 807; 
+  place-items: center; 
+  padding: 0 12% 0 12%; 
+  background: url('./assets/ui/GoldBalance.png') center / contain no-repeat; 
+  color: #fff1ad; font-family: Cinzel, Georgia, serif; 
+  text-shadow: 0 1px 2px #251308, 0 0 4px #5d2808; }
+.gold-balance strong { font-size: clamp(1.40rem, .82vw, 1.76rem); line-height: 1; }
 
 .market-workspace { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(195px, 250px) minmax(0, 1fr); gap: clamp(18px, 3vw, 45px); min-height: 0; max-width: 1180px; width: 100%; margin: 0 auto; overflow: hidden; }
 /* .market-navigation, .market-content { border: 2px solid #4a2b14; background: repeating-linear-gradient(-45deg, transparent 0 6px, rgb(107 66 27 / 3%) 6px 7px), radial-gradient(circle at 50% 0, #f9dfa0, #e6c889 75%, #cba765); box-shadow: 4px 5px 0 rgb(73 38 14 / 75%), inset 0 0 22px rgb(89 49 18 / 27%); } */
 /* .market-navigation { min-height: 300px; padding: 22px 14px; } */
 .market-content {
   background: url('./assets/ui/MarketContent.png');
-  background-size: 100% 100%;
+  background-size: 104% 100%;
   background-position: center;
   background-repeat: no-repeat,
     radial-gradient(circle at 50% 0, #f9dfa0, #e6c889 75%, #cba765);
@@ -64,7 +75,7 @@
   min-height: 0;
   /* The upper roll occupies roughly the first sixth of ShopMenu.png. Keep
      controls in the parchment's usable body as the menu scales. */
-  padding: clamp(56px, 12%, 88px) clamp(16px, 5.5%, 34px) clamp(20px, 5%, 42px);
+  padding: clamp(142px, 12%, 300px) clamp(16px, 5.5%, 34px) clamp(20px, 5%, 42px);
 
   background-image: url('./assets/ui/ShopMenu.png');
   background-position: center;
@@ -74,7 +85,7 @@
 .navigation-options { display: grid; gap: clamp(12px, 2.5vw, 18px); }
 .market-nav-group { display: grid; justify-items: center; gap: clamp(8px, 1.5vw, 12px); }
 .market-nav-group > .market-nav-image-button { width: min(100%, 220px); }
-.market-nav-group .category-menu { display: grid; gap: 6px; margin: 0 0 3px 27px; }
+.market-nav-group .category-menu { display: grid; gap: 6px; margin: 0 0 2px 0px; }
 .market-nav-group .category-button { padding-block: 7px; font-size: .61rem; text-align: left; }
 .market-navigation .category-button { width: 100%; text-align: left; }
 .market-nav-button { display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px 13px; border: 1px solid transparent; border-radius: 3px; background: transparent; color: #49260f; font-size: .95rem; font-weight: 700; letter-spacing: .045em; text-align: left; cursor: pointer; transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease; }
@@ -98,7 +109,13 @@
 }
 .market-nav-button.market-nav-image-button:focus-visible { outline: 2px solid #75501c; outline-offset: 3px; }
 
-.market-content { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; overflow: hidden; padding: clamp(14px, 1.5vw, 21px); }
+.market-content { 
+  position: relative;
+  display: grid; 
+  grid-template-rows: auto minmax(0, 1fr); 
+  min-height: 0; 
+  overflow: hidden; 
+  padding: clamp(14px, 1.5vw, 21px); }
 .content-heading { display: grid; 
   grid-template-columns: 1fr auto 1fr; 
   align-items: end; gap: 10px;
@@ -130,17 +147,37 @@
 .item-scroll, .inventory-item-grid, .selected-items-list { scrollbar-width: thin; scrollbar-color: #7b4b1e rgb(95 55 21 / 16%); }
 .item-scroll::-webkit-scrollbar, .inventory-item-grid::-webkit-scrollbar, .selected-items-list::-webkit-scrollbar { width: 8px; }
 .item-scroll::-webkit-scrollbar-thumb, .inventory-item-grid::-webkit-scrollbar-thumb, .selected-items-list::-webkit-scrollbar-thumb { border: 2px solid #d5ad65; border-radius: 8px; background: #70421f; }
-.item-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 8px 10px 12px 4px; }
+.item-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0px 4px 12px 4px; }
 .item-grid { --market-card-width: 172px; display: grid; grid-template-columns: repeat(auto-fit, var(--market-card-width)); align-content: center; justify-content: center; min-height: 100%; gap: 16px; }
-.market-item-card { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 7px; width: var(--market-card-width); aspect-ratio: 1038 / 1515; padding: 12% 11% 11%; overflow: hidden; border-radius: 16px; background: url('./assets/ui/ShopCardBackground.png') center / 100% 100% no-repeat; text-align: center; }
+.market-item-card { display: grid; 
+  grid-template-rows: minmax(0, 1fr) auto; 
+  gap: 7px; width: var(--market-card-width); 
+  aspect-ratio: 1038 / 1515; 
+  padding: 14% 7% 14%; 
+  overflow: hidden; border-radius: 16px; 
+  background: url('./assets/ui/ShopCardBackground.png') center / 100% 100% no-repeat; 
+  text-align: center; }
 .market-card-flip { justify-self: center; width: 86%; aspect-ratio: 309 / 387; margin-top: 4%; perspective: 1000px; }
 .market-card-flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .6s ease; }
 .market-item-card:hover .market-card-flip-inner, .market-item-card:focus-within .market-card-flip-inner { transform: rotateY(180deg); }
-.market-card-face { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border-radius: 9%; object-fit: contain; backface-visibility: hidden; }
+.market-card-face { 
+  position: absolute; 
+  inset: 0; display: block; 
+  width: 100%; 
+  height: 100%; 
+  border-radius: 3%; 
+  object-fit: contain; 
+  backface-visibility: hidden; }
 .market-card-back { transform: rotateY(180deg); }
 .buy-button { width: min(126px, 100%); justify-self: center; margin: 0; padding: 5px 9px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 1px 2px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
 .buy-button span { color: #80500f; }
-.sell-panel { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(230px, .85fr); grid-template-rows: minmax(0, 1fr); min-height: 0; gap: 20px; padding-top: 11px; }
+.sell-panel { 
+  display: grid; 
+  grid-template-columns: minmax(0, 1.5fr) minmax(230px, .85fr); 
+  grid-template-rows: minmax(0, 1fr); 
+  min-height: 0; 
+  gap: 20px; 
+  padding-top: 15%; }
 .sell-message { grid-column: 1 / -1; margin: 0; }
 .your-items-panel, .sell-selection-panel { min-width: 0; min-height: 0; padding: 14px; border: 1px solid #5a3518; background: rgb(247 218 157 / 33%); box-shadow: inset 0 0 16px rgb(101 57 19 / 19%); }
 .your-items-panel { display: grid; grid-template-rows: auto minmax(0, 1fr); }
@@ -173,7 +210,7 @@
 @media (max-width: 760px) {
   .market-page { padding: 5px; }
   .market-frame { min-height: 0; }
-  .gold-balance { position: static; width: min(104px, 30vw); max-width: none; margin-top: 8px; }
+  .gold-balance { top: 8px; right: 8px; width: min(96px, 28vw); max-width: none; }
   .market-workspace { grid-template-columns: 1fr; grid-template-rows: 215px minmax(0, 1fr); gap: 10px; }
   .market-navigation {
     height: 215px;
