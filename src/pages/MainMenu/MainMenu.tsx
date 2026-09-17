@@ -12,7 +12,8 @@ import skills from '../../assets/MainMenu/Buttons/Skills.png'
 import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
 
-type MenuAction = 'new-game' | 'load-game' | 'skills' | 'options' | 'log-out'
+type MenuAction = 'new-game' | 'load-game' | 'skills'
+type SelectedAction = Exclude<MenuAction, 'skills'> | 'log-out'
 
 const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'new-game', image: newGame, label: 'New Game' },
@@ -26,10 +27,18 @@ type MainMenuProps = {
   onMusicVolumeChange: (value: number) => void
   onSfxVolumeChange: (value: number) => void
   onPlayButtonSound: () => void
+  onOpenSkills: () => void
 }
 
-function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound }: MainMenuProps) {
-  const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
+function MainMenu({
+  musicVolume,
+  sfxVolume,
+  onMusicVolumeChange,
+  onSfxVolumeChange,
+  onPlayButtonSound,
+  onOpenSkills,
+}: MainMenuProps) {
+  const [selectedAction, setSelectedAction] = useState<SelectedAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
 
   if (selectedAction === 'new-game' || selectedAction === 'load-game') {
@@ -50,6 +59,11 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
+                if (item.action === 'skills') {
+                  onOpenSkills()
+                  return
+                }
+
                 setSelectedAction(item.action)
               }}
             >
@@ -86,10 +100,9 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
         </button>
       </div>
 
-      {selectedAction && selectedAction !== 'options' && (
+      {selectedAction === 'log-out' && (
         <div className="action-feedback" role="status" aria-live="polite">
-          {selectedAction === 'skills' && 'Skills selected'}
-          {selectedAction === 'log-out' && 'Log Out selected'}
+          Log Out selected
         </div>
       )}
 

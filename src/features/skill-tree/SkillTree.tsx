@@ -48,6 +48,9 @@ const STATE_LABELS: Record<RenderedSkillState, string> = {
   selected: 'Selected',
 }
 
+const NODE_INPUT_OFFSET_Y = 2.3
+const SECOND_ROW_NODE_IDS = new Set(['left-a', 'center-a', 'right-a'])
+
 function getCategory(categoryId: SkillCategoryId) {
   return (
     skillCategories.find((category) => category.id === categoryId) ??
@@ -61,6 +64,18 @@ function getSkillMap(build: SkillBuild) {
 
 function getNodeMap(nodes: SkillTreeNode[]) {
   return new Map(nodes.map((node) => [node.id, node]))
+}
+
+function getOutputOffsetY(node: SkillTreeNode) {
+  if (node.id === 'root') {
+    return 22.2
+  }
+
+  if (SECOND_ROW_NODE_IDS.has(node.id)) {
+    return 18.7
+  }
+
+  return 15.2
 }
 
 function getCategorySkillIds(
@@ -91,16 +106,13 @@ function getCategorySkillCounts(build: SkillBuild) {
 }
 
 function getConnectionGeometry(from: SkillTreeNode, to: SkillTreeNode) {
-  const startY = from.y + 11.8
-  const endY = to.y + 1.4
+  const startY = from.y + getOutputOffsetY(from)
+  const endY = to.y + NODE_INPUT_OFFSET_Y
   const distanceX = to.x - from.x
   const horizontalSpan = Math.abs(distanceX)
-  const verticalSpan = Math.max(endY - startY, 3)
-  const junctionRatio = verticalSpan > 24 ? 0.64 : 0.48
-  const junctionY = startY + verticalSpan * junctionRatio
 
   if (horizontalSpan < 4) {
-    const curveY = startY + verticalSpan * 0.5
+    const curveY = startY + (endY - startY) * 0.52
 
     return {
       path: `M ${from.x} ${startY} C ${from.x} ${curveY} ${to.x} ${curveY} ${to.x} ${endY}`,
@@ -113,24 +125,35 @@ function getConnectionGeometry(from: SkillTreeNode, to: SkillTreeNode) {
     }
   }
 
+  const verticalSpan = Math.max(endY - startY, 2.8)
+  const branchDepth = Math.min(
+    Math.max(verticalSpan * 0.5, 2.4),
+    Math.max(verticalSpan - 1.4, 1.4),
+    6.8,
+  )
+  const branchY = startY + branchDepth
   const direction = distanceX > 0 ? 1 : -1
-  const radius = Math.min(4.4, Math.max(2.1, horizontalSpan * 0.12))
+  const radius = Math.min(
+    3.2,
+    Math.max(1.25, horizontalSpan * 0.08),
+    Math.max((endY - branchY) * 0.5, 0.8),
+  )
   const startCurveX = from.x + direction * radius
   const endCurveX = to.x - direction * radius
 
   return {
     path: [
       `M ${from.x} ${startY}`,
-      `V ${junctionY - radius}`,
-      `Q ${from.x} ${junctionY} ${startCurveX} ${junctionY}`,
+      `V ${branchY - radius}`,
+      `Q ${from.x} ${branchY} ${startCurveX} ${branchY}`,
       `H ${endCurveX}`,
-      `Q ${to.x} ${junctionY} ${to.x} ${junctionY + radius}`,
+      `Q ${to.x} ${branchY} ${to.x} ${branchY + radius}`,
       `V ${endY}`,
     ].join(' '),
     startX: from.x,
     startY,
     junctionX: from.x + distanceX * 0.5,
-    junctionY,
+    junctionY: branchY,
     endX: to.x,
     endY,
   }
@@ -206,6 +229,7 @@ function SkillTree({ onBackToMap }: SkillTreeProps) {
     'tree-canvas',
     'tree-canvas--reference',
     hasActiveSkills ? '' : 'tree-canvas--placeholder-only',
+    hasActiveSkills ? '' : 'tree-canvas--no-approved-skills',
   ]
     .filter(Boolean)
     .join(' ')
@@ -323,6 +347,17 @@ function SkillTree({ onBackToMap }: SkillTreeProps) {
 
             <div className={treeCanvasClasses}>
               <TreeConnections connections={renderedConnections} />
+
+              {!hasActiveSkills && (
+                <div className="tree-empty-state" role="status" aria-live="polite">
+                  <span className="tree-empty-state__icon" aria-hidden="true">
+                    <FantasyIcon icon={activeCategory.icon} className="fantasy-icon" />
+                  </span>
+                  <p className="tree-empty-state__message">
+                    No approved abilities have been inscribed for this path yet.
+                  </p>
+                </div>
+              )}
 
               {renderedNodes.map(({ node, skill }) => {
                 const renderedState: RenderedSkillState =

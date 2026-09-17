@@ -1,13 +1,17 @@
 import { useCallback, useState } from 'react'
 import MainMenu from './pages/MainMenu/MainMenu'
+import SkillTreePage from './pages/SkillTree/SkillTreePage'
 import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
 import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
 
+type ApplicationPage = 'main-menu' | 'skill-tree'
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [authenticationPage, setAuthenticationPage] = useState<'login' | 'signup'>('login')
+  const [applicationPage, setApplicationPage] = useState<ApplicationPage>('main-menu')
   const [isInitialLoading, setIsInitialLoading] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
@@ -28,7 +32,11 @@ function App() {
     if (authenticationPage === 'signup') {
       return (
         <SignUp
-          onSignUp={() => { setIsAuthenticated(true); setIsInitialLoading(true) }}
+          onSignUp={() => {
+            setIsAuthenticated(true)
+            setApplicationPage('main-menu')
+            setIsInitialLoading(true)
+          }}
           onBackToLogin={() => setAuthenticationPage('login')}
         />
       )
@@ -36,21 +44,32 @@ function App() {
 
     return (
       <Login
-        onLogin={() => { setIsAuthenticated(true); setIsInitialLoading(true) }}
+        onLogin={() => {
+          setIsAuthenticated(true)
+          setApplicationPage('main-menu')
+          setIsInitialLoading(true)
+        }}
         onCreateAccount={() => setAuthenticationPage('signup')}
       />
     )
   }
 
+  const authenticatedPage = applicationPage === 'skill-tree' ? (
+    <SkillTreePage onBackToMainMenu={() => setApplicationPage('main-menu')} />
+  ) : (
+    <MainMenu
+      musicVolume={musicVolume}
+      sfxVolume={sfxVolume}
+      onMusicVolumeChange={setMusicVolume}
+      onSfxVolumeChange={setSfxVolume}
+      onPlayButtonSound={playButtonSound}
+      onOpenSkills={() => setApplicationPage('skill-tree')}
+    />
+  )
+
   return (
     <div className="app-page-enter">
-      <MainMenu
-        musicVolume={musicVolume}
-        sfxVolume={sfxVolume}
-        onMusicVolumeChange={setMusicVolume}
-        onSfxVolumeChange={setSfxVolume}
-        onPlayButtonSound={playButtonSound}
-      />
+      {authenticatedPage}
     </div>
   )
 }
