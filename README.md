@@ -46,6 +46,29 @@ Meniul principal permite jucătorului să acceseze opțiunile de bază ale jocul
 - 
 <img width="1914" height="867" alt="{FEE72B7D-7D41-449B-954C-F3A420590153}" src="https://github.com/user-attachments/assets/087e0037-2c88-4d27-859d-d00a0b241d72" />
 
+## Autentificare
+
+Ecranele de Log In și Sign Up (`src/pages/Authentication/`) sunt conectate la
+API-ul real din backend (repo separat, `D-D`), nu doar la stări locale simulate:
+
+- `src/api/authApi.ts` — clientul HTTP pentru `/api/auth/{register,login,logout,me}`,
+  cu `credentials: 'include'` pe fiecare cerere, obligatoriu pentru sesiunea pe
+  cookie `HttpOnly` a backend-ului.
+- Autentificarea este pe bază de cookie de sesiune (ASP.NET Core cookie auth), nu
+  JWT — sesiunea nu e stocată în `localStorage`/JS, ci gestionată automat de
+  browser.
+- La încărcarea aplicației (`App.tsx`), se verifică sesiunea existentă
+  (`GET /api/auth/me`), astfel încât un login rămâne valabil și după refresh de
+  pagină.
+- Butonul "Log Out" din meniul principal este conectat real (`POST /api/auth/logout`),
+  nu mai e doar un text de tip placeholder.
+- Erorile de la server (cont deja existent, credențiale greșite) sunt afișate
+  direct în formularele existente, nu sunt mesaje inventate pe frontend.
+
+Necesită backend-ul pornit local (`dotnet run --project src/DnDGame.API`, vezi
+`README.md`-ul din `D-D`) la adresa din `.env.development`
+(`VITE_API_BASE_URL`, implicit `http://localhost:5080`).
+
 ## Tehnologii
 
 - React
@@ -64,6 +87,9 @@ Partea vizuală de bază este implementată:
 - Sistem de sunete pentru loading și butoane.
 - Tranziții între ecrane.
 - Design responsive pentru desktop și mobil.
+- Autentificare (Log In / Sign Up / Log Out) conectată la backend-ul real, cu
+  sesiune pe cookie care rezistă la refresh de pagină (vezi secțiunea
+  "Autentificare" de mai sus).
 
 ## Următorii pași
 
