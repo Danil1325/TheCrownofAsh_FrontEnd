@@ -162,19 +162,6 @@ function App() {
     setSelectedQuantities({})
   }
 
-  const content =
-    activeView === 'shop'
-      ? {
-          eyebrow: 'The merchant’s wares',
-          title: 'Shop',
-          description: 'Browse wares and prepare for the road ahead.',
-        }
-      : {
-          eyebrow: 'Your adventurer’s pack',
-          title: 'Sell Items',
-          description: 'Choose unused equipment to trade for gold.',
-        }
-
   if (isMainMenuOpen) {
     return (
       <MainMenu
@@ -187,6 +174,8 @@ function App() {
           audio.volume = sfxVolume / 100
           void audio.play().catch(() => {})
         }}
+        onNewGame={() => setIsMainMenuOpen(false)}
+        onLogout={() => setIsMainMenuOpen(false)}
       />
     )
   }
@@ -240,14 +229,8 @@ function App() {
             <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
               <strong>{player.gold.toLocaleString()}</strong>
             </div>
-            {/* <div className="content-heading">
-              <p>{content.eyebrow}</p>
-              <h2 id="market-content-title">{content.title}</h2>
-              <span aria-hidden="true">✦</span>
-            </div> */}
             {activeView === 'shop' ? (
               <div className="shop-panel">
-                {/* <p className="shop-category-description">{content.description}</p> */}
                 <div className="item-scroll" aria-live="polite">
                   <div className="item-grid">
                     {visibleItems.map((item) => (
@@ -271,14 +254,14 @@ function App() {
                   {availableItems.length > 0 ? (
                     <div className="item-scroll">
                       <div className="item-grid">
-                      {availableItems.map(({ item, quantity }) => (
-                        <InventoryItemCard
-                          item={item}
-                          key={item.id}
-                          quantity={quantity}
-                          onSelect={addSellSelection}
-                        />
-                      ))}
+                        {availableItems.map(({ item, quantity }) => (
+                          <InventoryItemCard
+                            item={item}
+                            key={item.id}
+                            quantity={quantity}
+                            onSelect={addSellSelection}
+                          />
+                        ))}
                       </div>
                     </div>
                   ) : (
@@ -324,7 +307,6 @@ function App() {
             )}
           </section>
         </section>
-
       </div>
     </main>
   )
