@@ -39,6 +39,15 @@ export interface Skill {
   name: string
   description: string
   icon: FantasyIconId
+  cost: number
+  card?: SkillCardAssets
+  requiredLevel?: number
+  prerequisiteSkillId?: Skill['id']
+}
+
+export interface SkillCardAssets {
+  front?: string
+  back?: string
 }
 
 export interface SkillTreeNode {
@@ -64,4 +73,10 @@ export interface SkillBuild {
   skills: Skill[]
   nodes: SkillTreeNode[]
   connections: SkillTreeConnection[]
+}
+
+export interface ActiveSkillTreeCharacter {
+  race: Race
+  className: CharacterClass
+  level: number
 }

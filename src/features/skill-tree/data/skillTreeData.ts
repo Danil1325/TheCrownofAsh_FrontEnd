@@ -1,4 +1,5 @@
 import type { SkillBuild, SkillCategory } from '../types/skillTree'
+import { STANDARD_SKILL_COST } from '../config/skillProgression'
 
 export const skillCategories: SkillCategory[] = [
   { id: 'combat', label: 'COMBAT', icon: 'crossed-swords' },
@@ -31,7 +32,7 @@ export const skillTreeData: SkillBuild[] = [
       utility: ['human-mage-mana-reserve'],
     },
     // Visual-only pending game data: these slots reproduce the approved board
-    // topology without inventing new skill names, costs, ranks, or rules.
+    // topology without inventing new skill names, costs, or rules.
     skillSlots: {
       combat: {},
       defense: {
@@ -54,6 +55,7 @@ export const skillTreeData: SkillBuild[] = [
         id: 'human-mage-arcane-adaptation',
         name: 'Arcane Adaptation',
         icon: 'arcane-star',
+        cost: STANDARD_SKILL_COST,
         description:
           'At the beginning of combat, choose one bonus: +15% Spell Damage, +15% Mana Regen, or +10% Dodge.',
       },
@@ -61,6 +63,7 @@ export const skillTreeData: SkillBuild[] = [
         id: 'human-mage-quick-study',
         name: 'Quick Study',
         icon: 'open-book',
+        cost: STANDARD_SKILL_COST,
         description:
           'After using a spell for the first time, the next spell of the same type costs 1 less Mana.',
       },
@@ -68,6 +71,7 @@ export const skillTreeData: SkillBuild[] = [
         id: 'human-mage-mana-reserve',
         name: 'Mana Reserve',
         icon: 'mana-drop',
+        cost: STANDARD_SKILL_COST,
         description:
           'Can preserve up to 2 unused Mana for the next turn.',
       },
@@ -75,6 +79,7 @@ export const skillTreeData: SkillBuild[] = [
         id: 'human-mage-improvised-spell',
         name: 'Improvised Spell',
         icon: 'mirror',
+        cost: STANDARD_SKILL_COST,
         description:
           'Copies the effect of the last spell used by an enemy at 70% power.',
       },
@@ -82,6 +87,7 @@ export const skillTreeData: SkillBuild[] = [
         id: 'human-mage-arcane-shield',
         name: 'Arcane Shield',
         icon: 'ward',
+        cost: STANDARD_SKILL_COST,
         description:
           'Creates a shield equal to 20% of Max HP.',
       },
@@ -89,6 +95,7 @@ export const skillTreeData: SkillBuild[] = [
         id: 'human-mage-overcharge',
         name: 'Overcharge',
         icon: 'flame',
+        cost: STANDARD_SKILL_COST,
         description:
           'The next spell deals +50% damage but costs +2 Mana.',
       },
@@ -96,13 +103,13 @@ export const skillTreeData: SkillBuild[] = [
         id: 'human-mage-master-of-none',
         name: 'Master of None',
         icon: 'crown',
+        cost: STANDARD_SKILL_COST,
         description:
           'Gain +5% efficiency with all types of magic, but specializations of +25% or higher cannot be obtained.',
       },
     ],
-    // Presentation-only tree layout and states. Game costs, ranks,
-    // prerequisites, and real unlock rules are intentionally not modeled yet.
-    // Categories are provisional frontend presentation metadata.
+    // Presentation-only tree layout. Gameplay prerequisites stay optional
+    // skill metadata and are intentionally not inferred from visual branches.
     nodes: [
       { id: 'root', x: 50, y: 3.4, displayState: 'available' },
       { id: 'left-a', x: 29, y: 29, displayState: 'unlocked' },

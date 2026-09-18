@@ -3,9 +3,14 @@ import type { FantasyIconId } from '../types/skillTree'
 interface FantasyIconProps {
   icon: FantasyIconId
   className?: string
+  variant?: 'default' | 'node'
 }
 
-export function FantasyIcon({ icon, className }: FantasyIconProps) {
+export function FantasyIcon({
+  icon,
+  className,
+  variant = 'default',
+}: FantasyIconProps) {
   return (
     <svg
       className={className}
@@ -13,9 +18,125 @@ export function FantasyIcon({ icon, className }: FantasyIconProps) {
       aria-hidden="true"
       focusable="false"
     >
-      {getIconPaths(icon)}
+      {variant === 'node' ? (
+        <>
+          <g className="node-icon__outline">{getNodeIconPaths(icon)}</g>
+          <g className="node-icon__glyph">{getNodeIconPaths(icon)}</g>
+        </>
+      ) : (
+        getIconPaths(icon)
+      )}
     </svg>
   )
+}
+
+function getNodeIconPaths(icon: FantasyIconId) {
+  switch (icon) {
+    case 'arcane-star':
+      return (
+        <>
+          <path d="M32 5 39 24 59 32 39 40 32 59 25 40 5 32 25 24Z" />
+          <path d="M32 18v28M18 32h28" />
+          <path d="M21 21c6-5 16-7 22 0M43 43c-6 5-16 7-22 0" />
+        </>
+      )
+    case 'claw':
+      return (
+        <>
+          <path d="M18 52c9-17 10-29 4-42" />
+          <path d="M32 56c6-19 5-33-2-48" />
+          <path d="M46 52c2-18-3-31-14-42" />
+          <path d="M14 55c12 5 25 5 38 0" />
+        </>
+      )
+    case 'crown':
+      return (
+        <>
+          <path d="M9 48h46l-5-27-11 11-7-21-7 21-11-11Z" />
+          <path d="M14 54h36M19 41h26" />
+          <path d="M25 32h14" />
+        </>
+      )
+    case 'crossed-swords':
+      return (
+        <>
+          <path d="M13 52 27 38M36 29 53 12l-3 13-13 3" />
+          <path d="M51 52 37 38M28 29 11 12l3 13 13 3" />
+          <path d="M22 42 16 36M42 42l6-6" />
+        </>
+      )
+    case 'flame':
+      return (
+        <>
+          <path d="M33 58c12-5 18-14 17-24-1-8-6-15-11-25-2 10-8 17-15 21 1-8-1-13-7-18 1 12-7 18-7 29 0 10 9 16 23 17Z" />
+          <path d="M31 52c7-4 10-10 9-16-1-5-5-8-8-14-1 6-5 10-10 14 0 8 3 13 9 16Z" />
+        </>
+      )
+    case 'gear':
+      return (
+        <>
+          <path d="M28 7h8l2 8 7 3 7-4 5 7-5 6 1 8 7 5-3 8-9-1-6 5-1 8h-8l-3-8-7-3-7 4-5-7 5-7-1-7-7-5 3-8 9 1 6-5Z" />
+          <circle cx="32" cy="32" r="10" />
+        </>
+      )
+    case 'lock':
+      return (
+        <>
+          <path d="M16 29h32v25H16Z" />
+          <path d="M23 29v-8c0-8 4-14 9-14s9 6 9 14v8" />
+          <path d="M32 37v10" />
+          <circle cx="32" cy="37" r="2" />
+        </>
+      )
+    case 'mana-drop':
+      return (
+        <>
+          <path d="M32 6c13 16 21 28 21 39 0 9-8 15-21 15s-21-6-21-15c0-11 8-23 21-39Z" />
+          <path d="M22 41 32 19l11 22-11 12Z" />
+        </>
+      )
+    case 'mirror':
+      return (
+        <>
+          <path d="M17 10h30l7 7v30l-7 7H17l-7-7V17Z" />
+          <path d="M25 25 32 18l7 7-7 7Z" />
+          <path d="M24 42h16M28 54l-5 7M36 54l5 7" />
+        </>
+      )
+    case 'open-book':
+      return (
+        <>
+          <path d="M8 13c10-4 17-2 24 4v40c-7-6-14-8-24-4Z" />
+          <path d="M56 13c-10-4-17-2-24 4v40c7-6 14-8 24-4Z" />
+          <path d="M18 27h8M18 38h8M38 27h8M38 38h8" />
+          <path d="M32 17v40" />
+        </>
+      )
+    case 'shield':
+      return (
+        <>
+          <path d="M32 6 53 15v16c0 14-8 24-21 29C19 55 11 45 11 31V15Z" />
+          <path d="M32 15v35M21 28h22" />
+        </>
+      )
+    case 'staff':
+      return (
+        <>
+          <path d="M17 57 42 20" />
+          <path d="M45 7 56 18 45 29 34 18Z" />
+          <path d="M45 7v22M34 18h22" />
+          <path d="M14 49 26 57" />
+        </>
+      )
+    case 'ward':
+      return (
+        <>
+          <path d="M32 7 51 16v15c0 13-7 22-19 27-12-5-19-14-19-27V16Z" />
+          <path d="M22 35 30 43 44 22" />
+          <circle cx="32" cy="32" r="13" />
+        </>
+      )
+  }
 }
 
 function getIconPaths(icon: FantasyIconId) {

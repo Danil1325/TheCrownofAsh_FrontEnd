@@ -4,7 +4,12 @@ import { FantasyIcon } from './components/FantasyIcon'
 import { SkillDetailsPanel } from './components/SkillDetailsPanel'
 import { SkillNode } from './components/SkillNode'
 import { TreeConnections } from './components/TreeConnections'
+import {
+  getSkillBuildForCharacter,
+  TEMPORARY_ACTIVE_SKILL_TREE_CHARACTER,
+} from './config/skillProgression'
 import { skillCategories, skillTreeData } from './data/skillTreeData'
+import { useSkillProgression } from './hooks/useSkillProgression'
 import type {
   RenderedSkillState,
   Skill,
@@ -18,7 +23,10 @@ interface SkillTreeProps {
   onBackToMap?: () => void
 }
 
-const CURRENT_BUILD = skillTreeData[0]
+const CURRENT_CHARACTER = TEMPORARY_ACTIVE_SKILL_TREE_CHARACTER
+const CURRENT_BUILD =
+  getSkillBuildForCharacter(skillTreeData, CURRENT_CHARACTER) ??
+  skillTreeData[0]
 const FIRST_SKILL = CURRENT_BUILD?.skills[0]
 const FALLBACK_CATEGORY = skillCategories[0]
 
@@ -56,10 +64,6 @@ function getCategory(categoryId: SkillCategoryId) {
     skillCategories.find((category) => category.id === categoryId) ??
     FALLBACK_CATEGORY
   )
-}
-
-function getSkillMap(build: SkillBuild) {
-  return new Map(build.skills.map((skill) => [skill.id, skill]))
 }
 
 function getNodeMap(nodes: SkillTreeNode[]) {
@@ -178,7 +182,12 @@ function getRenderedNodes(
 
 function SkillTree({ onBackToMap }: SkillTreeProps) {
   const currentBuild = CURRENT_BUILD
-  const skillById = getSkillMap(currentBuild)
+  const {
+    availableSkillPoints,
+    getUnlockEvaluation,
+    skillById,
+    unlockSkill,
+  } = useSkillProgression(currentBuild, CURRENT_CHARACTER)
   const categorySkillCounts = getCategorySkillCounts(currentBuild)
 
   const [activeCategoryId, setActiveCategoryId] = useState(
@@ -222,8 +231,9 @@ function SkillTree({ onBackToMap }: SkillTreeProps) {
   const selectedSkillRenderId = selectedSkill?.id
   const hasActiveSkills = activeSkills.length > 0
   const rootNodeId = currentBuild.nodes[0]?.id
+  const selectedSkillUnlock = getUnlockEvaluation(selectedSkill)
   const statusLabel = selectedSkill
-    ? STATE_LABELS.selected
+    ? STATE_LABELS[selectedSkillUnlock.progressionState]
     : 'No current abilities'
   const treeCanvasClasses = [
     'tree-canvas',
@@ -319,9 +329,12 @@ function SkillTree({ onBackToMap }: SkillTreeProps) {
             FATE
           </p>
 
-          <div className="skill-points" aria-label="Skill points not defined">
+          <div
+            className="skill-points"
+            aria-label={`${availableSkillPoints} available skill points`}
+          >
             <span>SKILL POINTS</span>
-            <strong>TBD</strong>
+            <strong>{availableSkillPoints}</strong>
           </div>
         </header>
 
@@ -360,19 +373,17 @@ function SkillTree({ onBackToMap }: SkillTreeProps) {
               )}
 
               {renderedNodes.map(({ node, skill }) => {
-                const renderedState: RenderedSkillState =
-                  skill && selectedSkillRenderId === skill.id
-                    ? 'selected'
-                    : skill
-                      ? node.displayState
-                      : 'locked'
+                const unlockEvaluation = getUnlockEvaluation(skill)
+                const isSelected =
+                  Boolean(skill) && selectedSkillRenderId === skill?.id
 
                 return (
                   <SkillNode
                     key={node.id}
                     skill={skill}
                     node={node}
-                    state={renderedState}
+                    progressionState={unlockEvaluation.progressionState}
+                    isSelected={isSelected}
                     isRoot={node.id === rootNodeId}
                     onSelect={setSelectedSkillId}
                   />
@@ -386,6 +397,8 @@ function SkillTree({ onBackToMap }: SkillTreeProps) {
             build={currentBuild}
             selectedSkill={selectedSkill}
             statusLabel={statusLabel}
+            unlockEvaluation={selectedSkillUnlock}
+            onUnlockSkill={unlockSkill}
           />
         </section>
 
