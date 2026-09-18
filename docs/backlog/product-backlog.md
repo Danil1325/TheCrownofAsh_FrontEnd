@@ -13,19 +13,27 @@ Acest fișier este sursa unică de adevăr pentru backlog-ul inițial derivat di
 - **Titlu**: Înregistrare cont
 - **User story**: Ca jucător nou, vreau să îmi pot crea cont cu email și parolă, ca să pot accesa jocul.
 - **Prioritate**: P0
-- **Status**: Backlog
+- **Status**: Done — `POST /api/auth/register` (backend, repo `D-D`, branch `alexandru`) +
+  `SignUp.tsx`/`src/api/authApi.ts` (acest repo, branch `LogareRegistrareCookies`).
+  Parola este hash-uită cu `PasswordHasher<Account>`, nu e stocată în clar.
+  Confirmarea contului = autentificare automată (sign-in direct pe cookie de
+  sesiune) după înregistrare; nu există confirmare prin email (nu era cerută
+  aici, doar cont creat + acces imediat).
 - **Criterii de acceptare**:
-  - Formular cu validare pentru email/parolă.
-  - Contul este creat și utilizatorul primește confirmare.
+  - Formular cu validare pentru email/parolă. ✅ (client + server, inclusiv
+    lungime minimă parolă și unicitate email/username)
+  - Contul este creat și utilizatorul primește confirmare. ✅ (vezi nota de mai sus)
 
 ### US-02
 - **Titlu**: Autentificare
 - **User story**: Ca utilizator, vreau să mă autentific în cont, ca să continui progresul meu.
 - **Prioritate**: P0
-- **Status**: Backlog
+- **Status**: Done — `POST /api/auth/login`/`GET /api/auth/me` (backend) +
+  `Login.tsx`/`App.tsx` (frontend). Sesiunea e pe cookie `HttpOnly`
+  (ASP.NET Core cookie auth, nu JWT) și rezistă la refresh de pagină.
 - **Criterii de acceptare**:
-  - Login cu credențiale valide funcționează.
-  - Mesaj clar la credențiale invalide.
+  - Login cu credențiale valide funcționează. ✅
+  - Mesaj clar la credențiale invalide. ✅ (mesajul real de la server, afișat în formular)
 
 ### US-03
 - **Titlu**: Resetare parolă
