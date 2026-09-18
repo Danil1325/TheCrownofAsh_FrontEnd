@@ -1,0 +1,81 @@
+.dialogue-box {
+  /* Container query units (cqw) scale the typography with the rendered box,
+     keeping the layout and text proportional on small screens too. */
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  aspect-ratio: 16 / 9;
+  background-image: url('../../assets/scenario/ui/dialogue_box.png');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.dialogue-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 8cqw;
+}
+
+.dialogue-speaker {
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: clamp(0.9rem, 3.4cqw, 1.7rem);
+  font-weight: 700;
+  color: #5e2d15;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4em;
+}
+
+.dialogue-text {
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: clamp(0.85rem, 2.4cqw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: #24130d;
+  /* Light halo behind the dark text keeps it readable over the parchment art. */
+  text-shadow:
+    0 1px 0 rgba(255, 245, 224, 0.85),
+    0 0 8px rgba(255, 245, 224, 0.9);
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+.dialogue-continue {
+  position: absolute;
+  right: 6cqw;
+  bottom: 5cqw;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: clamp(0.8rem, 2cqw, 1.15rem);
+  font-weight: 700;
+  color: #24130d;
+  background: rgba(97, 46, 21, 0.14);
+  border: 1px solid rgba(97, 46, 21, 0.55);
+  border-radius: 6px;
+  padding: 0.35em 1.1em;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.dialogue-continue:hover {
+  background: rgba(97, 46, 21, 0.28);
+  transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+  .dialogue-content {
+    padding: 0 7cqw;
+  }
+
+  .dialogue-continue {
+    right: 5cqw;
+    bottom: 4cqw;
+  }
+}
