@@ -1,5 +1,10 @@
 #root { height: 100svh; }
 
+.market-exit-button { position: fixed; z-index: 1002; top: clamp(10px, 2vw, 24px); right: clamp(10px, 2vw, 24px); width: clamp(40px, 4vw, 58px); padding: 0; border: 0; background: transparent; cursor: pointer; transition: filter .15s ease; }
+.market-exit-button img { display: block; width: 100%; height: auto; }
+.market-exit-button:hover { filter: brightness(1.15); }
+.market-exit-button:focus-visible { outline: 2px solid #d9ba7b; outline-offset: 4px; }
+
 .market-page {
   height: 100svh;
   padding: clamp(6px, 1.2vw, 16px);
@@ -30,10 +35,9 @@
 .market-frame::after { right: -4%; bottom: 2%; content: '✦'; } */
 /* .market-header { background: url('./assets/ui/ShopHeader.png');} */
 .market-header { position: relative; z-index: 2; display: grid; justify-items: center; padding-bottom: clamp(7px, 1vw, 12px); }
-.rune-line, .market-footer { width: 100%; color: #5f3a19; font-family: Georgia, serif; font-size: clamp(11px, 1.25vw, 17px); font-weight: 700; letter-spacing: clamp(3px, .8vw, 11px); text-align: center; white-space: nowrap; overflow: hidden; }
-.rune-line { padding: 3px 0 7px; border-bottom: 2px solid rgb(76 46 20 / 55%); }
+.market-footer { width: 100%; color: #5f3a19; font-family: Georgia, serif; font-size: clamp(11px, 1.25vw, 17px); font-weight: 700; letter-spacing: clamp(3px, .8vw, 11px); text-align: center; white-space: nowrap; overflow: hidden; }
 
-.market-heading-wrap { width: min(300px, 76%); margin-top: clamp(4px, .8vw, 9px); }
+.market-heading-wrap { position: relative; top: 30%; width: min(300px, 76%); margin-top: clamp(4px, .8vw, 9px); }
 
 .shop-header-image {
   display: block;
@@ -41,12 +45,10 @@
   height: auto;
 }
 .heading-star { color: #573017; font-size: clamp(22px, 3.5vw, 47px); }
-.market-motto { margin: clamp(4px, .7vw, 8px) 0 0; padding: 4px clamp(16px, 2vw, 32px); border-block: 2px solid #4b2a13; color: #43240f; font-family: Cinzel, Georgia, serif; font-size: clamp(.65rem, 1vw, .86rem); font-weight: 700; letter-spacing: .04em; text-align: center; }
-.market-motto span { padding: 0 .45em; color: #94702b; }
 
 .gold-balance { 
   position: absolute; 
-  z-index: 3; top: clamp(10px, 1.5vw, 18px); 
+  z-index: 3; top: calc(clamp(10px, 1.5vw, 18px) - 6px);
   right: clamp(12px, 1vw, 64px); 
   display: grid; width: clamp(84px, 8vw, 112px); 
   max-width: 24%; 
@@ -82,11 +84,11 @@
   background-size: 100% 85%;
   background-repeat: no-repeat;
 }
-.navigation-options { display: grid; gap: clamp(12px, 2.5vw, 18px); }
-.market-nav-group { display: grid; justify-items: center; gap: clamp(8px, 1.5vw, 12px); }
+.navigation-options { display: grid; gap: clamp(12px, 2.5vw, 14px); }
+.market-nav-group { display: grid; justify-items: center; gap: 1px; }
 .market-nav-group > .market-nav-image-button { width: min(100%, 220px); }
-.market-nav-group .category-menu { display: grid; gap: 6px; margin: 0 0 2px 0px; }
-.market-nav-group .category-button { padding-block: 7px; font-size: .61rem; text-align: left; }
+.market-nav-group .category-menu { display: grid; gap: 1px; margin: 0 50px 2px 0px; }
+.market-nav-group .category-button { padding: 14px 17px; font-size: .61rem; text-align: left; }
 .market-navigation .category-button { width: 100%; text-align: left; }
 .market-nav-button { display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px 13px; border: 1px solid transparent; border-radius: 3px; background: transparent; color: #49260f; font-size: .95rem; font-weight: 700; letter-spacing: .045em; text-align: left; cursor: pointer; transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease; }
 .market-nav-button span { width: 23px; color: #6b3c19; font-family: Georgia, serif; font-size: 1.55rem; text-align: center; }
@@ -108,6 +110,10 @@
   transform: none;
 }
 .market-nav-button.market-nav-image-button:focus-visible { outline: 2px solid #75501c; outline-offset: 3px; }
+.market-nav-button.market-nav-image-button { transition: filter .16s ease, box-shadow .16s ease, transform .16s ease; }
+.market-nav-button.market-nav-image-button:hover,
+.market-nav-button.market-nav-image-button:focus-visible { filter: brightness(1.12); }
+.market-nav-button.market-nav-image-button.is-active { filter: brightness(1.15) drop-shadow(0 1px 2px #71421d); transform: translateY(-1px); }
 
 .market-content { 
   position: relative;
@@ -133,13 +139,13 @@
 .shop-panel { display: grid; 
   grid-template-rows: auto auto minmax(0, 1fr); 
   min-height: 0; 
-  padding-top: 10%;
- padding-bottom: 8%; }
+  padding-top: 8%;
+ padding-bottom: 6%; }
 .category-menu { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
-.category-button { padding: 9px 13px; border: 1px solid #75461e; border-radius: 3px; background: rgb(127 77 31 / 10%); color: #542e14; font-family: Cinzel, Georgia, serif; font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: background-color .16s ease, box-shadow .16s ease, transform .16s ease; }
-.category-button:hover, .category-button:focus-visible { background: rgb(169 110 42 / 24%); outline: none; }
+.category-button { padding: 9px 13px; border: 1px solid transparent; border-radius: 3px; background: url('./assets/Buttons/Shop category.png') center / 100% 100% no-repeat; color: #542e14; font-family: Cinzel, Georgia, serif; font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: filter .16s ease, box-shadow .16s ease, transform .16s ease; }
+.category-button:hover, .category-button:focus-visible { filter: brightness(1.12); outline: none; }
 .category-button:focus-visible { box-shadow: 0 0 0 3px #75501c; }
-.category-button.is-selected { border-color: #4b2a11; background: linear-gradient(180deg, #efd082, #be8338); box-shadow: 1px 2px 0 #71421d, inset 0 0 8px rgb(91 48 12 / 30%); transform: translateY(-1px); }
+.category-button.is-selected { filter: brightness(1.15) drop-shadow(0 1px 2px #71421d); color: #38200e; transform: translateY(-1px); }
 .shop-category-description { margin: 4px 0 8px; color: #6e4823; font-size: .88rem; font-style: italic; text-align: center; }
 .purchase-message {
   position: absolute;
@@ -219,8 +225,8 @@
   width: 100%; 
   border-radius: 4%;
   height: auto; filter: drop-shadow(0 8px 18px rgb(0 0 0 / 55%)); }
-.buy-button { width: min(126px, 100%); justify-self: center; margin: 0; padding: 5px 9px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 1px 2px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
-.buy-button span { color: #80500f; }
+.buy-button { position: relative; top: 6px; width: min(126px, 100%); justify-self: center; margin: 0; padding: 14px 9px; border: 2px solid transparent; border-radius: 3px; background: url('./assets/Buttons/Shop category.png') center / 100% 100% no-repeat; box-shadow: none; color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
+.buy-coin-icon { display: inline-block; width: 1.3em; height: 1.3em; object-fit: contain; vertical-align: middle; }
 /* The Sell view fills the available Market track; item counts cannot size it. */
 .market-workspace:has(> .market-content.is-selling) { grid-auto-rows: minmax(0, 1fr); }
 .market-content.is-selling { grid-template-rows: minmax(0, 1fr); contain: size; }
@@ -281,14 +287,14 @@
 .estimated-value { display: flex; justify-content: space-between; gap: 12px; margin: 16px 0 12px; padding-top: 12px; border-top: 1px solid #79532a; color: #593316; font-family: Cinzel, Georgia, serif; font-size: .64rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .estimated-value strong { color: #4a2b11; font-size: 1rem; line-height: .8; }
 .estimated-value strong span { color: #a46a17; }
-.sell-button { justify-self: center; width: min(180px, 100%); padding: 10px 18px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 2px 3px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: 1.1rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; cursor: default; }
-.sell-button:disabled { border-color: #796043; background: linear-gradient(180deg, #d6c69b, #aa9672); box-shadow: 1px 2px 0 #806e51; color: #796044; }
+.sell-button { position: relative; top: 6px; justify-self: center; width: min(180px, 100%); padding: 20px 18px; border: 2px solid transparent; border-radius: 3px; background: url('./assets/Buttons/Shop category.png') center / 100% 100% no-repeat; box-shadow: none; color: #42220e; font-family: Cinzel, Georgia, serif; font-size: 1.1rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.sell-button:disabled { filter: grayscale(.65); opacity: .6; cursor: default; }
 .market-footer { position: relative; z-index: 1; margin-top: 7px; padding-top: 6px; border-top: 2px solid rgb(75 45 18 / 55%); }
 
 @media (max-width: 760px) {
   .market-page { padding: 5px; }
   .market-frame { min-height: 0; }
-  .gold-balance { top: 8px; right: 8px; width: min(96px, 28vw); max-width: none; }
+  .gold-balance { top: 2px; right: 8px; width: min(96px, 28vw); max-width: none; }
   .market-workspace { grid-template-columns: 1fr; grid-template-rows: 215px minmax(0, 1fr); gap: 10px; transform: none; }
   .market-navigation {
     height: 215px;
@@ -315,6 +321,4 @@
 @media (max-width: 390px) {
   .market-heading-wrap { width: 96%; gap: 7px; padding-inline: 14px; }
   .heading-star { font-size: 18px; }
-  .market-motto { font-size: .67rem; }
-  .market-motto span { padding: 0 .15em; }
 }

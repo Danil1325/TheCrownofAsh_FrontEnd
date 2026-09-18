@@ -1,6 +1,7 @@
 import type { MarketItem } from '../data/marketItems'
 import { useState } from 'react'
 import { CardPreview } from './CardPreview'
+import coinIcon from '../assets/Icons/Coin.png'
 
 interface ItemCardProps {
   item: MarketItem
@@ -25,7 +26,7 @@ export function ItemCard({ item, onBuy }: ItemCardProps) {
         </span>
       </button>
       <button className="buy-button" type="button" onClick={() => onBuy(item)}>
-        Buy <span aria-hidden="true">◉</span> {item.buyPrice}
+        Buy <img className="buy-coin-icon" src={coinIcon} alt="" /> {item.buyPrice}
       </button>
       {previewWidth !== null && (
         <CardPreview item={item} width={previewWidth} onClose={() => setPreviewWidth(null)} />

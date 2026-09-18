@@ -1,4 +1,5 @@
 import type { MarketItem } from '../data/marketItems'
+import coinIcon from '../assets/Icons/Coin.png'
 
 interface SellSelectionItemProps {
   item: MarketItem
@@ -17,7 +18,7 @@ export function SellSelectionItem({ item, quantity, onRemove }: SellSelectionIte
       <img className="sell-selection-thumbnail" src={item.frontImage} alt="" />
       <span className="sell-selection-details">
         <span className="sell-selection-name">{item.name}</span>
-        <span className="sell-selection-value">×{quantity} · {item.sellPrice * quantity} gold</span>
+        <span className="sell-selection-value">×{quantity} · <img className="buy-coin-icon" src={coinIcon} alt="" /> {item.sellPrice * quantity}</span>
       </span>
     </button>
   )

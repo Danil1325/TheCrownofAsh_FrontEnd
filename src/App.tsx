@@ -1,6 +1,10 @@
 import shopHeader from './assets/ui/ShopHeader.png'
 import buyButton from './assets/Buttons/Buy.png'
 import sellButton from './assets/Buttons/Sell.png'
+import exitIcon from './assets/Icons/Exit Icon.png'
+import coinIcon from './assets/Icons/Coin.png'
+import buttonSound from './assets/Button Press.mp3'
+import MainMenu from './pages/MainMenu/MainMenu'
 import { useCallback, useReducer, useState } from 'react'
 import { MarketToast, type MarketNotification } from './components/MarketToast'
 import { CategoryMenu } from './components/CategoryMenu'
@@ -90,6 +94,9 @@ const navigation: ReadonlyArray<{ id: MarketView; label: string }> = [
 ]
 
 function App() {
+  const [isMainMenuOpen, setIsMainMenuOpen] = useState(false)
+  const [musicVolume, setMusicVolume] = useState(50)
+  const [sfxVolume, setSfxVolume] = useState(50)
   const [activeView, setActiveView] = useState<MarketView>('shop')
   const [selectedCategory, setSelectedCategory] = useState<MarketCategory>('all')
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({})
@@ -168,17 +175,32 @@ function App() {
           description: 'Choose unused equipment to trade for gold.',
         }
 
+  if (isMainMenuOpen) {
+    return (
+      <MainMenu
+        musicVolume={musicVolume}
+        sfxVolume={sfxVolume}
+        onMusicVolumeChange={setMusicVolume}
+        onSfxVolumeChange={setSfxVolume}
+        onPlayButtonSound={() => {
+          const audio = new Audio(buttonSound)
+          audio.volume = sfxVolume / 100
+          void audio.play().catch(() => {})
+        }}
+      />
+    )
+  }
+
   return (
     <main className="market-page">
+      <button className="market-exit-button" type="button" aria-label="Return to main menu" title="Main menu" onClick={() => setIsMainMenuOpen(true)}>
+        <img src={exitIcon} alt="" />
+      </button>
       <div className="market-frame">
         <header className="market-header">
-          <div className="rune-line" aria-hidden="true">
-            ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ
-          </div>
           <div className="market-heading-wrap">
             <img className="shop-header-image" src={shopHeader} alt="Market" />
           </div>
-          <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
           <MarketToast notification={player.marketMessage} onDismiss={dismissNotification} />
         </header>
 
@@ -288,7 +310,7 @@ function App() {
                       <p><span aria-hidden="true">✧</span> Select items to offer</p>
                     )}
                   </div>
-                  <p className="estimated-value">Estimated value <strong><span aria-hidden="true">◉</span> {estimatedSellValue}</strong></p>
+                  <p className="estimated-value">Estimated value <strong><img className="buy-coin-icon" src={coinIcon} alt="Gold" /> {estimatedSellValue}</strong></p>
                   <button
                     className="sell-button"
                     type="button"
@@ -303,9 +325,6 @@ function App() {
           </section>
         </section>
 
-        {/* <footer className="market-footer" aria-hidden="true">
-          ᚱ ᚢ ᚾ ᛖ ᛊ &nbsp; • &nbsp; ᚷ ᛟ ᛚ ᛞ &nbsp; • &nbsp; ᚹ ᚨ ᚱ ᛖ ᛊ
-        </footer> */}
       </div>
     </main>
   )
