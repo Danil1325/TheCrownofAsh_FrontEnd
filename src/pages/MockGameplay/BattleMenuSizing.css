@@ -1,0 +1,55 @@
+/* Reference-scale controls for the right-hand game menu. */
+.battle-right .battle-menu {
+  gap: 0.85rem;
+}
+
+.battle-right {
+  /* The icon occupies roughly two thirds of a menu row, as in the reference. */
+  --menu-icon-size: clamp(2.25rem, 2.6vw, 3rem);
+  --menu-button-height: calc(var(--menu-icon-size) + 0.7rem);
+}
+
+.battle-right .battle-menu button {
+  width: 100%;
+  height: var(--menu-button-height);
+  min-height: var(--menu-button-height);
+  padding: 0.55rem 8% 0.55rem 7%;
+}
+
+.battle-right .battle-menu img {
+  width: var(--menu-icon-size);
+  height: var(--menu-icon-size);
+  margin-right: 9%;
+  flex: 0 0 var(--menu-icon-size);
+}
+
+.battle-right .battle-menu span {
+  min-width: 0;
+  flex: 1;
+}
+
+.battle-right .battle-menu b {
+  font-size: clamp(0.88rem, 1.3vw, 1.25rem);
+  line-height: 1;
+}
+
+.battle-right .battle-menu small {
+  font-size: clamp(0.74rem, 1.05vw, 0.98rem);
+  line-height: 1.1;
+}
+
+.battle-right .dice-system {
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 760px) {
+  .battle-right .battle-menu {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .battle-right .battle-menu button {
+    height: var(--menu-button-height);
+    min-height: var(--menu-button-height);
+  }
+}

@@ -3,6 +3,7 @@ import { Eye, EyeOff, LockKeyhole, Mail, UserRound } from 'lucide-react'
 import '../../styles/game-ui.css'
 import '../Authentication/Login.css'
 import './SignUp.css'
+import { ApiError, register } from '../../api/authApi'
 
 import background from '../../assets/Log In Sign Up/Log In Sign Up Background.png'
 import parchment from '../../assets/Log In Sign Up/Log In Sign Up Pergament.png'
@@ -13,6 +14,9 @@ type SignUpProps = {
   onBackToLogin: () => void
 }
 
+/** Mirrors AccountService.MinimumPasswordLength on the backend. */
+const MINIMUM_PASSWORD_LENGTH = 8
+
 function SignUp({ onSignUp, onBackToLogin }: SignUpProps) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -22,8 +26,9 @@ function SignUp({ onSignUp, onBackToLogin }: SignUpProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (!username.trim() || !email.trim() || !password || !confirmPassword) {
@@ -36,13 +41,26 @@ function SignUp({ onSignUp, onBackToLogin }: SignUpProps) {
       return
     }
 
+    if (password.length < MINIMUM_PASSWORD_LENGTH) {
+      setError(`Password must be at least ${MINIMUM_PASSWORD_LENGTH} characters.`)
+      return
+    }
+
     if (!termsAccepted) {
       setError('Accept the Terms of Service and Privacy Policy to continue.')
       return
     }
 
     setError('')
-    onSignUp()
+    setIsSubmitting(true)
+    try {
+      await register({ username, email, password })
+      onSignUp()
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Unable to create an account. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -134,7 +152,7 @@ function SignUp({ onSignUp, onBackToLogin }: SignUpProps) {
             {error || '\u00a0'}
           </p>
 
-          <button className="game-button login-submit" type="submit">
+          <button className="game-button login-submit" type="submit" disabled={isSubmitting}>
             <img src={signUpButton} alt="Sign Up" />
           </button>
 

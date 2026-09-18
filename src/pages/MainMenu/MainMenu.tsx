@@ -12,7 +12,7 @@ import skills from '../../assets/MainMenu/Buttons/Skills.png'
 import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
 
-type MenuAction = 'new-game' | 'load-game' | 'skills' | 'options' | 'log-out'
+type MenuAction = 'new-game' | 'load-game' | 'skills' | 'options'
 
 const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'new-game', image: newGame, label: 'New Game' },
@@ -27,9 +27,10 @@ type MainMenuProps = {
   onSfxVolumeChange: (value: number) => void
   onPlayButtonSound: () => void
   onNewGame: () => void
+  onLogout: () => void
 }
 
-function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame }: MainMenuProps) {
+function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLogout }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
 
@@ -81,7 +82,7 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
           aria-label="Log out"
           onClick={() => {
             onPlayButtonSound()
-            setSelectedAction('log-out')
+            onLogout()
           }}
         >
           <img src={logOut} alt="" />
@@ -91,7 +92,6 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
       {selectedAction && selectedAction !== 'options' && (
         <div className="action-feedback" role="status" aria-live="polite">
           {selectedAction === 'skills' && 'Skills selected'}
-          {selectedAction === 'log-out' && 'Log Out selected'}
         </div>
       )}
 

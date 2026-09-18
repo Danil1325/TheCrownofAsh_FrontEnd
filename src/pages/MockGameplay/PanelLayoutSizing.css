@@ -1,0 +1,38 @@
+/* The supplied framed panels have wide decorative sides, so their columns need
+   more width than a plain rectangular sidebar. */
+.battle-screen {
+  height: 100svh;
+  min-height: 100svh;
+  padding: 0;
+  grid-template-columns: minmax(360px, 28%) minmax(500px, 1fr) minmax(300px, 22.5%);
+}
+
+.battle-left.parchment-panel,
+.battle-right.parchment-panel {
+  padding-right: clamp(1.75rem, 2.5vw, 2.65rem);
+  padding-left: clamp(1.75rem, 2.5vw, 2.65rem);
+}
+
+@media (max-width: 1320px) {
+  .battle-screen {
+    grid-template-columns: minmax(320px, 28%) minmax(420px, 1fr) minmax(280px, 23%);
+  }
+
+  .battle-left.parchment-panel,
+  .battle-right.parchment-panel {
+    padding-right: clamp(1.5rem, 2.5vw, 2.25rem);
+    padding-left: clamp(1.5rem, 2.5vw, 2.25rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .battle-screen {
+    grid-template-columns: 1fr;
+  }
+
+  .battle-left.parchment-panel,
+  .battle-right.parchment-panel {
+    padding-right: clamp(3.5rem, 16vw, 5rem);
+    padding-left: clamp(3.5rem, 16vw, 5rem);
+  }
+}
