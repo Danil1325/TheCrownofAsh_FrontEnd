@@ -207,6 +207,18 @@
   object-fit: contain; 
   backface-visibility: hidden; }
 .market-card-back { transform: rotateY(180deg); }
+.market-card-preview-trigger { display: block; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+.market-card-preview-trigger .market-card-flip-inner { display: block; }
+.market-card-preview-trigger:focus-visible { outline: 2px solid #75501c; outline-offset: 3px; }
+.card-preview { max-width: min(calc(100vw - 32px), calc((100svh - 32px) * 309 / 387)); max-height: calc(100svh - 32px); margin: auto; padding: 0; border: 0; background: transparent; overflow: visible; }
+.card-preview::backdrop { background: rgb(24 16 9 / 55%); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
+.card-preview-dismiss { display: block; width: 100%; padding: 0; border: 0; background: transparent; cursor: zoom-out; }
+.card-preview-dismiss:focus-visible { outline: 2px solid #d9ba7b; outline-offset: 4px; }
+.card-preview-dismiss img { 
+  display: block; 
+  width: 100%; 
+  border-radius: 4%;
+  height: auto; filter: drop-shadow(0 8px 18px rgb(0 0 0 / 55%)); }
 .buy-button { width: min(126px, 100%); justify-self: center; margin: 0; padding: 5px 9px; border: 2px solid #4e2a10; border-radius: 3px; background: linear-gradient(180deg, #f1d48c, #b47a36); box-shadow: 1px 2px 0 #70421f, inset 0 0 8px rgb(99 55 16 / 30%); color: #42220e; font-family: Cinzel, Georgia, serif; font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
 .buy-button span { color: #80500f; }
 /* The Sell view fills the available Market track; item counts cannot size it. */
