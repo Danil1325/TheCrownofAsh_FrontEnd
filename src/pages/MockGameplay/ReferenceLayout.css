@@ -15,9 +15,13 @@
   min-height: 0 !important;
   margin: 0 !important;
   padding: clamp(2rem, 4.25vh, 2.5rem) clamp(1.2rem, 1.5vw, 1.75rem) clamp(1.5rem, 3vh, 2rem) !important;
-  background-color: #eac084 !important;
-  background-image: none !important;
-  background-size: 100% 100% !important;
+  border: min(1vw, 1.5svh) solid transparent;
+  border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
+  background-image: url('../../assets/Inventory/Pergament texture.png') !important;
+  background-size: cover !important;
+  background-position: center;
+  background-color: transparent !important;
+  box-shadow: inset 0 0 1.8rem #6c3b1b50;
 }
 
 /* The artwork itself is the panel background; it must not be extended beyond
@@ -41,6 +45,10 @@
   place-content: center;
   min-height: 0;
   margin: 0;
+  padding-inline: 2%;
+  border: min(0.6svh, 0.4rem) solid transparent;
+  border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
+  background: url('../../assets/Inventory/Pergament texture.png') center / cover;
   font-size: min(9cqw, 4.2cqh, 2rem);
   white-space: nowrap;
 }
@@ -127,6 +135,8 @@
   min-height: 0;
   margin: 0;
   padding-top: 0.7svh;
+  border-top: min(0.6svh, 0.4rem) solid transparent;
+  border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
 }
 
 .battle-right .dice-system h2,
@@ -150,6 +160,10 @@
 .battle-right .dice-row {
   min-height: 0;
   padding: 0.3svh;
+  border: min(0.6svh, 0.4rem) solid transparent;
+  border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
+  border-radius: 0;
+  background: #1c130d;
 }
 
 .battle-right .die {
