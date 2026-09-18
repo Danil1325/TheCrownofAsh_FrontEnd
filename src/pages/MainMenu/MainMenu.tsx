@@ -35,14 +35,15 @@ type MainMenuProps = {
 function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLogout }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
+  const [isMapOpen, setIsMapOpen] = useState(false)
 
   if (selectedAction === 'new-game' || selectedAction === 'load-game') {
 
     return <LoadingScreen musicVolume={musicVolume} onComplete={onNewGame} />
   }
 
-  if (selectedAction === 'shop') {
-    return <Shop onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
+  if (isMapOpen) {
+    return <Map onClose={() => setIsMapOpen(false)} />
   }
 
   return (
@@ -59,7 +60,11 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
-                setSelectedAction(item.action)
+                if (item.action === 'new-game' || item.action === 'load-game') {
+                  setIsMapOpen(true)
+                } else {
+                  setSelectedAction(item.action)
+                }
               }}
             >
               <img src={item.image} alt="" />
