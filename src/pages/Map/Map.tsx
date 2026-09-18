@@ -28,16 +28,16 @@ const areas: Area[] = [
   { id: 'darkstorm-keep', name: 'Darkstorm Keep', image: darkstormKeep, buttonImage: darkstormKeepButton, x: 72, y: 24, width: 15 },
 ]
 
-type MapProps = { onClose: () => void }
+type MapProps = { onClose: () => void; onStartGameplay: () => void }
 
-function Map({ onClose }: MapProps) {
+function Map({ onClose, onStartGameplay }: MapProps) {
   const [activeArea, setActiveArea] = useState<Area | null>(null)
   const background = activeArea?.image ?? mapImage
   return (
     <main className="world-map" style={{ backgroundImage: `url("${background}")` }}>
       <button className="map-return" type="button" onClick={onClose}>Return to menu</button>
       {!activeArea && <section className="map-locations" aria-label="Choose a location">{areas.map((area) => <button key={area.id} className="map-location" aria-label={area.name} style={{ left: `${area.x}%`, top: `${area.y}%`, width: `${area.width}%` }} type="button" onClick={() => setActiveArea(area)}><img src={area.buttonImage} alt="" /></button>)}</section>}
-      {activeArea && <section className="area-card"><span className="map-caption">LOCATION SELECTED</span><h2>{activeArea.name}</h2><p>Continue into this region and begin your next chapter.</p><button className="continue-button" type="button"><img src={continueButton} alt="Continue" /></button><button className="back-map" type="button" onClick={() => setActiveArea(null)}>Back to map</button></section>}
+      {activeArea && <section className="area-card"><span className="map-caption">LOCATION SELECTED</span><h2>{activeArea.name}</h2><p>Continue into this region and begin your next chapter.</p><button className="continue-button" type="button" onClick={activeArea.id === 'heros-overlook' ? onStartGameplay : undefined}><img src={continueButton} alt="Continue" /></button><button className="back-map" type="button" onClick={() => setActiveArea(null)}>Back to map</button></section>}
     </main>
   )
 }

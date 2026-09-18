@@ -3,6 +3,7 @@ import '../../styles/game-ui.css'
 import './MainMenu.css'
 import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
+import Map from '../Map/Map'
 import Shop from '../Shop/Shop'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
@@ -43,7 +44,11 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
   }
 
   if (isMapOpen) {
-    return <Map onClose={() => setIsMapOpen(false)} />
+    return <Map onClose={() => setIsMapOpen(false)} onStartGameplay={onNewGame} />
+  }
+
+  if (selectedAction === 'shop') {
+    return <Shop onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
   }
 
   return (

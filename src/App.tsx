@@ -16,6 +16,10 @@ function App() {
   const [sfxVolume, setSfxVolume] = useState(70)
   const [gameState, setGameState] = useState<'menu' | 'playing'>('menu')
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
+  const startGameplay = useCallback(() => {
+    setGameState('playing')
+    setIsInitialLoading(true)
+  }, [])
   const playButtonSound = useCallback(() => {
     if (sfxVolume === 0) return
 
@@ -90,7 +94,7 @@ function App() {
         onMusicVolumeChange={setMusicVolume}
         onSfxVolumeChange={setSfxVolume}
         onPlayButtonSound={playButtonSound}
-        onNewGame={() => setGameState('playing')}
+        onNewGame={startGameplay}
         onLogout={handleLogout}
       />
     </div>
