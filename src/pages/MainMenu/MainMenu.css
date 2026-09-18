@@ -40,6 +40,7 @@
 
 .menu-button img,
 .options-button img,
+.shop-button img,
 .logout-button img {
   display: block;
   width: 100%;
@@ -59,12 +60,20 @@
   pointer-events: auto;
 }
 
+.corner-actions-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
 .options-button {
   width: min(8vw, 12vh, 7rem);
   position: relative;
   top: -10px;
 }
 
+.shop-button,
 .logout-button {
   width: min(24vw, 29vh, 24rem);
 }
