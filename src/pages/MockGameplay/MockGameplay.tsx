@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import BattleMenuButton from './BattleMenuButton'
 import ActionCard from './ActionCard'
 import PlayerPanel from './PlayerPanel'
+import Inventory from '../../components/Inventory/Inventory'
 import './MockGameplay.css'
 import './BattleMenuSizing.css'
 import './SectionPanelFrame.css'
@@ -46,11 +47,19 @@ const menuItems: Array<{ id: MenuKey; label: string; subtitle: string; icon: str
 ]
 function Meter({ value, type }: { value: number; type: 'health' | 'mana' }) { return <div className={`meter meter-${type}`}><img className="meter-frame" src={barFrame} alt="" /><div className="meter-clip"><img src={type === 'health' ? healthFill : manaFill} alt="" style={{ width: `${value}%` }} /></div></div> }
 
-function MockGameplay() {
+type MockGameplayProps = {
+  onBackToMenu?: () => void
+}
+
+function MockGameplay({ onBackToMenu }: MockGameplayProps = {}) {
   const [activeMenu, setActiveMenu] = useState<MenuKey>('combat'); const [selectedCard, setSelectedCard] = useState(0); const [health, setHealth] = useState(150); const [mana, setMana] = useState(50); const [turn, setTurn] = useState(3); const [dice, setDice] = useState([6, 5, 4]); const [page, setPage] = useState(1)
   const selectedAction = actionCards[selectedCard]; const message = useMemo(() => selectedAction.title === 'HEAL' ? 'Health restored.' : `${selectedAction.title} selected.`, [selectedAction])
   function handlePlayAction(index: number) { setSelectedCard(index); const action = actionCards[index]; if (action.title === 'HEAL') setHealth((current) => Math.min(200, current + 20)); else if (action.title !== 'SHIELD UP') setMana((current) => Math.max(0, current - 5)) }
   function rollDice() { setDice(dice.map(() => Math.floor(Math.random() * 6) + 1)) }
+
+  if (activeMenu === 'inventory') {
+    return <Inventory onClose={() => setActiveMenu('combat')} />
+  }
   return <main className="battle-screen" style={{ backgroundImage: `url(${landscape})` }}>
     <PlayerPanel health={health} mana={mana} />
     <section className="battle-main" aria-label="Battle arena">
