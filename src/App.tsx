@@ -1,9 +1,11 @@
 import shopHeader from './assets/ui/ShopHeader.png'
 import buyButton from './assets/Buttons/Buy.png'
 import sellButton from './assets/Buttons/Sell.png'
-import { useEffect, useReducer, useState } from 'react'
+import { useCallback, useReducer, useState } from 'react'
+import { MarketToast, type MarketNotification } from './components/MarketToast'
 import { CategoryMenu } from './components/CategoryMenu'
 import { InventoryItemCard } from './components/InventoryItemCard'
+import { SellSelectionItem } from './components/SellSelectionItem'
 import { ItemCard } from './components/ItemCard'
 import { itemCategories, marketItems, type ItemCategory, type MarketItem } from './data/marketItems'
 import { addItemToInventory, type Inventory } from './state/inventory'
@@ -11,7 +13,7 @@ import './App.css'
 
 type MarketView = 'shop' | 'sell'
 type MarketCategory = ItemCategory | 'all'
-type MarketMessage = { tone: 'success' | 'error'; text: string } | null
+type MarketMessage = MarketNotification | null
 type ResolvedInventoryItem = { item: MarketItem; quantity: number }
 interface PlayerState {
   gold: number
@@ -22,7 +24,7 @@ interface PlayerState {
 type PlayerAction =
   | { type: 'buy'; item: MarketItem }
   | { type: 'sell'; items: Inventory }
-  | { type: 'clearMarketMessage' }
+  | { type: 'clearMarketMessage'; message: MarketNotification }
 
 function calculateSellValue(items: readonly ResolvedInventoryItem[]): number {
   return items.reduce((total, { item, quantity }) => total + item.sellPrice * quantity, 0)
@@ -30,7 +32,7 @@ function calculateSellValue(items: readonly ResolvedInventoryItem[]): number {
 
 function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
   if (action.type === 'clearMarketMessage') {
-    return { ...state, marketMessage: null }
+    return state.marketMessage === action.message ? { ...state, marketMessage: null } : state
   }
 
   if (action.type === 'sell') {
@@ -90,24 +92,16 @@ const navigation: ReadonlyArray<{ id: MarketView; label: string }> = [
 function App() {
   const [activeView, setActiveView] = useState<MarketView>('shop')
   const [selectedCategory, setSelectedCategory] = useState<MarketCategory>('all')
-  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({})
   const [player, dispatchPlayerAction] = useReducer(playerReducer, {
     gold: 1250,
     inventory: [],
     marketMessage: null,
   })
 
-  useEffect(() => {
-    if (!player.marketMessage) {
-      return undefined
-    }
-
-    const messageTimer = window.setTimeout(() => {
-      dispatchPlayerAction({ type: 'clearMarketMessage' })
-    }, 3000)
-
-    return () => window.clearTimeout(messageTimer)
-  }, [player.marketMessage])
+  const dismissNotification = useCallback((message: MarketNotification) => {
+    dispatchPlayerAction({ type: 'clearMarketMessage', message })
+  }, [])
 
   const visibleItems = selectedCategory === 'all'
     ? marketItems
@@ -118,8 +112,12 @@ function App() {
       return item ? { item, quantity: entry.quantity } : null
     })
     .filter((entry): entry is ResolvedInventoryItem => entry !== null)
-  const selectedItems = ownedItems.filter(({ item }) => selectedItemIds.includes(item.id))
-  const availableItems = ownedItems.filter(({ item }) => !selectedItemIds.includes(item.id))
+  const selectedItems = ownedItems
+    .map(({ item, quantity }) => ({ item, quantity: Math.min(quantity, selectedQuantities[item.id] ?? 0) }))
+    .filter(({ quantity }) => quantity > 0)
+  const availableItems = ownedItems
+    .map(({ item, quantity }) => ({ item, quantity: quantity - Math.min(quantity, selectedQuantities[item.id] ?? 0) }))
+    .filter(({ quantity }) => quantity > 0)
   const estimatedSellValue = calculateSellValue(selectedItems)
 
   function handleBuy(item: MarketItem) {
@@ -131,23 +129,30 @@ function App() {
     setSelectedCategory('all')
   }
 
-  function toggleSellSelection(itemId: string) {
-    setSelectedItemIds((currentSelection) =>
-      currentSelection.includes(itemId)
-        ? currentSelection.filter((selectedItemId) => selectedItemId !== itemId)
-        : [...currentSelection, itemId],
-    )
+  function addSellSelection(itemId: string) {
+    const ownedQuantity = player.inventory.find((entry) => entry.itemId === itemId)?.quantity ?? 0
+    setSelectedQuantities((current) => ({
+      ...current,
+      [itemId]: Math.min(ownedQuantity, (current[itemId] ?? 0) + 1),
+    }))
+  }
+
+  function removeSellSelection(itemId: string) {
+    setSelectedQuantities((current) => ({
+      ...current,
+      [itemId]: Math.max(0, (current[itemId] ?? 0) - 1),
+    }))
   }
 
   function handleSell() {
-    const selectedInventory = player.inventory.filter((entry) => selectedItemIds.includes(entry.itemId))
+    const selectedInventory = selectedItems.map(({ item, quantity }) => ({ itemId: item.id, quantity }))
 
     if (selectedInventory.length === 0) {
       return
     }
 
     dispatchPlayerAction({ type: 'sell', items: selectedInventory })
-    setSelectedItemIds([])
+    setSelectedQuantities({})
   }
 
   const content =
@@ -174,6 +179,7 @@ function App() {
             <img className="shop-header-image" src={shopHeader} alt="Market" />
           </div>
           <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
+          <MarketToast notification={player.marketMessage} onDismiss={dismissNotification} />
         </header>
 
         <section className="market-workspace" aria-label="Market">
@@ -208,7 +214,7 @@ function App() {
             </div>
           </nav>
 
-          <section className="market-content" aria-labelledby="market-content-title">
+          <section className={activeView === 'sell' ? 'market-content is-selling' : 'market-content'} aria-labelledby="market-content-title">
             <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
               <strong>{player.gold.toLocaleString()}</strong>
             </div>
@@ -220,11 +226,6 @@ function App() {
             {activeView === 'shop' ? (
               <div className="shop-panel">
                 {/* <p className="shop-category-description">{content.description}</p> */}
-                {player.marketMessage && (
-                  <p className={`purchase-message is-${player.marketMessage.tone}`} role="status">
-                    {player.marketMessage.text}
-                  </p>
-                )}
                 <div className="item-scroll" aria-live="polite">
                   <div className="item-grid">
                     {visibleItems.map((item) => (
@@ -239,11 +240,6 @@ function App() {
               </div>
             ) : (
               <div className="sell-panel">
-                {player.marketMessage && (
-                  <p className={`purchase-message sell-message is-${player.marketMessage.tone}`} role="status">
-                    {player.marketMessage.text}
-                  </p>
-                )}
                 <section className="your-items-panel" aria-labelledby="your-items-heading">
                   <div className="sell-section-heading">
                     <span aria-hidden="true">✦</span>
@@ -251,16 +247,17 @@ function App() {
                     <span aria-hidden="true">✦</span>
                   </div>
                   {availableItems.length > 0 ? (
-                    <div className="inventory-item-grid">
+                    <div className="item-scroll">
+                      <div className="item-grid">
                       {availableItems.map(({ item, quantity }) => (
                         <InventoryItemCard
                           item={item}
                           key={item.id}
                           quantity={quantity}
-                          selected={false}
-                          onSelect={toggleSellSelection}
+                          onSelect={addSellSelection}
                         />
                       ))}
+                      </div>
                     </div>
                   ) : (
                     <p className="empty-inventory">
@@ -280,12 +277,11 @@ function App() {
                   <div className="selected-items-list">
                     {selectedItems.length > 0 ? (
                       selectedItems.map(({ item, quantity }) => (
-                        <InventoryItemCard
+                        <SellSelectionItem
                           item={item}
                           key={item.id}
                           quantity={quantity}
-                          selected
-                          onSelect={toggleSellSelection}
+                          onRemove={removeSellSelection}
                         />
                       ))
                     ) : (
