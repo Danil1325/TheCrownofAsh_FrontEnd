@@ -3,6 +3,7 @@ import '../../styles/game-ui.css'
 import './MainMenu.css'
 import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
+import Map from '../Map/Map'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
@@ -33,10 +34,15 @@ type MainMenuProps = {
 function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLogout }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
+  const [isMapOpen, setIsMapOpen] = useState(false)
 
   if (selectedAction === 'new-game' || selectedAction === 'load-game') {
 
     return <LoadingScreen musicVolume={musicVolume} onComplete={onNewGame} />
+  }
+
+  if (isMapOpen) {
+    return <Map onClose={() => setIsMapOpen(false)} />
   }
 
   return (
@@ -53,7 +59,11 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
-                setSelectedAction(item.action)
+                if (item.action === 'new-game' || item.action === 'load-game') {
+                  setIsMapOpen(true)
+                } else {
+                  setSelectedAction(item.action)
+                }
               }}
             >
               <img src={item.image} alt="" />
