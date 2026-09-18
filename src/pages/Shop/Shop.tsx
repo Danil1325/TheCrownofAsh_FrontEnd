@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import './Shop.css'
 import marketBackground from '../../assets/Shop/Market Map Background.png'
 import marketBanner from '../../assets/Shop/market-assets/market-banner.png'
@@ -39,28 +40,50 @@ type ShopProps = { onBack: () => void; onPlayButtonSound: () => void }
 function Shop({ onBack, onPlayButtonSound }: ShopProps) {
   const [activeCategory, setActiveCategory] = useState<Category | null>(null)
   const [gold, setGold] = useState(1250)
-  const [owned, setOwned] = useState<string[]>([])
+  const [quantities, setQuantities] = useState<Record<string, number>>({})
   const [isSelling, setIsSelling] = useState(false)
-  const [notice, setNotice] = useState('Fine goods and fair prices.')
+  const [notice, setNotice] = useState('')
+
+  useEffect(() => {
+    if (!notice) return
+
+    const timer = window.setTimeout(() => {
+      setNotice('')
+    }, 2000)
+
+    return () => window.clearTimeout(timer)
+  }, [notice])
+
   const shownItems = useMemo(() => activeCategory ? inventory.filter((item) => item.category === activeCategory) : inventory, [activeCategory])
   const buy = (item: Item) => {
     onPlayButtonSound()
     if (isSelling) {
-      if (!owned.includes(item.id)) return setNotice(`You do not own the ${item.name}.`)
+      const ownedCount = quantities[item.id] ?? 0
+      if (ownedCount <= 0) return setNotice(`You do not own the ${item.name}.`)
       const salePrice = Math.floor(item.price / 2)
-      setGold((value) => value + salePrice); setOwned((items) => items.filter((id) => id !== item.id)); setNotice(`${item.name} sold for ${salePrice} gold.`)
+      setGold((value) => value + salePrice)
+      setQuantities((current) => ({ ...current, [item.id]: Math.max((current[item.id] ?? 0) - 1, 0) }))
+      setNotice(`${item.name} sold for ${salePrice} gold.`)
       return
     }
-    if (owned.includes(item.id)) return setNotice(`You already own the ${item.name}.`)
-    if (gold < item.price) return setNotice('Your purse is too light for that.')
-    setGold((value) => value - item.price); setOwned((items) => [...items, item.id]); setNotice(`${item.name} added to your pack.`)
+    if (gold < item.price) return setNotice(`You need ${item.price - gold} more gold for the ${item.name}.`)
+    setGold((value) => value - item.price)
+    setQuantities((current) => ({ ...current, [item.id]: (current[item.id] ?? 0) + 1 }))
+    setNotice(`${item.name} purchased for ${item.price} gold.`)
   }
   return <main className="shop-screen" style={{ backgroundImage: `url("${marketBackground}")` }}>
     <header className="market-header"><p className="rune-line" aria-hidden="true">ᛏ ᚺ ᚱ ᚨ ᚾ ᛞ ᛟ ᚱ ᛖ ᛚ ᛚ ᛁ ᚾ ᛋ ᛏ ᚨ ᚱ</p><img className="market-banner" src={marketBanner} alt="Market" /><img className="subtitle-banner" src={subtitleBanner} alt="Spend your gold · Gear up · Survive" /></header>
     <div className="market-gold" aria-label={`${gold} gold`}><img src={goldCounter} alt="" /><strong>{gold.toLocaleString()}</strong></div>
+    <AnimatePresence mode="wait">
+      {notice && <motion.p className="shop-notice" role="status" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2, ease: 'easeOut' }}>{notice}</motion.p>}
+    </AnimatePresence>
     <section className="market-layout" aria-label="Merchant inventory">
       <aside className="shop-menu"><div className="category-panel"><img className="category-panel__paper" src={categoryPanel} alt="" /><div className="category-content"><nav aria-label="Shop categories">{categories.map((category) => <button type="button" key={category.name} className={activeCategory === category.name ? 'category-button category-button--active' : 'category-button'} onClick={() => { onPlayButtonSound(); setActiveCategory((current) => current === category.name ? null : category.name) }}><img className="category-button__active-bg" src={activeCategoryButton} alt="" /><img className="category-button__icon" src={category.icon} alt="" /><span>{category.name}</span></button>)}</nav></div></div><div className="shop-menu-actions"><button className={isSelling ? 'shop-menu-action--active' : ''} type="button" onClick={() => { onPlayButtonSound(); setIsSelling((current) => !current); setNotice(isSelling ? 'Buying mode active.' : 'Selling mode active. Choose an owned item.') }}><img src={isSelling ? activeCategoryButton : buyButton} alt="" style={{ height: '3.5rem' }} /><span>Sell Items</span></button><button type="button" onClick={() => { onPlayButtonSound(); onBack() }}><img src={buyButton} alt="" style={{ height: '3.5rem' }} /><span>Back</span></button></div></aside>
-      <section className="wares"><div className="item-grid">{shownItems.map((item) => { const isOwned = owned.includes(item.id); const actionLabel = isSelling ? 'Sell' : isOwned ? 'Owned' : 'Buy'; return <article className="item-card" key={item.id}><img className="item-card__paper" src={productCard} alt="" /><img className={`item-card__icon${item.id === 'iron-sword' ? ' item-card__icon--iron-sword' : ''}`} src={item.image} alt={item.name} /><div className="item-card__copy"><h2>{item.name}</h2><p>{item.description}</p><strong><img src={priceCoin} alt="" />{item.price}</strong></div><button className="buy-button" type="button" disabled={!isSelling && isOwned} aria-label={`${actionLabel} ${item.name}`} onClick={() => buy(item)}><img src={buyButton} alt="" />{isSelling || isOwned ? <span>{actionLabel}</span> : <img className="buy-button__label" src={buyButtonLabeled} alt="Buy" />}</button></article> })}</div><p className="shop-notice" role="status">{notice}</p></section>
+      <section className="wares"><div className="item-grid">{shownItems.map((item) => {
+        const ownedCount = quantities[item.id] ?? 0
+        const actionLabel = isSelling ? 'Sell' : 'Buy'
+        return <article className="item-card" key={item.id}><img className="item-card__paper" src={productCard} alt="" /><img className={`item-card__icon${item.id === 'iron-sword' ? ' item-card__icon--iron-sword' : ''}`} src={item.image} alt={item.name} /><div className="item-card__copy"><h2>{item.name}</h2><p>{item.description}</p><strong><img src={priceCoin} alt="" />{item.price}</strong></div><button className="buy-button" type="button" aria-label={`${actionLabel} ${item.name}`} onClick={() => buy(item)}><img src={buyButton} alt="" />{isSelling ? <span>{actionLabel}</span> : ownedCount > 0 ? <img className="buy-button__label" src={buyButtonLabeled} alt="Buy" /> : <img className="buy-button__label" src={buyButtonLabeled} alt="Buy" />}</button></article>
+      })}</div></section>
     </section>
   </main>
 }

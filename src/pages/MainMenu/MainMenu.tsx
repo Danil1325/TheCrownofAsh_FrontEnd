@@ -3,17 +3,18 @@ import '../../styles/game-ui.css'
 import './MainMenu.css'
 import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
-import Map from '../Map/Map'
+import Shop from '../Shop/Shop'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
 import newGame from '../../assets/MainMenu/Buttons/New Game.png'
 import loadGame from '../../assets/MainMenu/Buttons/Load Game.png'
+import market from '../../assets/MainMenu/Buttons/Market.png'
 import skills from '../../assets/MainMenu/Buttons/Skills.png'
 import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
 
-type MenuAction = 'new-game' | 'load-game' | 'skills' | 'options'
+type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options'
 
 const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'new-game', image: newGame, label: 'New Game' },
@@ -86,17 +87,31 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
           <img src={options} alt="" />
         </button>
 
-        <button
-          className="game-button logout-button"
-          type="button"
-          aria-label="Log out"
-          onClick={() => {
-            onPlayButtonSound()
-            onLogout()
-          }}
-        >
-          <img src={logOut} alt="" />
-        </button>
+        <div className="corner-actions-right">
+          <button
+            className="game-button shop-button"
+            type="button"
+            aria-label="Shop"
+            onClick={() => {
+              onPlayButtonSound()
+              setSelectedAction('shop')
+            }}
+          >
+            <img src={market} alt="" />
+          </button>
+
+          <button
+            className="game-button logout-button"
+            type="button"
+            aria-label="Log out"
+            onClick={() => {
+              onPlayButtonSound()
+              onLogout()
+            }}
+          >
+            <img src={logOut} alt="" />
+          </button>
+        </div>
       </div>
 
       {selectedAction && selectedAction !== 'options' && (
