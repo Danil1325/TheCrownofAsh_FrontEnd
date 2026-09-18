@@ -46,14 +46,18 @@ function App() {
 
   return (
     <div className="app-page-enter">
-      <MainMenu
-        musicVolume={musicVolume}
-        sfxVolume={sfxVolume}
-        onMusicVolumeChange={setMusicVolume}
-        onSfxVolumeChange={setSfxVolume}
-        onPlayButtonSound={playButtonSound}
-        onNewGame={() => setGameState('playing')}
-      />
+      {gameState === 'playing' ? (
+        <MockGameplay />
+      ) : (
+        <MainMenu
+          musicVolume={musicVolume}
+          sfxVolume={sfxVolume}
+          onMusicVolumeChange={setMusicVolume}
+          onSfxVolumeChange={setSfxVolume}
+          onPlayButtonSound={playButtonSound}
+          onNewGame={() => setGameState('playing')}
+        />
+      )}
     </div>
   )
 }
