@@ -242,7 +242,9 @@
 .sell-section-heading { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgb(83 47 18 / 50%); color: #5b3518; text-align: center; }
 .sell-section-heading span { color: #81582a; font-size: .85rem; }
 .sell-section-heading h3 { margin: 0; color: #4d2911; font-family: Cinzel, Georgia, serif; font-size: .86rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-.inventory-selection-card { border: 0; cursor: pointer; }
+.inventory-selection-card { border: 0; background: transparent; cursor: pointer; }
+.inventory-selection-card .market-card-flip { position: relative; }
+.inventory-copy-count { position: absolute; z-index: 2; top: 4px; right: 4px; min-width: 25px; padding: 3px 6px; border: 1px solid #d9ba7b; background: #43240f; box-shadow: 0 1px 3px rgb(0 0 0 / 55%); color: #fff1c4; font-family: Cinzel, Georgia, serif; font-size: .75rem; font-weight: 800; line-height: 1.2; text-align: center; pointer-events: none; }
 .inventory-selection-card .market-card-flip,
 .inventory-selection-card .market-card-flip-inner { display: block; }
 .inventory-selection-card:focus-visible { outline: 2px solid #75501c; outline-offset: 2px; }

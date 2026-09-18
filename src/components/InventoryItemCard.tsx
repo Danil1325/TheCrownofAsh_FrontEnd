@@ -20,8 +20,8 @@ export function InventoryItemCard({ item, quantity, onSelect }: InventoryItemCar
           <img className="market-card-face market-card-front" src={item.frontImage} alt="" />
           <img className="market-card-face market-card-back" src={item.backImage} alt="" />
         </span>
+        <span className="inventory-copy-count">×{quantity}</span>
       </span>
-      <span className="buy-button">Select · ×{quantity}</span>
     </button>
   )
 }
