@@ -43,8 +43,11 @@ const ItemCard = ({ item, onEquip, onUnequip, isEquipped }: ItemCardProps) => {
             </div>
           </div>
           <div className="card-image-placeholder">
-            {/* Placeholder for item image */}
-            <div className="placeholder-img-box"></div>
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt={item.name} className="item-image" />
+            ) : (
+              <div className="placeholder-img-box"></div>
+            )}
           </div>
           <div className="card-footer">
             <span className="item-name">{item.name}</span>

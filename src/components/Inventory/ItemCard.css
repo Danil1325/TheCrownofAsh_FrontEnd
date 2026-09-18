@@ -107,6 +107,13 @@
   border-radius: 8px;
 }
 
+.item-image {
+  max-width: 120px;
+  max-height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
 .card-footer {
   padding: 8px 10px;
   background: transparent;
