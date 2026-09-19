@@ -1,5 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react'
-import { FlaskConical, Flame, Mountain, Snowflake } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import '../../styles/game-ui.css'
 import './CharacterCreation.css'
 import background from '../../assets/CharacterCreation/UI/CharacterCreationBackground.png'
@@ -7,27 +6,17 @@ import banner from '../../assets/CharacterCreation/UI/CreateYourCharacterBanner.
 import leftArrow from '../../assets/CharacterCreation/UI/LeftArrow.png'
 import rightArrow from '../../assets/CharacterCreation/UI/RightArrow.png'
 import selectedFrame from '../../assets/CharacterCreation/UI/SelectedFrame.png'
-import displayMenu from '../../assets/CharacterCreation/UI/DisplayMenu.png'
-import attributesMenu from '../../assets/CharacterCreation/UI/AttributesMenu.png'
-import textBox from '../../assets/CharacterCreation/UI/TextBox.png'
-import blankBar from '../../assets/CharacterCreation/UI/BlankBar.png'
-import healthBar from '../../assets/CharacterCreation/UI/HealthBar.png'
-import strengthBar from '../../assets/CharacterCreation/UI/StrengthBar.png'
-import dexterityBar from '../../assets/CharacterCreation/UI/DexterityBar.png'
-import intelligenceBar from '../../assets/CharacterCreation/UI/IntelligenceBar.png'
-import charismaBar from '../../assets/CharacterCreation/UI/CharismaBar.png'
 import backButton from '../../assets/CharacterCreation/UI/BackButton.png'
 import continueButton from '../../assets/CharacterCreation/UI/ConfirmButton.png'
 import Attributes from '../../components/CharacterCreation/Attributes'
 import { default as CharacterDisplayMenu } from '../../components/CharacterCreation/DisplayMenu'
-import { attributeLabels, classes, combineAttributes, races, type AttributeKey, type CharacterClass, type Race, type ResistanceIcon, wrapIndex } from './characterCreationData'
+import { classes, combineAttributes, races, type CharacterClass, type Race, wrapIndex } from './characterCreationData'
 
 type CharacterCreationProps = { onComplete: () => void }
 type CreationStep = 'race' | 'class'
 type CarouselItem = Race | CharacterClass
 type CarouselMotion = 'center-to-left' | 'right-to-center' | 'enter-right' | 'enter-left' | 'left-to-center' | 'center-to-right'
 type FrameState = 'visible' | 'entering' | 'leaving'
-const attributeBarImages: Record<AttributeKey, string> = { health: healthBar, strength: strengthBar, dexterity: dexterityBar, intelligence: intelligenceBar, charisma: charismaBar }
 
 function CharacterCreation({ onComplete }: CharacterCreationProps) {
   const [step, setStep] = useState<CreationStep>('race')
@@ -38,7 +27,7 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
   const [exitingCard, setExitingCard] = useState<{ item: CarouselItem; direction: -1 | 1 } | null>(null)
   const selectedRace = races[raceIndex]
   const selectedClass = classes[classIndex]
-  const attributes = useMemo(() => combineAttributes(selectedRace, selectedClass), [selectedRace, selectedClass])
+  const attributes = useMemo(() => step === 'class' ? combineAttributes(selectedRace, selectedClass) : selectedRace.attributes, [step, selectedRace, selectedClass])
   const cards = step === 'race' ? races : classes
   const selectedIndex = step === 'race' ? raceIndex : classIndex
   const move = (direction: -1 | 1) => {
@@ -92,10 +81,10 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
           </div>
           <button className="game-button carousel-arrow carousel-arrow--right" type="button" aria-label="Next" onClick={() => move(1)} disabled={Boolean(rotationDirection)}><img src={rightArrow} alt="" /></button>
         </section>
-      <CharacterDisplayMenu race={selectedRace} characterClass={step === 'class' ? selectedClass : undefined} name={characterName} onNameChange={setCharacterName} />
+        <CharacterDisplayMenu race={selectedRace} characterClass={step === 'class' ? selectedClass : undefined} name={characterName} onNameChange={setCharacterName} />
         <div className={`creation-navigation creation-navigation--${step}`}>
-          {step === 'class' && <button className="game-button creation-navigation__button" type="button" onClick={() => setStep('race')}><img src={backButton} alt="Back" /></button>}
-          <button className="game-button creation-navigation__button" type="button" onClick={() => { if (step === 'race') setStep('class'); else onComplete() }}><img src={continueButton} alt="Continue" /></button>
+          <button className="game-button creation-navigation__button creation-navigation__back" type="button" onClick={() => setStep('race')} disabled={step === 'race'} aria-hidden={step === 'race'}><img src={backButton} alt="Back" /></button>
+          <button className="game-button creation-navigation__button creation-navigation__continue" type="button" onClick={() => { if (step === 'race') setStep('class'); else onComplete() }}><img src={continueButton} alt="Continue" /></button>
         </div>
       </section>
       <Attributes attributes={attributes} />
@@ -108,6 +97,7 @@ function CarouselCard({ item, position, direction, selectedFrame: frame, frameSt
   return <div className={`carousel-card carousel-card--${position} carousel-card--${direction}${motion ? ` carousel-card--${motion}` : ''}${exiting ? ' carousel-card--exiting' : ''}`}><img className="carousel-card__image" src={image} alt={item.name} />{frame && <img className={`carousel-card__selected-frame${frameState ? ` carousel-card__selected-frame--${frameState}` : ''}`} src={frame} alt="" aria-hidden="true" />}</div>
 }
 
+/* Legacy inline components retained temporarily in source history.
 function DisplayMenu({ race, characterClass, name, onNameChange }: { race: Race; characterClass?: CharacterClass; name: string; onNameChange: (name: string) => void }) {
   const resistanceIcons: Record<ResistanceIcon, typeof Mountain> = { stone: Mountain, fire: Flame, ice: Snowflake, arcane: FlaskConical }
   return <section className="display-menu" style={{ backgroundImage: `url("${displayMenu}")` }} aria-label="Character summary">
@@ -134,5 +124,6 @@ function AttributesPanel({ attributes }: { attributes: Record<AttributeKey, numb
     <div className="derived-stats">{Object.entries(derived).map(([label, value]) => <div className="derived-stat" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
   </aside>
 }
+*/
 
 export default CharacterCreation

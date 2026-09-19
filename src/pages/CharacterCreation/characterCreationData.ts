@@ -29,10 +29,10 @@ export const races: Race[] = [
 ]
 
 export const classes: CharacterClass[] = [
-  { id: 'warrior', name: 'Warrior', image: warriorCard, symbol: warriorSymbol, attributes: { health: 18, strength: 24, dexterity: 3 } },
+  { id: 'warrior', name: 'Warrior', image: warriorCard, symbol: warriorSymbol, attributes: { health: 6, strength: 14, dexterity: 3 } },
   { id: 'bard', name: 'Bard', image: bardCard, symbol: bardSymbol, attributes: { charisma: 22, dexterity: 10, intelligence: 8 } },
   { id: 'magician', name: 'Magician', image: magicianCard, symbol: magicianSymbol, attributes: { intelligence: 26, charisma: 8, health: -6 } },
-  { id: 'healer', name: 'Healer', image: healerCard, symbol: healerSymbol, attributes: { intelligence: 18, charisma: 12, health: 12 } },
+  { id: 'healer', name: 'Healer', image: healerCard, symbol: healerSymbol, attributes: { intelligence: 18, charisma: 12, health: 6 } },
 ]
 
 export const attributeLabels: Record<AttributeKey, string> = { health: 'Health', strength: 'Strength', dexterity: 'Dexterity', intelligence: 'Intelligence', charisma: 'Charisma' }
