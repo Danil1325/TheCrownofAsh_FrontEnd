@@ -1,0 +1,262 @@
+/* Full-screen dim layer behind the journal drawer. */
+.quest-journal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(12, 7, 3, 0.55);
+}
+
+/* Right-side parchment drawer. */
+.quest-journal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 41;
+  display: flex;
+  flex-direction: column;
+  width: min(26rem, 100vw);
+  background:
+    linear-gradient(180deg, #fff7e4 0%, #f3e4c4 100%);
+  border-left: 1px solid rgba(97, 46, 21, 0.5);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.45);
+  color: #24130d;
+  animation: quest-journal-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.quest-journal-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid rgba(97, 46, 21, 0.35);
+  background: rgba(212, 164, 63, 0.22);
+}
+
+.quest-journal-head-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #5e2d15;
+  color: #f3e4c4;
+}
+
+.quest-journal-title {
+  flex: 1 1 auto;
+  margin: 0;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5e2d15;
+}
+
+.quest-journal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(97, 46, 21, 0.12);
+  color: #5e2d15;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.quest-journal-close:hover {
+  background: rgba(97, 46, 21, 0.28);
+  transform: scale(1.06);
+}
+
+.quest-journal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 1rem 1.1rem 2rem;
+}
+
+.quest-journal-section + .quest-journal-section {
+  margin-top: 1.6rem;
+}
+
+.quest-journal-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.55rem;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a3415;
+}
+
+.quest-journal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.quest-journal-item {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(97, 46, 21, 0.3);
+  border-radius: 0.4rem;
+  background: rgba(255, 250, 235, 0.85);
+}
+
+.quest-journal-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.quest-journal-item-title {
+  margin: 0;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #5e2d15;
+}
+
+.quest-journal-badge {
+  flex: 0 0 auto;
+  padding: 0.15em 0.6em;
+  border-radius: 999px;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.quest-journal-badge--active {
+  background: rgba(212, 164, 63, 0.32);
+  color: #7a4d12;
+}
+
+.quest-journal-badge--completed {
+  background: rgba(95, 157, 111, 0.32);
+  color: #2f5c3b;
+}
+
+.quest-journal-badge--available {
+  background: rgba(91, 141, 184, 0.3);
+  color: #2e557a;
+}
+
+.quest-journal-item-code {
+  margin: 0.25rem 0 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: #8a7a62;
+  text-transform: uppercase;
+}
+
+.quest-journal-objective,
+.quest-journal-item-description,
+.quest-journal-progress {
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: #3d2b1f;
+}
+
+.quest-journal-progress {
+  font-size: 0.74rem;
+  color: #8a3415;
+}
+
+.quest-journal-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+}
+
+.quest-journal-reward {
+  padding: 0.2em 0.7em;
+  border: 1px solid rgba(97, 46, 21, 0.4);
+  border-radius: 999px;
+  background: rgba(255, 245, 224, 0.75);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #7a4d12;
+}
+
+.quest-journal-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: #8a7a62;
+}
+
+.quest-journal-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.4rem 1.1rem;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #5e2d15;
+}
+
+.quest-journal-spinner {
+  animation: quest-journal-spin 900ms linear infinite;
+  color: #a7782c;
+}
+
+.quest-journal-error {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #9d3f36;
+}
+
+@keyframes quest-journal-in {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes quest-journal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quest-journal {
+    animation: none;
+  }
+
+  .quest-journal-spinner {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .quest-journal {
+    width: 100vw;
+  }
+}

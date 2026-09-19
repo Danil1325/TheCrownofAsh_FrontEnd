@@ -75,6 +75,10 @@
   background: linear-gradient(180deg, #c06a86, #9d4a63);
 }
 
+.notification--purple .notification-icon {
+  background: linear-gradient(180deg, #9170b8, #6f4f99);
+}
+
 .notification-text {
   flex: 1 1 auto;
   min-width: 0;

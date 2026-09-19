@@ -4,11 +4,13 @@ import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
 import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
-import MockGameplay from './pages/MockGameplay/MockGameplay'
+import ScenarioPage from './pages/Scenario/ScenarioPage'
 import { getCurrentUser, logout } from './api/authApi'
+import type { CurrentUser } from './api/authApi'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [authenticationPage, setAuthenticationPage] = useState<'login' | 'signup'>('login')
   const [isInitialLoading, setIsInitialLoading] = useState(false)
@@ -20,6 +22,7 @@ function App() {
     setGameState('playing')
     setIsInitialLoading(true)
   }, [])
+  const backToMenu = useCallback(() => setGameState('menu'), [])
   const playButtonSound = useCallback(() => {
     if (sfxVolume === 0) return
 
@@ -35,8 +38,11 @@ function App() {
   useEffect(() => {
     let isMounted = true
     getCurrentUser()
-      .then(() => {
-        if (isMounted) setIsAuthenticated(true)
+      .then((user) => {
+        if (isMounted) {
+          setCurrentUser(user)
+          setIsAuthenticated(true)
+        }
       })
       .catch(() => {
         if (isMounted) setIsAuthenticated(false)
@@ -52,6 +58,7 @@ function App() {
   const handleLogout = useCallback(() => {
     void logout().finally(() => {
       setIsAuthenticated(false)
+      setCurrentUser(null)
       setGameState('menu')
     })
   }, [])
@@ -68,7 +75,7 @@ function App() {
     if (authenticationPage === 'signup') {
       return (
         <SignUp
-          onSignUp={() => { setIsAuthenticated(true); setIsInitialLoading(true) }}
+          onSignUp={(user) => { setCurrentUser(user); setIsAuthenticated(true); setIsInitialLoading(true) }}
           onBackToLogin={() => setAuthenticationPage('login')}
         />
       )
@@ -76,14 +83,16 @@ function App() {
 
     return (
       <Login
-        onLogin={() => { setIsAuthenticated(true); setIsInitialLoading(true) }}
+        onLogin={(user) => { setCurrentUser(user); setIsAuthenticated(true); setIsInitialLoading(true) }}
         onCreateAccount={() => setAuthenticationPage('signup')}
       />
     )
   }
 
   if (gameState === 'playing') {
-    return <MockGameplay />
+    return currentUser ? (
+      <ScenarioPage key={currentUser.id} playerId={currentUser.id} onBackToMenu={backToMenu} />
+    ) : null
   }
 
   return (

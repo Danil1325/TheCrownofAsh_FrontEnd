@@ -13,6 +13,12 @@ interface ScenarioBackgroundProps {
   /** LocationId of the loaded scene; drives which background image renders. */
   locationId: number | null;
   /**
+   * Backend-provided background image URL (e.g. the StoryScene `backgroundImage`
+   * field). Used only when no bundled asset matches `locationId`, so the bundled
+   * art — which cannot be affected by server downtime — wins when available.
+   */
+  backgroundImage?: string | null;
+  /**
    * Reported `true` from the moment a new location starts loading until the
    * cross-fade finishes — the page should keep the DialogueBox/ChoiceBox
    * hidden for the whole transition.
@@ -41,7 +47,7 @@ function preloadImage(src: string): Promise<void> {
  * whole window so the page can hide the DialogueBox. With
  * `prefers-reduced-motion: reduce` the swap happens instantly (no fade).
  */
-function ScenarioBackground({ locationId, onTransitionChange, className }: ScenarioBackgroundProps) {
+function ScenarioBackground({ locationId, backgroundImage, onTransitionChange, className }: ScenarioBackgroundProps) {
   // Start blank; the first effect below preloads and fades in the first scene.
   const [current, setCurrent] = useState<BackgroundState>({ locationId: null, url: undefined });
   const [incoming, setIncoming] = useState<BackgroundState | null>(null);
@@ -100,9 +106,10 @@ function ScenarioBackground({ locationId, onTransitionChange, className }: Scena
   }, []);
 
   useEffect(() => {
+    const bundled = locationId != null ? backgroundByLocation[locationId] : undefined;
     const target: BackgroundState = {
       locationId,
-      url: locationId != null ? backgroundByLocation[locationId] : undefined,
+      url: bundled ?? backgroundImage ?? undefined,
     };
     if (target.locationId === current.locationId) {
       return;
@@ -117,7 +124,7 @@ function ScenarioBackground({ locationId, onTransitionChange, className }: Scena
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [locationId, current.locationId, startTransition]);
+  }, [locationId, backgroundImage, current.locationId, startTransition]);
 
   const rootClassName = [
     'scenario-background',

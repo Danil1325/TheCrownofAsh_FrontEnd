@@ -5,6 +5,7 @@ export type NotificationType =
   | 'quest-completed'
   | 'quest-failed'
   | 'exp-gained'
+  | 'level-up'
   | 'location-unlocked'
   | 'loyalty-changed';
 
@@ -31,6 +32,8 @@ export interface NotificationApi {
   questFailed(questName: string): void;
   /** "EXP Gained — +<amount> EXP" */
   expGained(amount: number): void;
+  /** "Level Up — Reached level <newLevel>" */
+  levelUp(newLevel: number): void;
   /** "Location Unlocked — <locationName>" */
   locationUnlocked(locationName: string): void;
   /** "Loyalty Changed — <companionName> +<delta> Loyalty" */
