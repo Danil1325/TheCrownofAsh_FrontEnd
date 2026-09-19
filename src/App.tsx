@@ -5,7 +5,7 @@ import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
 import MockGameplay from './pages/MockGameplay/MockGameplay'
-import CharacterCreation from './pages/CharacterCreation'
+import CharacterCreation from './pages/CharacterCreation/CharacterCreation'
 import { getCurrentUser, logout } from './api/authApi'
 
 function App() {
