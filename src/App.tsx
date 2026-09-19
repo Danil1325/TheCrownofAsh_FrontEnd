@@ -4,6 +4,8 @@ import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
 import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
+import MockGameplay from './pages/MockGameplay/MockGameplay'
+import CharacterCreation from './pages/CharacterCreation/CharacterCreation'
 import ScenarioPage from './pages/Scenario/ScenarioPage'
 import { getCurrentUser, logout } from './api/authApi'
 import type { CurrentUser } from './api/authApi'
@@ -16,7 +18,7 @@ function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
-  const [gameState, setGameState] = useState<'menu' | 'playing'>('menu')
+  const [gameState, setGameState] = useState<'menu' | 'character-creation' | 'playing'>('menu')
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
   const startGameplay = useCallback(() => {
     setGameState('playing')
@@ -89,6 +91,10 @@ function App() {
     )
   }
 
+  if (gameState === 'character-creation') {
+    return <CharacterCreation onComplete={() => setGameState('playing')} />
+  }
+
   if (gameState === 'playing') {
     return currentUser ? (
       <ScenarioPage key={currentUser.id} playerId={currentUser.id} onBackToMenu={backToMenu} />
@@ -103,7 +109,7 @@ function App() {
         onMusicVolumeChange={setMusicVolume}
         onSfxVolumeChange={setSfxVolume}
         onPlayButtonSound={playButtonSound}
-        onNewGame={startGameplay}
+        onNewGame={() => setGameState('character-creation')}
         onLogout={handleLogout}
       />
     </div>
