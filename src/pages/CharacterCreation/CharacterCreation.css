@@ -10,28 +10,9 @@
 .carousel-card--center { width: 29%; z-index: 2; transform: scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); }
 .carousel-card__image, .carousel-card__selected-frame { display: block; width: 100%; height: auto; grid-area: 1 / 1; }
 .carousel-card__selected-frame { pointer-events: none; filter: drop-shadow(0 0 .25rem #fff0a0) drop-shadow(0 0 .9rem rgba(255, 183, 54, .9)); }
-.carousel-card__selected-frame--entering { animation: selected-frame-appear 520ms cubic-bezier(.18,.82,.22,1) both; }
-.carousel-card__selected-frame--leaving { animation: selected-frame-disappear 400ms ease-in both; }
-.carousel-card--center-to-left { animation: card-center-to-left 520ms cubic-bezier(.2,.8,.25,1) both; }
-.carousel-card--right-to-center { animation: card-right-to-center 520ms cubic-bezier(.2,.8,.25,1) both; }
-.carousel-card--left-to-center { animation: card-left-to-center 520ms cubic-bezier(.2,.8,.25,1) both; }
-.carousel-card--center-to-right { animation: card-center-to-right 520ms cubic-bezier(.2,.8,.25,1) both; }
-.carousel-card--enter-left { animation: card-enter-left 520ms cubic-bezier(.2,.8,.25,1) both; }
-.carousel-card--enter-right { animation: card-enter-right 520ms cubic-bezier(.2,.8,.25,1) both; }
 .carousel-card--exiting { position: absolute; top: 50%; width: 22%; z-index: 1; pointer-events: none; }
-.carousel-card--exit-left { left: 5%; animation: card-exit-left 520ms cubic-bezier(.2,.8,.25,1) both; }
-.carousel-card--exit-right { right: 5%; animation: card-exit-right 520ms cubic-bezier(.2,.8,.25,1) both; }
-@keyframes card-center-to-left { from { opacity: 1; transform: translateX(105%) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
-@keyframes card-right-to-center { from { opacity: .78; transform: translateX(95%) scale(.78); filter: brightness(.72) saturate(.82); } to { opacity: 1; transform: translateX(0) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } }
-@keyframes card-left-to-center { from { opacity: .78; transform: translateX(-95%) scale(.78); filter: brightness(.72) saturate(.82); } to { opacity: 1; transform: translateX(0) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } }
-@keyframes card-center-to-right { from { opacity: 1; transform: translateX(-105%) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
-@keyframes card-enter-left { from { opacity: 0; transform: translateX(-75%) scale(.58); filter: brightness(.55) saturate(.7); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
-@keyframes card-enter-right { from { opacity: 0; transform: translateX(75%) scale(.58); filter: brightness(.55) saturate(.7); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
-@keyframes card-exit-left { from { opacity: .78; transform: translateY(-50%) scale(.78); filter: brightness(.72) saturate(.82); } 65% { opacity: .5; transform: translate(140%, -50%) scale(.64); filter: brightness(.62) saturate(.74); } to { opacity: 0; transform: translate(175%, -50%) scale(.5); filter: brightness(.5) saturate(.65); } }
-@keyframes card-exit-right { from { opacity: .78; transform: translateY(-50%) scale(.78); filter: brightness(.72) saturate(.82); } 65% { opacity: .5; transform: translate(-140%, -50%) scale(.64); filter: brightness(.62) saturate(.74); } to { opacity: 0; transform: translate(-175%, -50%) scale(.5); filter: brightness(.5) saturate(.65); } }
-@keyframes selected-frame-appear { from { opacity: 0; transform: scale(.82); } to { opacity: 1; transform: scale(1); } }
-@keyframes selected-frame-disappear { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(.84); } }
-@media (prefers-reduced-motion: reduce) { .carousel-card, .carousel-card__selected-frame { animation: none !important; transition: none; } }
+.carousel-card--exit-left { left: 5%; }
+.carousel-card--exit-right { right: 5%; }
 .display-menu { container-type: inline-size; position: absolute; top: 52.5%; left: 23%; width: 60%; height: 38%; overflow: hidden; background-size: 100% 100%; background-repeat: no-repeat; display: flex; align-items: flex-start; padding: 2% 6% 4% 4%; gap: 4%; text-shadow: 0 .08em .08em rgba(55, 25, 9, .38); }
 .display-menu__portrait-wrap { position: relative; width: 34%; flex: 0 0 34%; }
 .display-menu__portrait { display: block; width: 100%; height: auto; }

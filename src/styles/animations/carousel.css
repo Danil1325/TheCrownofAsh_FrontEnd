@@ -1,0 +1,29 @@
+.carousel-frame--entering { animation: carousel-frame-appear 520ms cubic-bezier(.18,.82,.22,1) both; }
+.carousel-frame--leaving { animation: carousel-frame-disappear 400ms ease-in both; }
+.carousel-motion--center-to-left { animation: carousel-card-center-to-left 520ms cubic-bezier(.2,.8,.25,1) both; }
+.carousel-motion--right-to-center { animation: carousel-card-right-to-center 520ms cubic-bezier(.2,.8,.25,1) both; }
+.carousel-motion--left-to-center { animation: carousel-card-left-to-center 520ms cubic-bezier(.2,.8,.25,1) both; }
+.carousel-motion--center-to-right { animation: carousel-card-center-to-right 520ms cubic-bezier(.2,.8,.25,1) both; }
+.carousel-motion--enter-left { animation: carousel-card-enter-left 520ms cubic-bezier(.2,.8,.25,1) both; }
+.carousel-motion--enter-right { animation: carousel-card-enter-right 520ms cubic-bezier(.2,.8,.25,1) both; }
+.carousel-motion--exit-left { animation: carousel-card-exit-left 520ms cubic-bezier(.2,.8,.25,1) both; }
+.carousel-motion--exit-right { animation: carousel-card-exit-right 520ms cubic-bezier(.2,.8,.25,1) both; }
+
+@keyframes carousel-card-center-to-left { from { opacity: 1; transform: translateX(105%) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
+@keyframes carousel-card-right-to-center { from { opacity: .78; transform: translateX(95%) scale(.78); filter: brightness(.72) saturate(.82); } to { opacity: 1; transform: translateX(0) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } }
+@keyframes carousel-card-left-to-center { from { opacity: .78; transform: translateX(-95%) scale(.78); filter: brightness(.72) saturate(.82); } to { opacity: 1; transform: translateX(0) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } }
+@keyframes carousel-card-center-to-right { from { opacity: 1; transform: translateX(-105%) scale(.92); filter: drop-shadow(0 0 1rem rgba(255, 203, 84, .5)); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
+@keyframes carousel-card-enter-left { from { opacity: 0; transform: translateX(-75%) scale(.58); filter: brightness(.55) saturate(.7); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
+@keyframes carousel-card-enter-right { from { opacity: 0; transform: translateX(75%) scale(.58); filter: brightness(.55) saturate(.7); } to { opacity: .78; transform: translateX(0) scale(.78); filter: brightness(.72) saturate(.82); } }
+@keyframes carousel-card-exit-left { from { opacity: .78; transform: translateY(-50%) scale(.78); filter: brightness(.72) saturate(.82); } 65% { opacity: .5; transform: translate(140%, -50%) scale(.64); filter: brightness(.62) saturate(.74); } to { opacity: 0; transform: translate(175%, -50%) scale(.5); filter: brightness(.5) saturate(.65); } }
+@keyframes carousel-card-exit-right { from { opacity: .78; transform: translateY(-50%) scale(.78); filter: brightness(.72) saturate(.82); } 65% { opacity: .5; transform: translate(-140%, -50%) scale(.64); filter: brightness(.62) saturate(.74); } to { opacity: 0; transform: translate(-175%, -50%) scale(.5); filter: brightness(.5) saturate(.65); } }
+@keyframes carousel-frame-appear { from { opacity: 0; transform: scale(.82); } to { opacity: 1; transform: scale(1); } }
+@keyframes carousel-frame-disappear { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(.84); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-motion,
+  .carousel-frame {
+    animation: none !important;
+    transition: none;
+  }
+}

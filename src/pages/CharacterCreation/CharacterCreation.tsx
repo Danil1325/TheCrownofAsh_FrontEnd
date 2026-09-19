@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import '../../styles/game-ui.css'
+import '../../styles/animations/carousel.css'
 import './CharacterCreation.css'
 import background from '../../assets/CharacterCreation/UI/CharacterCreationBackground.png'
 import banner from '../../assets/CharacterCreation/UI/CreateYourCharacterBanner.png'
@@ -94,7 +95,7 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
 
 function CarouselCard({ item, position, direction, selectedFrame: frame, frameState, motion, exiting = false }: { item: CarouselItem; position: 'side' | 'center'; direction: 'left' | 'center' | 'right'; selectedFrame?: string; frameState?: FrameState; motion?: CarouselMotion | 'exit-left' | 'exit-right'; exiting?: boolean }) {
   const image = 'selectionImage' in item ? item.selectionImage : item.image
-  return <div className={`carousel-card carousel-card--${position} carousel-card--${direction}${motion ? ` carousel-card--${motion}` : ''}${exiting ? ' carousel-card--exiting' : ''}`}><img className="carousel-card__image" src={image} alt={item.name} />{frame && <img className={`carousel-card__selected-frame${frameState ? ` carousel-card__selected-frame--${frameState}` : ''}`} src={frame} alt="" aria-hidden="true" />}</div>
+  return <div className={`carousel-card carousel-card--${position} carousel-card--${direction}${motion ? ` carousel-motion carousel-motion--${motion}` : ''}${exiting ? ' carousel-card--exiting' : ''}`}><img className="carousel-card__image" src={image} alt={item.name} />{frame && <img className={`carousel-card__selected-frame${frameState ? ` carousel-frame carousel-frame--${frameState}` : ''}`} src={frame} alt="" aria-hidden="true" />}</div>
 }
 
 /* Legacy inline components retained temporarily in source history.
