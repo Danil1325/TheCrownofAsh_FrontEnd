@@ -4,13 +4,14 @@ import '../../styles/game-ui.css'
 import '../Authentication/Login.css'
 import './SignUp.css'
 import { ApiError, register } from '../../api/authApi'
+import type { CurrentUser } from '../../api/authApi'
 
 import background from '../../assets/Log In Sign Up/Log In Sign Up Background.png'
 import parchment from '../../assets/Log In Sign Up/Log In Sign Up Pergament.png'
 import signUpButton from '../../assets/Log In Sign Up/Sign In.png'
 
 type SignUpProps = {
-  onSignUp: () => void
+  onSignUp: (user: CurrentUser) => void
   onBackToLogin: () => void
 }
 
@@ -54,8 +55,8 @@ function SignUp({ onSignUp, onBackToLogin }: SignUpProps) {
     setError('')
     setIsSubmitting(true)
     try {
-      await register({ username, email, password })
-      onSignUp()
+      const user = await register({ username, email, password })
+      onSignUp(user)
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Unable to create an account. Please try again.')
     } finally {

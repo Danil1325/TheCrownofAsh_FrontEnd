@@ -3,13 +3,14 @@ import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react'
 import '../../styles/game-ui.css'
 import './Login.css'
 import { ApiError, login } from '../../api/authApi'
+import type { CurrentUser } from '../../api/authApi'
 
 import background from '../../assets/Log In Sign Up/Log In Sign Up Background.png'
 import parchment from '../../assets/Log In Sign Up/Log In Sign Up Pergament.png'
 import loginButton from '../../assets/Log In Sign Up/Log In.png'
 
 type LoginProps = {
-  onLogin: () => void
+  onLogin: (user: CurrentUser) => void
   onCreateAccount: () => void
 }
 
@@ -44,8 +45,8 @@ function Login({ onLogin, onCreateAccount }: LoginProps) {
     setErrorMessage('')
     setIsSubmitting(true)
     try {
-      await login({ email, password })
-      onLogin()
+      const user = await login({ email, password })
+      onLogin(user)
     } catch (error) {
       setErrorMessage(error instanceof ApiError ? error.message : 'Unable to log in. Please try again.')
     } finally {
