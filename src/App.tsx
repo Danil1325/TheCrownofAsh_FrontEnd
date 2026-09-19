@@ -5,6 +5,7 @@ import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
 import MockGameplay from './pages/MockGameplay/MockGameplay'
+import CharacterCreation from './pages/CharacterCreation'
 import { getCurrentUser, logout } from './api/authApi'
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
-  const [gameState, setGameState] = useState<'menu' | 'playing'>('menu')
+  const [gameState, setGameState] = useState<'menu' | 'character-creation' | 'playing'>('menu')
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
   const playButtonSound = useCallback(() => {
     if (sfxVolume === 0) return
@@ -78,6 +79,10 @@ function App() {
     )
   }
 
+  if (gameState === 'character-creation') {
+    return <CharacterCreation onComplete={() => setGameState('playing')} />
+  }
+
   if (gameState === 'playing') {
     return <MockGameplay />
   }
@@ -90,7 +95,7 @@ function App() {
         onMusicVolumeChange={setMusicVolume}
         onSfxVolumeChange={setSfxVolume}
         onPlayButtonSound={playButtonSound}
-        onNewGame={() => setGameState('playing')}
+        onNewGame={() => setGameState('character-creation')}
         onLogout={handleLogout}
       />
     </div>
