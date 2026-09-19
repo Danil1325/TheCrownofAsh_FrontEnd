@@ -37,7 +37,7 @@ function Map({ onClose, onStartGameplay }: MapProps) {
     <main className="world-map" style={{ backgroundImage: `url("${background}")` }}>
       <button className="map-return" type="button" onClick={onClose}>Return to menu</button>
       {!activeArea && <section className="map-locations" aria-label="Choose a location">{areas.map((area) => <button key={area.id} className="map-location" aria-label={area.name} style={{ left: `${area.x}%`, top: `${area.y}%`, width: `${area.width}%` }} type="button" onClick={() => setActiveArea(area)}><img src={area.buttonImage} alt="" /></button>)}</section>}
-      {activeArea && <section className="area-card"><span className="map-caption">LOCATION SELECTED</span><h2>{activeArea.name}</h2><p>Continue into this region and begin your next chapter.</p><button className="continue-button" type="button" onClick={activeArea.id === 'heros-overlook' ? onStartGameplay : undefined}><img src={continueButton} alt="Continue" /></button><button className="back-map" type="button" onClick={() => setActiveArea(null)}>Back to map</button></section>}
+      {activeArea && <section className="area-card"><span className="map-caption">LOCATION SELECTED</span><h2>{activeArea.name}</h2><p>Continue into this region and begin your next chapter.</p><button className="continue-button" type="button" onClick={onStartGameplay}><img src={continueButton} alt="Continue" /></button><button className="back-map" type="button" onClick={() => setActiveArea(null)}>Back to map</button></section>}
     </main>
   )
 }

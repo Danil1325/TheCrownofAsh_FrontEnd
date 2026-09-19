@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { CheckCircle2, Heart, MapPin, ScrollText, Target, X, XCircle, Zap } from 'lucide-react';
+import { CheckCircle2, Heart, MapPin, ScrollText, Sparkles, Target, X, XCircle, Zap } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { NotificationsContext } from '../../hooks/useNotifications';
 import type { GameNotification, NotificationApi, NotificationType } from '../../types/notifications';
@@ -23,6 +23,7 @@ const NOTIFICATION_META: Record<NotificationType, NotificationMeta> = {
   'quest-completed': { title: 'Quest Completed', icon: CheckCircle2, tone: 'green', duration: 3600 },
   'quest-failed': { title: 'Quest Failed', icon: XCircle, tone: 'red', duration: 3600 },
   'exp-gained': { title: 'EXP Gained', icon: Zap, tone: 'gold', duration: 2600 },
+  'level-up': { title: 'Level Up!', icon: Sparkles, tone: 'purple', duration: 3800 },
   'location-unlocked': { title: 'Location Unlocked', icon: MapPin, tone: 'teal', duration: 3600 },
   'loyalty-changed': { title: 'Loyalty Changed', icon: Heart, tone: 'rose', duration: 3000 },
 };
@@ -117,6 +118,9 @@ function NotificationsProvider({ children }: NotificationsProviderProps) {
       },
       expGained(amount) {
         push('exp-gained', `+${amount} EXP`);
+      },
+      levelUp(newLevel) {
+        push('level-up', `Reached level ${newLevel}`);
       },
       locationUnlocked(locationName) {
         push('location-unlocked', locationName);
