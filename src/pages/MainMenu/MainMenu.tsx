@@ -5,6 +5,7 @@ import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
 import Map from '../Map/Map'
 import Shop from '../Shop/Shop'
+import type { StoryScene } from '../../types/scenario'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
@@ -24,27 +25,37 @@ const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
 ]
 
 type MainMenuProps = {
+  playerId: number
   musicVolume: number
   sfxVolume: number
   onMusicVolumeChange: (value: number) => void
   onSfxVolumeChange: (value: number) => void
   onPlayButtonSound: () => void
   onNewGame: () => void
+  onLoadGame: (scene: StoryScene) => void
   onLogout: () => void
 }
 
-function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLogout }: MainMenuProps) {
+function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLoadGame, onLogout }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
-  const [isMapOpen, setIsMapOpen] = useState(false)
+  const [mapMode, setMapMode] = useState<'new' | 'load' | null>(null)
 
   if (selectedAction === 'new-game' || selectedAction === 'load-game') {
 
     return <LoadingScreen musicVolume={musicVolume} onComplete={onNewGame} />
   }
 
-  if (isMapOpen) {
-    return <Map onClose={() => setIsMapOpen(false)} onStartGameplay={onNewGame} />
+  if (mapMode) {
+    return (
+      <Map
+        mode={mapMode}
+        playerId={playerId}
+        onClose={() => setMapMode(null)}
+        onStartGameplay={onNewGame}
+        onLoadGame={onLoadGame}
+      />
+    )
   }
 
   if (selectedAction === 'shop') {
@@ -65,8 +76,10 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
-                if (item.action === 'new-game' || item.action === 'load-game') {
-                  setIsMapOpen(true)
+                if (item.action === 'new-game') {
+                  setMapMode('new')
+                } else if (item.action === 'load-game') {
+                  setMapMode('load')
                 } else {
                   setSelectedAction(item.action)
                 }

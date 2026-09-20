@@ -14,6 +14,10 @@ import './ScenarioPage.css';
 interface ScenarioPageProps {
   /** The player whose scenario run is being played. Passed down to every API call. */
   playerId: number;
+  /** Optional scene already returned by another backend flow, such as location travel. */
+  initialScene?: StoryScene | null;
+  /** Lets the parent clear one-shot initial scene state after this page takes ownership. */
+  onInitialSceneConsumed?: () => void;
   onBackToMenu: () => void;
 }
 
@@ -38,9 +42,15 @@ interface ScenarioPageProps {
  *     frontend calculation.
  *  5. The scenario-end overlay uses the progress returned by the choice POST.
  */
-function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
-  const [scene, setScene] = useState<StoryScene | null>(null);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+function ScenarioPage({
+  playerId,
+  initialScene = null,
+  onInitialSceneConsumed,
+  onBackToMenu,
+}: ScenarioPageProps) {
+  const hasInitialScene = initialScene != null;
+  const [scene, setScene] = useState<StoryScene | null>(() => initialScene);
+  const [isInitialLoading, setIsInitialLoading] = useState(!hasInitialScene);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isBackgroundTransitioning, setIsBackgroundTransitioning] = useState(false);
   const [isScenarioEnded, setIsScenarioEnded] = useState(false);
@@ -51,6 +61,7 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
   const { progression, refresh: refreshProgression } = useScenarioProgression(playerId);
 
   const loadTaskRef = useRef(0);
+  const usedInitialSceneRef = useRef(hasInitialScene);
 
   const loadCurrentScene = useCallback(async () => {
     const task = ++loadTaskRef.current;
@@ -90,6 +101,11 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
   }, [playerId]);
 
   useEffect(() => {
+    if (usedInitialSceneRef.current) {
+      onInitialSceneConsumed?.();
+      return;
+    }
+
     let cancelled = false;
     const timer = window.setTimeout(() => {
       if (!cancelled) {
@@ -100,7 +116,7 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [loadCurrentScene]);
+  }, [loadCurrentScene, onInitialSceneConsumed]);
 
   const handleSceneChange = useCallback(
     (nextScene: StoryScene) => {

@@ -9,6 +9,7 @@ import CharacterCreation from './pages/CharacterCreation/CharacterCreation'
 import ScenarioPage from './pages/Scenario/ScenarioPage'
 import { getCurrentUser, logout } from './api/authApi'
 import type { CurrentUser } from './api/authApi'
+import type { StoryScene } from './types/scenario'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -19,12 +20,22 @@ function App() {
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
   const [gameState, setGameState] = useState<'menu' | 'character-creation' | 'playing'>('menu')
+  const [initialScenarioScene, setInitialScenarioScene] = useState<StoryScene | null>(null)
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
-  const startGameplay = useCallback(() => {
+  const clearInitialScenarioScene = useCallback(() => setInitialScenarioScene(null), [])
+  const startGameplay = useCallback((initialScene: StoryScene | null = null) => {
+    setInitialScenarioScene(initialScene)
     setGameState('playing')
-    setIsInitialLoading(true)
+    setIsInitialLoading(initialScene == null)
   }, [])
-  const backToMenu = useCallback(() => setGameState('menu'), [])
+  const startNewGame = useCallback(() => {
+    setInitialScenarioScene(null)
+    setGameState('character-creation')
+  }, [])
+  const backToMenu = useCallback(() => {
+    setInitialScenarioScene(null)
+    setGameState('menu')
+  }, [])
   const playButtonSound = useCallback(() => {
     if (sfxVolume === 0) return
 
@@ -61,6 +72,7 @@ function App() {
     void logout().finally(() => {
       setIsAuthenticated(false)
       setCurrentUser(null)
+      setInitialScenarioScene(null)
       setGameState('menu')
     })
   }, [])
@@ -92,28 +104,36 @@ function App() {
   }
 
   if (gameState === 'character-creation') {
-    return <CharacterCreation onComplete={() => setGameState('playing')} />
+    return <CharacterCreation onComplete={startGameplay} />
   }
 
   if (gameState === 'playing') {
     return currentUser ? (
-      <ScenarioPage key={currentUser.id} playerId={currentUser.id} onBackToMenu={backToMenu} />
+      <ScenarioPage
+        key={currentUser.id}
+        playerId={currentUser.id}
+        initialScene={initialScenarioScene}
+        onInitialSceneConsumed={clearInitialScenarioScene}
+        onBackToMenu={backToMenu}
+      />
     ) : null
   }
 
-  return (
+  return currentUser ? (
     <div className="app-page-enter">
       <MainMenu
+        playerId={currentUser.id}
         musicVolume={musicVolume}
         sfxVolume={sfxVolume}
         onMusicVolumeChange={setMusicVolume}
         onSfxVolumeChange={setSfxVolume}
         onPlayButtonSound={playButtonSound}
-        onNewGame={() => setGameState('character-creation')}
+        onNewGame={startNewGame}
+        onLoadGame={startGameplay}
         onLogout={handleLogout}
       />
     </div>
-  )
+  ) : null
 }
 
 export default App
