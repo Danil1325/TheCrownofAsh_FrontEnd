@@ -3,7 +3,7 @@
 .battle-left.parchment-panel.player-panel {
   container-type: size;
   display: grid;
-  grid-template-rows: minmax(0, 35fr) minmax(0, 9fr) minmax(0, 46fr) minmax(0, 6fr);
+  grid-template-rows: minmax(0, 35fr) minmax(0, 55fr) minmax(0, 6fr);
   gap: 0.65svh;
   height: 100svh !important;
   min-height: 0 !important;
@@ -164,13 +164,15 @@
 }
 
 .player-inventory {
-  display: grid;
-  grid-template-rows: 3.8svh minmax(0, 1fr);
+  container-type: size;
+  display: flex;
+  flex-direction: column;
   gap: 0.35svh;
   min-height: 0;
 }
 
 .player-panel .player-inventory h2 {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   min-height: 0;
@@ -181,17 +183,26 @@
 }
 
 .player-panel .inventory-grid {
-  container-type: size;
+  display: grid;
   min-height: 0;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: repeat(3, minmax(0, 1fr));
   gap: 0.45svh 0.6cqw;
+}
+
+.player-panel .equipment-grid {
+  flex: 1;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.player-panel .potions-grid {
+  flex: 2;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
 }
 
 .player-panel .inventory-item {
   --slot-color: #51432b;
   container-type: inline-size;
-  width: min(100%, calc((100cqh - 0.9svh) / 3 * 361 / 408));
+  width: min(100%, calc((100cqh - 11svh) / 3 * 361 / 408));
   height: auto;
   aspect-ratio: 361 / 408;
   place-self: center;

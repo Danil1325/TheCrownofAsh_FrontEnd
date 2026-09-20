@@ -57,10 +57,8 @@ function MockGameplay({ onBackToMenu }: MockGameplayProps = {}) {
   function handlePlayAction(index: number) { setSelectedCard(index); const action = actionCards[index]; if (action.title === 'HEAL') setHealth((current) => Math.min(200, current + 20)); else if (action.title !== 'SHIELD UP') setMana((current) => Math.max(0, current - 5)) }
   function rollDice() { setDice(dice.map(() => Math.floor(Math.random() * 6) + 1)) }
 
-  if (activeMenu === 'inventory') {
-    return <Inventory onClose={() => setActiveMenu('combat')} />
-  }
   return <main className="battle-screen" style={{ backgroundImage: `url(${landscape})` }}>
+    {activeMenu === 'inventory' && <Inventory />}
     <PlayerPanel health={health} mana={mana} />
     <section className="battle-main" aria-label="Battle arena">
       <div className="battle-scene">

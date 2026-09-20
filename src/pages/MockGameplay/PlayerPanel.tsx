@@ -17,19 +17,22 @@ import crystal from '../../assets/Battle/items/crystal.png'
 import shield from '../../assets/Battle/items/shield.png'
 import './PlayerPanel.css'
 
-const items = [
-  { name: 'Potion', icon: potion, tone: 'violet' },
-  { name: 'Ring', icon: ring, tone: 'neutral' },
-  { name: 'Skull', icon: skull, tone: 'neutral' },
-  { name: 'Hood', icon: hood, tone: 'neutral' },
+const equipment = [
   { name: 'Helmet', icon: helmet, tone: 'blue' },
+  { name: 'Armor', icon: armor, tone: 'green' },
   { name: 'Hammer', icon: hammer, tone: 'blue' },
   { name: 'Boots', icon: boots, tone: 'blue' },
-  { name: 'Fireball', icon: fireball, tone: 'ember' },
-  { name: 'Armor', icon: armor, tone: 'green' },
-  { name: 'Leather boots', icon: boots, tone: 'neutral' },
-  { name: 'Crystal', icon: crystal, tone: 'blue' },
-  { name: 'Shield', icon: shield, tone: 'blue' },
+]
+
+const potions = [
+  { name: 'Health Potion 1', icon: potion, tone: 'violet' },
+  { name: 'Mana Potion 1', icon: potion, tone: 'blue' },
+  { name: 'Health Potion 2', icon: potion, tone: 'violet' },
+  { name: 'Mana Potion 2', icon: potion, tone: 'blue' },
+  { name: 'Health Potion 3', icon: potion, tone: 'violet' },
+  { name: 'Mana Potion 3', icon: potion, tone: 'blue' },
+  { name: 'Health Potion 4', icon: potion, tone: 'violet' },
+  { name: 'Mana Potion 4', icon: potion, tone: 'blue' },
 ]
 
 function PlayerMeter({ value, maximum, type }: { value: number; maximum: number; type: 'health' | 'mana' }) {
@@ -69,17 +72,29 @@ export default function PlayerPanel({ health, mana }: { health: number; mana: nu
           <p>Aura: Damage Shield<br /><strong>Status Effects:</strong><br />-20% Damage</p>
         </div>
       </div>
-      <label className="inventory-filter">
-        <span>Filtru Inventar: Arme/Armuri</span>
-        <select aria-label="Inventory filter" defaultValue="weapons">
-          <option value="weapons">Arme/Armuri</option>
-          <option value="potions">Poțiuni</option>
-        </select>
-      </label>
-      <section className="player-inventory" aria-labelledby="player-inventory-heading">
-        <h2 id="player-inventory-heading">Inventar</h2>
-        <div className="inventory-grid">
-          {items.map((item) => (
+      <section className="player-inventory" aria-labelledby="player-equipment-heading">
+        <h2 id="player-equipment-heading">Equipment</h2>
+        <div className="inventory-grid equipment-grid">
+          {equipment.map((item) => (
+            <button
+              className={`inventory-item inventory-tone-${item.tone}`}
+              key={item.name}
+              type="button"
+              aria-label={`${item.name}, level 2`}
+              aria-pressed={selectedItem === item.name}
+              onClick={() => setSelectedItem(item.name)}
+            >
+              <svg className="inventory-slot-frame" viewBox="76 14 361 408" aria-hidden="true">
+                <image href={itemFrame} width="512" height="435" />
+              </svg>
+              <img className="inventory-slot-icon" src={item.icon} alt="" />
+              <span>LvL 2</span>
+            </button>
+          ))}
+        </div>
+        <h2 id="player-potions-heading">Potions</h2>
+        <div className="inventory-grid potions-grid">
+          {potions.map((item) => (
             <button
               className={`inventory-item inventory-tone-${item.tone}`}
               key={item.name}
