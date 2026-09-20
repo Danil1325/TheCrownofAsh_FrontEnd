@@ -1,0 +1,285 @@
+.race-location-route {
+  width: 100%;
+  padding: 1rem 1.1rem 1.15rem;
+  border: 1px solid rgba(97, 46, 21, 0.45);
+  border-radius: 0.7rem;
+  background:
+    linear-gradient(180deg, rgba(255, 247, 228, 0.96) 0%, rgba(243, 228, 196, 0.96) 100%);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.28),
+    inset 0 0 20px rgba(97, 46, 21, 0.08);
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+}
+
+.race-location-route--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 5rem;
+}
+
+.race-location-route__empty-message {
+  margin: 0;
+  color: #8a7a62;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.race-location-route__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(97, 46, 21, 0.26);
+}
+
+.race-location-route__title {
+  margin: 0;
+  color: #5e2d15;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.race-location-route__subtitle {
+  margin: 0;
+  color: #8a7a62;
+  font-size: 0.78rem;
+  font-style: italic;
+  text-align: right;
+}
+
+.race-location-route__list {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  list-style: none;
+  margin: 0;
+  padding: 1rem 0 0;
+}
+
+.race-location-route__step {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 8.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.35rem;
+}
+
+.race-location-route__step:not(:last-child)::after {
+  position: absolute;
+  top: 2.55rem;
+  left: calc(50% + 1.4rem);
+  right: calc(-50% + 1.4rem);
+  z-index: 0;
+  height: 3px;
+  content: '';
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(97, 46, 21, 0.42), rgba(212, 164, 63, 0.72));
+}
+
+.race-location-route__step--completed:not(:last-child)::after {
+  background: linear-gradient(90deg, rgba(95, 157, 111, 0.7), rgba(212, 164, 63, 0.76));
+}
+
+.race-location-route__marker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.race-location-route__order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  min-height: 1.35rem;
+  padding: 0 0.35rem;
+  border: 1px solid rgba(97, 46, 21, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 245, 224, 0.95);
+  color: #8a3415;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.race-location-route__seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(97, 46, 21, 0.45);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #d4a43f, #8a3415);
+  color: #fff7e4;
+  box-shadow:
+    0 3px 9px rgba(0, 0, 0, 0.25),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.22);
+}
+
+.race-location-route__step--completed .race-location-route__seal {
+  background: linear-gradient(180deg, #5f9d6f, #3f7a4f);
+}
+
+.race-location-route__step--current .race-location-route__seal {
+  background: linear-gradient(180deg, #5b8db8, #35707e);
+  box-shadow:
+    0 0 0 3px rgba(91, 141, 184, 0.22),
+    0 0 14px rgba(79, 144, 160, 0.45),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.22);
+}
+
+.race-location-route__card {
+  position: relative;
+  width: 100%;
+  min-height: 8.6rem;
+  padding: 0.7rem 0.65rem;
+  border: 1px solid rgba(97, 46, 21, 0.28);
+  border-radius: 0.45rem;
+  background: rgba(255, 250, 235, 0.84);
+  box-shadow: inset 0 0 12px rgba(97, 46, 21, 0.08);
+  text-align: center;
+}
+
+.race-location-route__step--current .race-location-route__card {
+  border-color: rgba(91, 141, 184, 0.72);
+  box-shadow:
+    0 0 0 2px rgba(91, 141, 184, 0.22),
+    0 8px 18px rgba(0, 0, 0, 0.16),
+    inset 0 0 14px rgba(91, 141, 184, 0.11);
+}
+
+.race-location-route__step--completed .race-location-route__card {
+  border-color: rgba(95, 157, 111, 0.5);
+  background: rgba(248, 249, 224, 0.86);
+}
+
+.race-location-route__location {
+  margin: 0 0 0.5rem;
+  color: #5e2d15;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.race-location-route__facts {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.race-location-route__fact {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.race-location-route__fact dt {
+  color: #8a7a62;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.race-location-route__fact dd {
+  margin: 0;
+  color: #3d2b1f;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.race-location-route__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+}
+
+.race-location-route__badge {
+  padding: 0.18em 0.55em;
+  border: 1px solid rgba(97, 46, 21, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 245, 224, 0.78);
+  color: #7a4d12;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.race-location-route__step--current .race-location-route__badge:first-child {
+  background: rgba(91, 141, 184, 0.24);
+  color: #2e557a;
+}
+
+.race-location-route__step--completed .race-location-route__badge:last-child {
+  background: rgba(95, 157, 111, 0.26);
+  color: #2f5c3b;
+}
+
+@media (max-width: 700px) {
+  .race-location-route {
+    padding: 0.95rem;
+  }
+
+  .race-location-route__header {
+    display: block;
+  }
+
+  .race-location-route__subtitle {
+    margin-top: 0.25rem;
+    text-align: left;
+  }
+
+  .race-location-route__list {
+    flex-direction: column;
+    gap: 0.7rem;
+    overflow-x: visible;
+    overflow-y: visible;
+    padding-top: 0.9rem;
+  }
+
+  .race-location-route__step {
+    min-width: 0;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0;
+  }
+
+  .race-location-route__step:not(:last-child)::after {
+    top: 3.9rem;
+    left: 1.125rem;
+    right: auto;
+    bottom: -0.75rem;
+    width: 3px;
+    height: auto;
+  }
+
+  .race-location-route__marker {
+    flex: 0 0 2.25rem;
+  }
+
+  .race-location-route__card {
+    min-height: 0;
+    text-align: left;
+  }
+
+  .race-location-route__badges {
+    justify-content: flex-start;
+  }
+}
