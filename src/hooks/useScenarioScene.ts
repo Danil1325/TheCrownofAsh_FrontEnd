@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { ApiError } from '../api/authApi';
 import { getLocationDetails } from '../api/locationApi';
 import * as scenarioApi from '../api/scenarioApi';
+import { backgroundByLocation } from '../assets/scenario/scenarioAssets';
 import { useNotifications } from './useNotifications';
 import type { ScenarioProgress, StoryChoice, StoryScene } from '../types/scenario';
 
@@ -107,7 +108,7 @@ export function useScenarioScene({
         const details = result.value;
         notifications.locationUnlocked({
           locationName: details.name,
-          thumbnail: details.backgroundImage,
+          thumbnail: backgroundByLocation[details.id],
           recommendedLevel: details.recommendedMinimumLevel,
           onViewMap,
         });
