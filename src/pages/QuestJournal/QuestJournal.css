@@ -1,0 +1,34 @@
+.quest-journal-modal { position:fixed; inset:0; z-index:50; color:#2b170d; font-family:Georgia,'Times New Roman',serif; }.quest-modal-backdrop { position:absolute; inset:0; width:100%; border:0; background:rgba(12,7,3,.62); cursor:default; }.quest-journal-panel { position:absolute; top:0; right:0; bottom:0; display:flex; flex-direction:column; width:min(48rem,100vw); border-left:2px solid #8b572d; background:#ead3a7 url('../../assets/Inventory/Pergament.png') center/100% 100% no-repeat; box-shadow:-12px 0 35px rgba(0,0,0,.45); }.quest-journal-header { display:flex; align-items:center; gap:10px; padding:18px 22px; color:#4c2717; background:transparent; }.quest-journal-header h2 { flex:1; margin:0; font-size:22px; letter-spacing:.1em; text-transform:uppercase; }.quest-journal-close { display:grid; place-items:center; border:0; background:rgba(76,39,23,.12); color:#4c2717; cursor:pointer; }.quest-tabs { display:flex; gap:4px; padding:1px 48px 0; background:transparent; }.quest-tabs button { flex:1; padding:11px 8px; border:1px solid rgba(135,84,45,.45); border-bottom:0; background:rgba(85,40,18,.08); color:#60321b; font:700 12px Georgia,serif; cursor:pointer; }.quest-tabs button.is-active { border-color:#87542d; background:rgba(234,211,167,.35); color:#3d1d0f; }.quest-journal-content { overflow:auto; padding:18px; }.quest-category h3 { margin:0 0 12px; color:#6c3215; font-size:17px; letter-spacing:.08em; text-transform:uppercase; }.quest-card { position:relative; margin-bottom:16px; padding:16px; border:1px solid rgba(105,53,25,.45); border-left:10px solid #b77c2d; background:rgba(255,247,226,.88); box-shadow:0 3px 9px rgba(60,27,10,.12); }.quest-card--side { border-left-color:#668b8a; }.quest-card--main { border-left-color:#b77c2d; }.quest-card.is-locked { opacity:.66; filter:grayscale(.2); }.quest-card-heading { display:flex; justify-content:space-between; gap:12px; }.quest-card-code { color:#8b6d4e; font-size:10px; letter-spacing:.1em; text-transform:uppercase; }.quest-card h3 { margin:3px 0 0; color:#4c2717; font-size:19px; }.quest-status { align-self:flex-start; padding:4px 8px; border-radius:20px; background:#d3b06f; font-size:10px; font-weight:700; text-transform:uppercase; }.quest-status--completed { background:#a4c59f; }.quest-status--locked { background:#b5aaa0; }.quest-status--in-progress { background:#ddad54; }.quest-card-description { margin:10px 0; color:#503421; font-size:14px; line-height:1.4; }.quest-card-meta { display:flex; flex-wrap:wrap; gap:18px; margin:0 0 12px; }.quest-card-meta dt { color:#86684a; font-size:10px; text-transform:uppercase; }.quest-card-meta dd { margin:2px 0 0; color:#432411; font-size:13px; font-weight:700; }.quest-card-objectives h4 { margin:0 0 5px; color:#6c3215; font-size:12px; text-transform:uppercase; }.quest-objective-list { display:grid; gap:4px; margin:0; padding:0; list-style:none; }.quest-objective { display:flex; align-items:center; gap:7px; font-size:13px; }.quest-objective-check { color:#a05e27; font-weight:700; }.quest-objective.is-complete .quest-objective-check { color:#3f824b; }.quest-objective.is-complete .quest-objective-description { text-decoration:line-through; }.quest-objective-description { flex:1; }.quest-objective-count { color:#79583b; font-size:11px; }.quest-objectives-empty,.quest-empty { color:#856d55; font-size:13px; font-style:italic; }.quest-card-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:14px; }.quest-reward-view { display:flex; align-items:center; gap:6px; color:#8a5314; font-size:13px; }.quest-reward-view span { color:#b47c1e; }.quest-start-button { padding:8px 12px; border:1px solid #713416; background:#713416; color:#ffe9b9; font:700 12px Georgia,serif; cursor:pointer; }.quest-start-button:hover:not(:disabled) { background:#994d20; }.quest-start-button:disabled { cursor:not-allowed; opacity:.55; }.quest-card-key { position:absolute; right:10px; bottom:7px; color:rgba(103,65,39,.45); font-size:9px; }.quest-journal-loading { display:flex; align-items:center; gap:8px; padding:24px; font-weight:700; }.quest-journal-spinner { animation:quest-spin 900ms linear infinite; }.quest-journal-error { margin:14px 18px 0; padding:10px; background:#edd0c7; color:#8b2f23; font-size:13px; }@keyframes quest-spin { to { transform:rotate(360deg); } }
+@media (max-width:560px) { .quest-tabs button { font-size:10px; }.quest-journal-content { padding:12px; }.quest-card-heading { display:block; }.quest-status { display:inline-block; margin-top:8px; } }
+
+/* Keep the journal title and tabs inside the parchment's clear interior. */
+.quest-journal-header { padding-top: 60px; color: #3b1c0e; background: rgba(255, 241, 207, 0.22); text-shadow: 0 1px 0 rgba(255, 236, 188, 0.65); }
+.quest-journal-header h2 { color: #3b1c0e; }
+.quest-journal-close { color: #3b1c0e; }
+.quest-tabs { background: rgba(255, 239, 202, 0.18); }
+.quest-tabs button { background: rgba(255, 248, 224, 0.38); color: #4b2817; }
+.quest-tabs button.is-active { background: rgba(255, 246, 214, 0.58); color: #311609; }
+.quest-category h3 { color: #5b2b16; text-shadow: 0 1px 0 rgba(255, 237, 193, 0.7); }
+.quest-objectives-empty, .quest-empty { color: #6a432b; }
+.quest-empty { display: inline-block; margin: 0; padding: 8px 12px; border: 1px solid rgba(92, 47, 22, 0.28); border-radius: 4px; background: rgba(255, 244, 211, 0.78); color: #4a2818; font-size: 14px; font-style: italic; line-height: 1.3; text-shadow: 0 1px 0 rgba(255, 240, 202, 0.8); }
+.quest-category--main h3 {
+  position: relative;
+  top: 8px;
+  left: 18px;
+}
+.quest-category--side h3 {
+  position: relative;
+  top: 8px;
+  left: 18px;
+}
+.quest-category--completed h3 {
+  position: relative;
+  top: 8px;
+  left: 18px;
+}
+.quest-category--main .quest-empty {
+  position: relative;
+  top: 8px;
+  left: 18px;
+  color: #4b2817;
+}
