@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import MainMenu from './pages/MainMenu/MainMenu'
 import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
 import Login from './pages/Authentication/Login'
@@ -7,6 +7,7 @@ import buttonPressSound from './assets/Button Press.mp3'
 import MockGameplay from './pages/MockGameplay/MockGameplay'
 import CharacterCreation from './pages/CharacterCreation/CharacterCreation'
 import ScenarioPage from './pages/Scenario/ScenarioPage'
+import Map from './pages/Map/Map'
 import { getCurrentUser, logout } from './api/authApi'
 import type { CurrentUser } from './api/authApi'
 import type { StoryScene } from './types/scenario'
@@ -21,21 +22,39 @@ function App() {
   const [sfxVolume, setSfxVolume] = useState(70)
   const [gameState, setGameState] = useState<'menu' | 'character-creation' | 'playing'>('menu')
   const [initialScenarioScene, setInitialScenarioScene] = useState<StoryScene | null>(null)
+  const [travelScenarioScene, setTravelScenarioScene] = useState<{ id: number; scene: StoryScene } | null>(null)
+  const [isGameplayMapOpen, setIsGameplayMapOpen] = useState(false)
+  const nextTravelScenarioSceneId = useRef(0)
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
   const clearInitialScenarioScene = useCallback(() => setInitialScenarioScene(null), [])
+  const clearTravelScenarioScene = useCallback(() => setTravelScenarioScene(null), [])
   const startGameplay = useCallback((initialScene: StoryScene | null = null) => {
     setInitialScenarioScene(initialScene)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
     setGameState('playing')
     setIsInitialLoading(initialScene == null)
   }, [])
   const startNewGame = useCallback(() => {
     setInitialScenarioScene(null)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
     setGameState('character-creation')
   }, [])
   const backToMenu = useCallback(() => {
     setInitialScenarioScene(null)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
     setGameState('menu')
   }, [])
+  const openGameplayMap = useCallback(() => setIsGameplayMapOpen(true), [])
+  const closeGameplayMap = useCallback(() => setIsGameplayMapOpen(false), [])
+  const handleGameplayTravel = useCallback((scene: StoryScene) => {
+    nextTravelScenarioSceneId.current += 1
+    setTravelScenarioScene({ id: nextTravelScenarioSceneId.current, scene })
+    setIsGameplayMapOpen(false)
+  }, [])
+  const ignoreMapStartGameplay = useCallback(() => undefined, [])
   const playButtonSound = useCallback(() => {
     if (sfxVolume === 0) return
 
@@ -73,6 +92,8 @@ function App() {
       setIsAuthenticated(false)
       setCurrentUser(null)
       setInitialScenarioScene(null)
+      setTravelScenarioScene(null)
+      setIsGameplayMapOpen(false)
       setGameState('menu')
     })
   }, [])
@@ -109,13 +130,31 @@ function App() {
 
   if (gameState === 'playing') {
     return currentUser ? (
-      <ScenarioPage
-        key={currentUser.id}
-        playerId={currentUser.id}
-        initialScene={initialScenarioScene}
-        onInitialSceneConsumed={clearInitialScenarioScene}
-        onBackToMenu={backToMenu}
-      />
+      <>
+        <ScenarioPage
+          key={currentUser.id}
+          playerId={currentUser.id}
+          initialScene={initialScenarioScene}
+          travelScene={travelScenarioScene?.scene ?? null}
+          travelSceneId={travelScenarioScene?.id ?? null}
+          onInitialSceneConsumed={clearInitialScenarioScene}
+          onTravelSceneConsumed={clearTravelScenarioScene}
+          onBackToMenu={backToMenu}
+          onViewMap={openGameplayMap}
+        />
+        {isGameplayMapOpen && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 60 }}>
+            <Map
+              mode="load"
+              playerId={currentUser.id}
+              closeLabel="Return to game"
+              onClose={closeGameplayMap}
+              onStartGameplay={ignoreMapStartGameplay}
+              onLoadGame={handleGameplayTravel}
+            />
+          </div>
+        )}
+      </>
     ) : null
   }
 

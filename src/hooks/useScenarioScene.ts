@@ -14,6 +14,8 @@ export interface UseScenarioSceneOptions {
   onSceneChange: (scene: StoryScene) => void;
   /** Called with the run's progress when a choice finishes the scenario (`nextSceneId === null`). */
   onScenarioEnd?: (progress: ScenarioProgress) => void;
+  /** Opens the gameplay map from rich location-unlocked notifications when available. */
+  onViewMap?: () => void;
 }
 
 /** What a retry still has to redo after a failure. */
@@ -38,6 +40,7 @@ export function useScenarioScene({
   playerId,
   onSceneChange,
   onScenarioEnd,
+  onViewMap,
 }: UseScenarioSceneOptions) {
   const notifications = useNotifications();
   const dialogues = useMemo(
@@ -106,10 +109,11 @@ export function useScenarioScene({
           locationName: details.name,
           thumbnail: details.backgroundImage,
           recommendedLevel: details.recommendedMinimumLevel,
+          onViewMap,
         });
       });
     },
-    [notifications],
+    [notifications, onViewMap],
   );
 
   const performChoice = useCallback(

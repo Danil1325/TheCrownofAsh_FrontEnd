@@ -16,9 +16,15 @@ interface ScenarioPageProps {
   playerId: number;
   /** Optional scene already returned by another backend flow, such as location travel. */
   initialScene?: StoryScene | null;
+  /** One-shot scene returned by map travel while this page is already mounted. */
+  travelScene?: StoryScene | null;
+  travelSceneId?: number | null;
   /** Lets the parent clear one-shot initial scene state after this page takes ownership. */
   onInitialSceneConsumed?: () => void;
+  /** Lets the parent clear one-shot travel scene state after this page applies it. */
+  onTravelSceneConsumed?: () => void;
   onBackToMenu: () => void;
+  onViewMap?: () => void;
 }
 
 /**
@@ -45,8 +51,12 @@ interface ScenarioPageProps {
 function ScenarioPage({
   playerId,
   initialScene = null,
+  travelScene = null,
+  travelSceneId = null,
   onInitialSceneConsumed,
+  onTravelSceneConsumed,
   onBackToMenu,
+  onViewMap,
 }: ScenarioPageProps) {
   const hasInitialScene = initialScene != null;
   const [scene, setScene] = useState<StoryScene | null>(() => initialScene);
@@ -62,6 +72,7 @@ function ScenarioPage({
 
   const loadTaskRef = useRef(0);
   const usedInitialSceneRef = useRef(hasInitialScene);
+  const appliedTravelSceneIdRef = useRef<number | null>(null);
 
   const loadCurrentScene = useCallback(async () => {
     const task = ++loadTaskRef.current;
@@ -118,6 +129,39 @@ function ScenarioPage({
     };
   }, [loadCurrentScene, onInitialSceneConsumed]);
 
+  useEffect(() => {
+    if (!travelScene || travelSceneId == null) {
+      return;
+    }
+
+    if (appliedTravelSceneIdRef.current === travelSceneId) {
+      return;
+    }
+
+    let isCancelled = false;
+    const nextScene = travelScene;
+    const nextTravelSceneId = travelSceneId;
+
+    queueMicrotask(() => {
+      if (isCancelled || appliedTravelSceneIdRef.current === nextTravelSceneId) {
+        return;
+      }
+
+      appliedTravelSceneIdRef.current = nextTravelSceneId;
+      setScene(nextScene);
+      setSelectedChoiceId(null);
+      setIsInitialLoading(false);
+      setLoadError(null);
+      setIsScenarioEnded(false);
+      setEndProgress(null);
+      onTravelSceneConsumed?.();
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [travelScene, travelSceneId, onTravelSceneConsumed]);
+
   const handleSceneChange = useCallback(
     (nextScene: StoryScene) => {
       setScene(nextScene);
@@ -150,6 +194,7 @@ function ScenarioPage({
     playerId,
     onSceneChange: handleSceneChange,
     onScenarioEnd: handleScenarioEnd,
+    onViewMap,
   });
 
   const handleChoice = useCallback(

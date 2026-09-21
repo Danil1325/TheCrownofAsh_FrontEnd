@@ -35,12 +35,13 @@ const areas: Area[] = [
 type MapProps = {
   mode: MapMode
   playerId: number
+  closeLabel?: string
   onClose: () => void
   onStartGameplay: () => void
   onLoadGame: (scene: StoryScene) => void
 }
 
-function Map({ mode, playerId, onClose, onStartGameplay, onLoadGame }: MapProps) {
+function Map({ mode, playerId, closeLabel = 'Return to menu', onClose, onStartGameplay, onLoadGame }: MapProps) {
   const [activeArea, setActiveArea] = useState<Area | null>(null)
   const [isTraveling, setIsTraveling] = useState(false)
   const [travelError, setTravelError] = useState<string | null>(null)
@@ -93,7 +94,7 @@ function Map({ mode, playerId, onClose, onStartGameplay, onLoadGame }: MapProps)
       data-player-id={isLoadMode ? playerId : undefined}
       style={{ backgroundImage: `url("${background}")` }}
     >
-      <button className="map-return" type="button" onClick={onClose} disabled={isTraveling}>Return to menu</button>
+      <button className="map-return" type="button" onClick={onClose} disabled={isTraveling}>{closeLabel}</button>
       {!activeArea && <section className="map-locations" aria-label={isLoadMode ? 'Choose a saved-game location' : 'Choose a starting location'}>{areas.map((area) => <button key={area.id} className="map-location" aria-label={area.name} data-location-id={area.locationId} style={{ left: `${area.x}%`, top: `${area.y}%`, width: `${area.width}%` }} type="button" onClick={() => selectArea(area)}><img src={area.buttonImage} alt="" /></button>)}</section>}
       {activeArea && (
         <section className="area-card" aria-busy={isTraveling}>
