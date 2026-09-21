@@ -1,6 +1,8 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ApiError } from '../../api/authApi'
-import { travelToLocation } from '../../api/locationApi'
+import { getPlayerRoute, travelToLocation } from '../../api/locationApi'
+import RaceLocationRoute from '../../components/RaceLocationRoute/RaceLocationRoute'
+import type { LocationRoute } from '../../types/location'
 import type { StoryScene } from '../../types/scenario'
 import mapImage from '../../assets/Map/CrownOfAshMap.png'
 import bonePeaks from '../../assets/Map/The_Bone_Peaks.png'
@@ -22,6 +24,7 @@ import './Map.css'
 
 type MapMode = 'new' | 'load'
 type Area = { id: string; locationId: number; name: string; image: string; buttonImage: string; x: number; y: number; width: number }
+type RouteState = { playerId: number | null; route: LocationRoute[] }
 const areas: Area[] = [
   { id: 'bone-peaks', locationId: 6, name: 'The Bone Peaks', image: bonePeaks, buttonImage: bonePeaksButton, x: 43, y: 20, width: 18 },
   { id: 'whispering-woods', locationId: 7, name: 'Whispering Woods', image: whisperingWoods, buttonImage: whisperingWoodsButton, x: 27, y: 42, width: 18 },
@@ -43,11 +46,37 @@ type MapProps = {
 
 function Map({ mode, playerId, closeLabel = 'Return to menu', onClose, onStartGameplay, onLoadGame }: MapProps) {
   const [activeArea, setActiveArea] = useState<Area | null>(null)
+  const [routeState, setRouteState] = useState<RouteState>({ playerId: null, route: [] })
   const [isTraveling, setIsTraveling] = useState(false)
   const [travelError, setTravelError] = useState<string | null>(null)
   const isTravelingRef = useRef(false)
   const background = activeArea?.image ?? mapImage
   const isLoadMode = mode === 'load'
+  const route = routeState.playerId === playerId ? routeState.route : []
+
+  useEffect(() => {
+    if (!isLoadMode) {
+      return
+    }
+
+    let isCurrent = true
+
+    getPlayerRoute(playerId)
+      .then((playerRoute) => {
+        if (isCurrent) {
+          setRouteState({ playerId, route: playerRoute })
+        }
+      })
+      .catch(() => {
+        if (isCurrent) {
+          setRouteState({ playerId, route: [] })
+        }
+      })
+
+    return () => {
+      isCurrent = false
+    }
+  }, [isLoadMode, playerId])
 
   const selectArea = (area: Area) => {
     setTravelError(null)
@@ -96,6 +125,11 @@ function Map({ mode, playerId, closeLabel = 'Return to menu', onClose, onStartGa
     >
       <button className="map-return" type="button" onClick={onClose} disabled={isTraveling}>{closeLabel}</button>
       {!activeArea && <section className="map-locations" aria-label={isLoadMode ? 'Choose a saved-game location' : 'Choose a starting location'}>{areas.map((area) => <button key={area.id} className="map-location" aria-label={area.name} data-location-id={area.locationId} style={{ left: `${area.x}%`, top: `${area.y}%`, width: `${area.width}%` }} type="button" onClick={() => selectArea(area)}><img src={area.buttonImage} alt="" /></button>)}</section>}
+      {isLoadMode && !activeArea && (
+        <aside className="map-route-panel" aria-label="Player route">
+          <RaceLocationRoute route={route} />
+        </aside>
+      )}
       {activeArea && (
         <section className="area-card" aria-busy={isTraveling}>
           <span className="map-caption">LOCATION SELECTED</span>
