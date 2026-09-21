@@ -1,0 +1,74 @@
+/* The supplied 1024 × 1536 artwork stays intact. Overlay regions follow its
+   cost medallion, illustration area and two parchment text fields. */
+.actions .action-card {
+  container-type: inline-size;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  padding: 0;
+  background: none;
+  text-align: center;
+}
+
+.action-card .action-card-frame {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  filter: none;
+  pointer-events: none;
+}
+
+.action-card .action-card-cost {
+  top: 6.6%;
+  left: 18.5%;
+  width: 17%;
+  height: 10.7%;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 13cqw;
+  line-height: 1;
+}
+
+.action-card .action-card-icon {
+  position: absolute;
+  top: 21%;
+  left: 22%;
+  width: 56%;
+  height: 36%;
+  margin: 0;
+  object-fit: contain;
+}
+
+.action-card .action-card-title,
+.action-card .action-card-detail {
+  position: absolute;
+  display: grid;
+  place-content: center;
+  left: 13%;
+  width: 74%;
+  padding: 0;
+  border: 0;
+}
+
+.action-card .action-card-title {
+  top: 62%;
+  height: 9.5%;
+  font-size: 8cqw;
+  line-height: 1.05;
+}
+
+.action-card .action-card-detail {
+  top: 74%;
+  height: 12%;
+  font-size: 7cqw;
+  line-height: 1.2;
+}
+
+.actions .action-card:focus-visible {
+  outline: 2px solid #f5d68e;
+  outline-offset: 2px;
+}

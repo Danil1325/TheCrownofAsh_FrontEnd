@@ -1,0 +1,171 @@
+/* Scene, hand and navigation occupy separate rows, so their contents cannot
+   collide when the viewport becomes shorter or wider. */
+.battle-screen .battle-main {
+  container-type: size;
+  --mana-size: min(13cqw, 14cqh, 7.4rem);
+  --hand-gap: min(2.5cqw, 1.4rem);
+  --card-size: min(calc((100cqw - var(--mana-size) - var(--hand-gap)) / 4), calc(34cqh * 2 / 3));
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 1.2svh;
+  height: 100svh;
+  min-height: 0;
+  padding: 1.5svh 1.5% 1svh;
+}
+
+.battle-scene {
+  position: relative;
+  container-type: size;
+  min-height: 0;
+}
+
+.battle-scene .top-hud {
+  inset: 3% 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  transform: none;
+}
+
+.battle-scene .enemy-info {
+  container-type: size;
+  width: min(50cqw, 52cqh);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 512 / 435;
+  margin: 0;
+  padding: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.enemy-info .enemy-info-content {
+  position: absolute;
+  inset: 15% 16% 14%;
+  display: grid;
+  grid-template-rows: 22fr 16fr 15fr 15fr 20fr;
+  gap: 1cqh;
+  align-items: center;
+}
+
+.enemy-info .enemy-info-content h1 {
+  font-size: min(9cqw, 12cqh);
+}
+
+.enemy-info .enemy-info-content p {
+  font-size: min(5.1cqw, 7cqh);
+  white-space: nowrap;
+}
+
+.enemy-info .enemy-info-content b {
+  margin: 0;
+  font-size: min(6cqw, 8cqh);
+  white-space: nowrap;
+}
+
+.enemy-info .enemy-info-content .meter {
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+}
+
+.battle-scene .enemy-info > span {
+  display: none;
+}
+
+.battle-scene .turn-scroll {
+  position: relative;
+  margin: 0;
+  padding: 0.55em 0.8em;
+  font-size: min(3cqw, 4cqh, 1.1rem);
+  flex-shrink: 0;
+}
+
+.battle-scene .enemy-character {
+  top: auto;
+  bottom: 0;
+  width: min(38cqw, 50cqh);
+  height: min(38cqw, 50cqh);
+  filter: drop-shadow(0 0.6rem 0.4rem rgba(16, 8, 2, 0.55));
+}
+
+.battle-hand {
+  display: grid;
+  grid-template-columns: var(--mana-size) auto;
+  align-items: center;
+  justify-self: center;
+  gap: var(--hand-gap);
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.battle-hand .mana-orb {
+  position: relative;
+  inset: auto;
+  width: var(--mana-size);
+  border-width: min(0.45rem, 0.8cqw);
+}
+
+.battle-hand .mana-orb span {
+  font-size: min(4cqw, 4.5cqh, 2.1rem);
+}
+
+.battle-hand .mana-orb b {
+  font-size: min(1.5cqw, 1.5cqh, 0.6rem);
+}
+
+.battle-hand .mana-orb div {
+  font-size: min(2cqw, 2cqh, 0.85rem);
+  margin-top: 0.25em;
+}
+
+.battle-hand .actions {
+  position: relative;
+  inset: auto;
+  grid-template-columns: repeat(4, var(--card-size));
+  align-items: end;
+  width: auto;
+  height: auto;
+  gap: 0;
+  transform: none;
+}
+
+.battle-main .card-controls {
+  position: relative;
+  inset: auto;
+  justify-content: center;
+  transform: none;
+  font-size: min(3cqw, 3cqh, 1.5rem);
+  gap: min(4cqw, 2rem);
+}
+
+.battle-main .card-controls button {
+  width: min(8cqw, 3.4rem);
+  font-size: inherit;
+}
+
+.battle-scene .battle-toast {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  max-width: 26%;
+  transform: none;
+  font-size: min(2cqw, 3cqh, 0.75rem);
+}
+
+@media (max-width: 760px) {
+  .battle-screen .battle-main {
+    --mana-size: 0px;
+    --hand-gap: 0px;
+    height: max(680px, 100svh);
+    padding-inline: 3%;
+  }
+
+  .battle-hand {
+    grid-template-columns: auto;
+  }
+}

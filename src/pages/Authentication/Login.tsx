@@ -2,13 +2,15 @@ import { useState, type FormEvent } from 'react'
 import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react'
 import '../../styles/game-ui.css'
 import './Login.css'
+import { ApiError, login } from '../../api/authApi'
+import type { CurrentUser } from '../../api/authApi'
 
 import background from '../../assets/Log In Sign Up/Log In Sign Up Background.png'
 import parchment from '../../assets/Log In Sign Up/Log In Sign Up Pergament.png'
 import loginButton from '../../assets/Log In Sign Up/Log In.png'
 
 type LoginProps = {
-  onLogin: () => void
+  onLogin: (user: CurrentUser) => void
   onCreateAccount: () => void
 }
 
@@ -29,18 +31,27 @@ function Login({ onLogin, onCreateAccount }: LoginProps) {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const [hasError, setHasError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (!email.trim() || !password) {
-      setHasError(true)
+      setErrorMessage('Enter an email and password to continue.')
       return
     }
 
-    setHasError(false)
-    onLogin()
+    setErrorMessage('')
+    setIsSubmitting(true)
+    try {
+      const user = await login({ email, password })
+      onLogin(user)
+    } catch (error) {
+      setErrorMessage(error instanceof ApiError ? error.message : 'Unable to log in. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -99,14 +110,14 @@ function Login({ onLogin, onCreateAccount }: LoginProps) {
           </div>
 
           <p
-            className={`login-error${hasError ? ' login-error--visible' : ''}`}
+            className={`login-error${errorMessage ? ' login-error--visible' : ''}`}
             role="alert"
             aria-live="polite"
           >
-            {hasError ? 'Enter an email and password to continue.' : '\u00a0'}
+            {errorMessage || '\u00a0'}
           </p>
 
-          <button className="game-button login-submit" type="submit">
+          <button className="game-button login-submit" type="submit" disabled={isSubmitting}>
             <img src={loginButton} alt="Log In" />
           </button>
 

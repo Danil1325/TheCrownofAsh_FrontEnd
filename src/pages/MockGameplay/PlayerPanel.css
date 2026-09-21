@@ -1,0 +1,289 @@
+/* The reference allocates roughly 35% to the hero and 46% to the inventory.
+   Bounded grid rows keep the complete panel, including its footer, on screen. */
+.battle-left.parchment-panel.player-panel {
+  container-type: size;
+  display: grid;
+  grid-template-rows: minmax(0, 35fr) minmax(0, 55fr) minmax(0, 6fr);
+  gap: 0.65svh;
+  height: 100svh !important;
+  min-height: 0 !important;
+  padding: 0.7svh 0.8vw 1.1svh !important;
+  border: min(1vw, 1.5svh) solid transparent;
+  border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
+  background-image: url('../../assets/Inventory/Pergament texture.png') !important;
+  background-size: cover !important;
+  background-position: center;
+  box-shadow: inset 0 0 1.8rem #6c3b1b50;
+}
+
+.player-panel .hero-overview {
+  container-type: size;
+  display: grid;
+  grid-template-columns: minmax(0, 64fr) minmax(0, 34fr);
+  gap: 2%;
+  min-height: 0;
+}
+
+.player-panel .hero-portrait {
+  container-type: size;
+  position: relative;
+  width: min(100%, calc(100cqh * 143 / 184));
+  aspect-ratio: 143 / 184;
+  align-self: center;
+}
+
+.hero-portrait > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Keep the name and level as live HTML over the supplied portrait artwork. */
+.hero-portrait .hero-level {
+  position: absolute;
+  top: 2.5%;
+  left: 46%;
+  width: 14%;
+  height: 10%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8bf80;
+  font-size: 11cqw;
+  line-height: 1;
+}
+
+.hero-portrait .hero-name {
+  position: absolute;
+  inset: auto 14% 4.2%;
+  height: 9%;
+  display: grid;
+  place-content: center;
+  background: url('../../assets/Inventory/Pergament texture.png') center / 300%;
+  font-size: 10cqw;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.player-panel .hero-stats {
+  min-width: 0;
+  min-height: 0;
+  padding-top: 5svh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45svh;
+}
+
+.player-panel .hero-stats b {
+  font-size: min(6.2cqw, 2.6svh);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.player-panel .mana-text {
+  margin-top: 0.55svh;
+}
+
+.player-meter {
+  position: relative;
+  flex: 0 0 1.45svh;
+  width: 100%;
+  background: #583413;
+  border-radius: 999px;
+}
+
+.player-meter > svg,
+.player-meter-fill svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.player-meter-fill {
+  position: absolute;
+  inset: 23% 5% 23%;
+}
+
+.hero-gems {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 4.2svh;
+  margin-block: 0.3svh;
+}
+
+.hero-gems img {
+  width: 23%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.hero-gems img:nth-child(2) {
+  width: 30%;
+  height: 100%;
+}
+
+.player-panel .hero-stats p {
+  margin: 0;
+  font-size: min(4.7cqw, 1.95svh);
+  line-height: 1.12;
+}
+
+.player-panel .inventory-filter {
+  display: grid;
+  grid-template-rows: 36% minmax(0, 1fr);
+  gap: 0.3svh;
+  min-height: 0;
+  font-size: min(5.7cqw, 2.65svh);
+  line-height: 1;
+}
+
+.player-panel .inventory-filter > span {
+  align-self: center;
+  white-space: nowrap;
+}
+
+.player-panel .inventory-filter select,
+.player-panel .details-button,
+.player-panel .player-inventory h2 {
+  border: min(0.6svh, 0.4rem) solid transparent;
+  border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
+  border-radius: 0;
+  background: url('../../assets/Inventory/Pergament texture.png') center / cover;
+  color: var(--ink);
+}
+
+.player-panel .inventory-filter select {
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0 5%;
+  font-size: min(5.4cqw, 2.5svh);
+  font-weight: 400;
+}
+
+.player-inventory {
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35svh;
+  min-height: 0;
+}
+
+.player-panel .player-inventory h2 {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  margin: 0;
+  padding-inline: 2%;
+  font-size: min(6.5cqw, 2.8svh);
+  line-height: 1;
+}
+
+.player-panel .inventory-grid {
+  display: grid;
+  min-height: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45svh 0.6cqw;
+}
+
+.player-panel .equipment-grid {
+  flex: 1;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.player-panel .potions-grid {
+  flex: 2;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.player-panel .inventory-item {
+  --slot-color: #51432b;
+  container-type: inline-size;
+  width: min(100%, calc((100cqh - 11svh) / 3 * 361 / 408));
+  height: auto;
+  aspect-ratio: 361 / 408;
+  place-self: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 5%;
+  background: radial-gradient(ellipse at 50% 42%, var(--slot-color), #141412 80%);
+  box-shadow: none;
+  overflow: visible;
+}
+
+.player-panel .inventory-tone-violet { --slot-color: #643174; }
+.player-panel .inventory-tone-blue { --slot-color: #26526b; }
+.player-panel .inventory-tone-ember { --slot-color: #8e3410; }
+.player-panel .inventory-tone-green { --slot-color: #304a29; }
+
+.inventory-slot-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.player-panel .inventory-slot-icon {
+  position: absolute;
+  top: 7%;
+  left: 12%;
+  width: 76%;
+  height: 68%;
+  object-fit: contain;
+}
+
+.player-panel .inventory-item > span {
+  inset: auto 9% 7%;
+  height: 17%;
+  display: grid;
+  place-content: center;
+  padding: 0;
+  background: url('../../assets/Inventory/Pergament texture.png') center / cover;
+  font-size: 18cqw;
+  line-height: 1;
+}
+
+.player-panel .inventory-item:hover {
+  filter: brightness(1.15);
+}
+
+.player-panel .inventory-item[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px #f9d87d, 0 0 10px #8b411b;
+}
+
+.player-panel .details-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  font-size: min(5.5cqw, 2.6svh);
+  font-weight: 400;
+}
+
+.player-panel .details-button span {
+  margin: 0;
+  font-size: 1.4em;
+}
+
+.player-panel button:focus-visible,
+.player-panel select:focus-visible {
+  outline: 2px solid #5c2712;
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .battle-left.parchment-panel.player-panel {
+    padding-inline: 3vw !important;
+    border-width: 1.5svh;
+  }
+}
