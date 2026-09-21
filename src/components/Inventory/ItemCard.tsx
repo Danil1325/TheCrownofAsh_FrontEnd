@@ -34,18 +34,23 @@ const ItemCard = ({ item, onEquip, onUnequip, isEquipped }: ItemCardProps) => {
         {/* Front of the card */}
         <div className={`card-face card-front ${rarityClass}`}>
           <div className="card-header">
-            <span className="item-name">{item.name}</span>
-            {item.quantity && item.quantity > 1 && (
-              <span className="item-quantity">x{item.quantity}</span>
-            )}
+            <span className="item-type">{item.category}</span>
+            <div className="header-right">
+              <span className="item-value">🪙 {item.value}</span>
+              {item.quantity && item.quantity > 1 && (
+                <span className="item-quantity">x{item.quantity}</span>
+              )}
+            </div>
           </div>
           <div className="card-image-placeholder">
-            {/* We can place an icon based on category here */}
-            <span className="category-icon">{item.category}</span>
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt={item.name} className="item-image" />
+            ) : (
+              <div className="placeholder-img-box"></div>
+            )}
           </div>
           <div className="card-footer">
-            <span className="item-type">{item.category}</span>
-            <span className="item-value">🪙 {item.value}</span>
+            <span className="item-name">{item.name}</span>
           </div>
           <div className="card-glare"></div>
         </div>

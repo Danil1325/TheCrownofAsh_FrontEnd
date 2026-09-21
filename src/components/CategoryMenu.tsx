@@ -1,0 +1,44 @@
+import type { ItemCategory } from '../data/marketItems'
+
+interface CategoryMenuProps {
+  categories: readonly ItemCategory[]
+  selectedCategory: ItemCategory | 'all'
+  onSelect: (category: ItemCategory | 'all') => void
+}
+
+const categoryLabels: Record<ItemCategory, string> = {
+  weapons: 'Weapons',
+  armor: 'Armor',
+  potions: 'Potions',
+  artifacts: 'Artifacts',
+}
+
+export function CategoryMenu({ categories, selectedCategory, onSelect }: CategoryMenuProps) {
+  return (
+    <div className="category-menu" role="group" aria-label="Shop categories">
+      <button
+        className={selectedCategory === 'all' ? 'category-button is-selected' : 'category-button'}
+        type="button"
+        aria-pressed={selectedCategory === 'all'}
+        onClick={() => onSelect('all')}
+      >
+        All Wares
+      </button>
+      {categories.map((category) => {
+        const isSelected = category === selectedCategory
+
+        return (
+          <button
+            className={isSelected ? 'category-button is-selected' : 'category-button'}
+            type="button"
+            key={category}
+            aria-pressed={isSelected}
+            onClick={() => onSelect(category)}
+          >
+            {categoryLabels[category]}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
