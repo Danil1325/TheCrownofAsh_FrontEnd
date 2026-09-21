@@ -49,6 +49,7 @@ function Map({ mode, playerId, closeLabel = 'Return to menu', onClose, onStartGa
   const [routeState, setRouteState] = useState<RouteState>({ playerId: null, route: [] })
   const [isTraveling, setIsTraveling] = useState(false)
   const [travelError, setTravelError] = useState<string | null>(null)
+  const [isRouteDrawerOpen, setIsRouteDrawerOpen] = useState(false)
   const isTravelingRef = useRef(false)
   const background = activeArea?.image ?? mapImage
   const isLoadMode = mode === 'load'
@@ -80,11 +81,13 @@ function Map({ mode, playerId, closeLabel = 'Return to menu', onClose, onStartGa
 
   const selectArea = (area: Area) => {
     setTravelError(null)
+    setIsRouteDrawerOpen(false)
     setActiveArea(area)
   }
 
   const returnToMap = () => {
     setTravelError(null)
+    setIsRouteDrawerOpen(false)
     setActiveArea(null)
   }
 
@@ -126,8 +129,24 @@ function Map({ mode, playerId, closeLabel = 'Return to menu', onClose, onStartGa
       <button className="map-return" type="button" onClick={onClose} disabled={isTraveling}>{closeLabel}</button>
       {!activeArea && <section className="map-locations" aria-label={isLoadMode ? 'Choose a saved-game location' : 'Choose a starting location'}>{areas.map((area) => <button key={area.id} className="map-location" aria-label={area.name} data-location-id={area.locationId} style={{ left: `${area.x}%`, top: `${area.y}%`, width: `${area.width}%` }} type="button" onClick={() => selectArea(area)}><img src={area.buttonImage} alt="" /></button>)}</section>}
       {isLoadMode && !activeArea && (
-        <aside className="map-route-panel" aria-label="Player route">
-          <RaceLocationRoute route={route} />
+        <aside className={`map-route-drawer${isRouteDrawerOpen ? ' map-route-drawer--open' : ''}`} aria-label="Player route">
+          <button
+            className="map-route-toggle"
+            type="button"
+            aria-controls="map-route-drawer-content"
+            aria-expanded={isRouteDrawerOpen}
+            onClick={() => setIsRouteDrawerOpen((isOpen) => !isOpen)}
+          >
+            <span>Location Route</span>
+            <span className="map-route-toggle-state" aria-hidden="true">
+              {isRouteDrawerOpen ? 'Hide' : 'Show'}
+            </span>
+          </button>
+          {isRouteDrawerOpen && (
+            <div id="map-route-drawer-content" className="map-route-drawer-content">
+              <RaceLocationRoute route={route} />
+            </div>
+          )}
         </aside>
       )}
       {activeArea && (
