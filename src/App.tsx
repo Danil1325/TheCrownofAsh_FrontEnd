@@ -1,15 +1,23 @@
 import shopHeader from './assets/ui/ShopHeader.png'
-import shopMenu from './assets/ui/ShopMenu.png'
-import { useReducer, useState } from 'react'
+import buyButton from './assets/Buttons/Buy.png'
+import sellButton from './assets/Buttons/Sell.png'
+import exitIcon from './assets/Icons/Exit Icon.png'
+import coinIcon from './assets/Icons/Coin.png'
+import buttonSound from './assets/Button Press.mp3'
+import MainMenu from './pages/MainMenu/MainMenu'
+import { useCallback, useReducer, useState } from 'react'
+import { MarketToast, type MarketNotification } from './components/MarketToast'
 import { CategoryMenu } from './components/CategoryMenu'
 import { InventoryItemCard } from './components/InventoryItemCard'
+import { SellSelectionItem } from './components/SellSelectionItem'
 import { ItemCard } from './components/ItemCard'
 import { itemCategories, marketItems, type ItemCategory, type MarketItem } from './data/marketItems'
-import { addItemToInventory, getInventoryQuantity, type Inventory } from './state/inventory'
+import { addItemToInventory, type Inventory } from './state/inventory'
 import './App.css'
 
 type MarketView = 'shop' | 'sell'
-type MarketMessage = { tone: 'success' | 'error'; text: string } | null
+type MarketCategory = ItemCategory | 'all'
+type MarketMessage = MarketNotification | null
 type ResolvedInventoryItem = { item: MarketItem; quantity: number }
 interface PlayerState {
   gold: number
@@ -20,12 +28,17 @@ interface PlayerState {
 type PlayerAction =
   | { type: 'buy'; item: MarketItem }
   | { type: 'sell'; items: Inventory }
+  | { type: 'clearMarketMessage'; message: MarketNotification }
 
 function calculateSellValue(items: readonly ResolvedInventoryItem[]): number {
   return items.reduce((total, { item, quantity }) => total + item.sellPrice * quantity, 0)
 }
 
 function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
+  if (action.type === 'clearMarketMessage') {
+    return state.marketMessage === action.message ? { ...state, marketMessage: null } : state
+  }
+
   if (action.type === 'sell') {
     const quantitiesToSell = action.items.reduce<Map<string, number>>((quantities, entry) => {
       quantities.set(entry.itemId, (quantities.get(entry.itemId) ?? 0) + entry.quantity)
@@ -75,176 +88,188 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
   }
 }
 
-const navigation: ReadonlyArray<{ id: MarketView; label: string; icon: string }> = [
-  { id: 'shop', label: 'Shop', icon: '⚔' },
-  { id: 'sell', label: 'Sell Items', icon: '⚖' },
+const navigation: ReadonlyArray<{ id: MarketView; label: string }> = [
+  { id: 'shop', label: 'Buy' },
+  { id: 'sell', label: 'Sell Items' },
 ]
 
 function App() {
+  const [isMainMenuOpen, setIsMainMenuOpen] = useState(false)
+  const [musicVolume, setMusicVolume] = useState(50)
+  const [sfxVolume, setSfxVolume] = useState(50)
   const [activeView, setActiveView] = useState<MarketView>('shop')
-  const [selectedCategory, setSelectedCategory] = useState<ItemCategory>('weapons')
-  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<MarketCategory>('all')
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({})
   const [player, dispatchPlayerAction] = useReducer(playerReducer, {
     gold: 1250,
     inventory: [],
     marketMessage: null,
   })
-  const visibleItems = marketItems.filter((item) => item.category === selectedCategory)
+
+  const dismissNotification = useCallback((message: MarketNotification) => {
+    dispatchPlayerAction({ type: 'clearMarketMessage', message })
+  }, [])
+
+  const visibleItems = selectedCategory === 'all'
+    ? marketItems
+    : marketItems.filter((item) => item.category === selectedCategory)
   const ownedItems = player.inventory
     .map((entry) => {
       const item = marketItems.find((marketItem) => marketItem.id === entry.itemId)
       return item ? { item, quantity: entry.quantity } : null
     })
     .filter((entry): entry is ResolvedInventoryItem => entry !== null)
-  const selectedItems = ownedItems.filter(({ item }) => selectedItemIds.includes(item.id))
+  const selectedItems = ownedItems
+    .map(({ item, quantity }) => ({ item, quantity: Math.min(quantity, selectedQuantities[item.id] ?? 0) }))
+    .filter(({ quantity }) => quantity > 0)
+  const availableItems = ownedItems
+    .map(({ item, quantity }) => ({ item, quantity: quantity - Math.min(quantity, selectedQuantities[item.id] ?? 0) }))
+    .filter(({ quantity }) => quantity > 0)
   const estimatedSellValue = calculateSellValue(selectedItems)
 
   function handleBuy(item: MarketItem) {
     dispatchPlayerAction({ type: 'buy', item })
   }
 
-  function toggleSellSelection(itemId: string) {
-    setSelectedItemIds((currentSelection) =>
-      currentSelection.includes(itemId)
-        ? currentSelection.filter((selectedItemId) => selectedItemId !== itemId)
-        : [...currentSelection, itemId],
-    )
+  function handleShopNavigation() {
+    setActiveView('shop')
+    setSelectedCategory('all')
+  }
+
+  function addSellSelection(itemId: string) {
+    const ownedQuantity = player.inventory.find((entry) => entry.itemId === itemId)?.quantity ?? 0
+    setSelectedQuantities((current) => ({
+      ...current,
+      [itemId]: Math.min(ownedQuantity, (current[itemId] ?? 0) + 1),
+    }))
+  }
+
+  function removeSellSelection(itemId: string) {
+    setSelectedQuantities((current) => ({
+      ...current,
+      [itemId]: Math.max(0, (current[itemId] ?? 0) - 1),
+    }))
   }
 
   function handleSell() {
-    const selectedInventory = player.inventory.filter((entry) => selectedItemIds.includes(entry.itemId))
+    const selectedInventory = selectedItems.map(({ item, quantity }) => ({ itemId: item.id, quantity }))
 
     if (selectedInventory.length === 0) {
       return
     }
 
     dispatchPlayerAction({ type: 'sell', items: selectedInventory })
-    setSelectedItemIds([])
+    setSelectedQuantities({})
   }
 
-  const content =
-    activeView === 'shop'
-      ? {
-          eyebrow: 'The merchant’s wares',
-          title: 'Shop',
-          description: 'Browse wares and prepare for the road ahead.',
-        }
-      : {
-          eyebrow: 'Your adventurer’s pack',
-          title: 'Sell Items',
-          description: 'Choose unused equipment to trade for gold.',
-        }
+  if (isMainMenuOpen) {
+    return (
+      <MainMenu
+        musicVolume={musicVolume}
+        sfxVolume={sfxVolume}
+        onMusicVolumeChange={setMusicVolume}
+        onSfxVolumeChange={setSfxVolume}
+        onPlayButtonSound={() => {
+          const audio = new Audio(buttonSound)
+          audio.volume = sfxVolume / 100
+          void audio.play().catch(() => {})
+        }}
+        onNewGame={() => setIsMainMenuOpen(false)}
+        onLogout={() => setIsMainMenuOpen(false)}
+      />
+    )
+  }
 
   return (
     <main className="market-page">
+      <button className="market-exit-button" type="button" aria-label="Return to main menu" title="Main menu" onClick={() => setIsMainMenuOpen(true)}>
+        <img src={exitIcon} alt="" />
+      </button>
       <div className="market-frame">
         <header className="market-header">
-          <div className="rune-line" aria-hidden="true">
-            ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ
-          </div>
           <div className="market-heading-wrap">
             <img className="shop-header-image" src={shopHeader} alt="Market" />
           </div>
-          <p className="market-motto">Spend your gold <span>•</span> Gear up <span>•</span> Survive</p>
-          <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
-            <span className="gold-coin" aria-hidden="true">◉</span>
-            <strong>{player.gold.toLocaleString()}</strong>
-            <span className="gold-label">Gold</span>
-          </div>
+          <MarketToast notification={player.marketMessage} onDismiss={dismissNotification} />
         </header>
 
         <section className="market-workspace" aria-label="Market">
-          {activeView === 'shop' ? (
-            <nav className="market-navigation" aria-label="Market sections">
-              <p className="navigation-title">Market Menu</p>
-              <div className="navigation-options">
-                {navigation.map((item) => (
+          <nav className="market-navigation" aria-label="Market sections">
+            <div className="navigation-options">
+              {navigation.map((item) => (
+                <div className="market-nav-group" key={item.id}>
                   <button
-                    className={activeView === item.id ? 'market-nav-button is-active' : 'market-nav-button'}
+                    className={activeView === item.id ? 'market-nav-button market-nav-image-button is-active' : 'market-nav-button market-nav-image-button'}
                     type="button"
-                    key={item.id}
                     aria-pressed={activeView === item.id}
-                    onClick={() => setActiveView(item.id)}
+                    aria-expanded={item.id === 'shop' ? activeView === 'shop' : undefined}
+                    aria-label={item.label}
+                    onClick={() => item.id === 'shop' ? handleShopNavigation() : setActiveView(item.id)}
                   >
-                    <span aria-hidden="true">{item.icon}</span>
-                    {item.label}
+                    <img
+                      className="market-nav-button-image"
+                      src={item.id === 'shop' ? buyButton : sellButton}
+                      alt=""
+                    />
+                    {item.id === 'shop' && <b className="shop-disclosure" aria-hidden="true">−</b>}
                   </button>
-                ))}
-              </div>
-            </nav>
-          ) : (
-            <nav className="market-navigation sell-navigation" aria-label="Inventory sections">
-              <p className="navigation-title">Inventory</p>
-              <div className="navigation-options">
-                <p className="market-nav-label"><span aria-hidden="true">🎒</span> Inventory</p>
-                <p className="market-nav-label is-active"><span aria-hidden="true">⚖</span> Sell Items</p>
-                <button className="market-nav-button" type="button" onClick={() => setActiveView('shop')}>
-                  <span aria-hidden="true">◉</span> Buy Items
-                </button>
-                <button className="market-nav-button" type="button" onClick={() => setActiveView('shop')}>
-                  <span aria-hidden="true">↩</span> Back
-                </button>
-              </div>
-            </nav>
-          )}
+                  {item.id === 'shop' && activeView === 'shop' && (
+                    <CategoryMenu
+                      categories={itemCategories}
+                      selectedCategory={selectedCategory}
+                      onSelect={setSelectedCategory}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </nav>
 
-          <section className="market-content" aria-labelledby="market-content-title">
-            <div className="content-heading">
-              <p>{content.eyebrow}</p>
-              <h2 id="market-content-title">{content.title}</h2>
-              <span aria-hidden="true">✦</span>
+          <section className={activeView === 'sell' ? 'market-content is-selling' : 'market-content'} aria-labelledby="market-content-title">
+            <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
+              <strong>{player.gold.toLocaleString()}</strong>
             </div>
             {activeView === 'shop' ? (
               <div className="shop-panel">
-                <CategoryMenu
-                  categories={itemCategories}
-                  selectedCategory={selectedCategory}
-                  onSelect={setSelectedCategory}
-                />
-                <p className="shop-category-description">{content.description}</p>
-                {player.marketMessage && (
-                  <p className={`purchase-message is-${player.marketMessage.tone}`} role="status">
-                    {player.marketMessage.text}
-                  </p>
-                )}
-                <div className="item-grid" aria-live="polite">
-                  {visibleItems.map((item) => (
-                    <ItemCard
-                      item={item}
-                      key={item.id}
-                      ownedQuantity={getInventoryQuantity(player.inventory, item.id)}
-                      onBuy={handleBuy}
-                    />
-                  ))}
+                <div className="item-scroll" aria-live="polite">
+                  <div className="item-grid">
+                    {visibleItems.map((item) => (
+                      <ItemCard
+                        item={item}
+                        key={item.id}
+                        onBuy={handleBuy}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (
               <div className="sell-panel">
-                {player.marketMessage && (
-                  <p className={`purchase-message sell-message is-${player.marketMessage.tone}`} role="status">
-                    {player.marketMessage.text}
-                  </p>
-                )}
                 <section className="your-items-panel" aria-labelledby="your-items-heading">
                   <div className="sell-section-heading">
                     <span aria-hidden="true">✦</span>
                     <h3 id="your-items-heading">Your Items</h3>
                     <span aria-hidden="true">✦</span>
                   </div>
-                  {ownedItems.length > 0 ? (
-                    <div className="inventory-item-grid">
-                      {ownedItems.map(({ item, quantity }) => (
-                        <InventoryItemCard
-                          item={item}
-                          key={item.id}
-                          quantity={quantity}
-                          selected={selectedItemIds.includes(item.id)}
-                          onSelect={toggleSellSelection}
-                        />
-                      ))}
+                  {availableItems.length > 0 ? (
+                    <div className="item-scroll">
+                      <div className="item-grid">
+                        {availableItems.map(({ item, quantity }) => (
+                          <InventoryItemCard
+                            item={item}
+                            key={item.id}
+                            quantity={quantity}
+                            onSelect={addSellSelection}
+                          />
+                        ))}
+                      </div>
                     </div>
                   ) : (
-                    <p className="empty-inventory">Your pack is empty. Visit the shop to acquire wares.</p>
+                    <p className="empty-inventory">
+                      {ownedItems.length === 0
+                        ? 'Your pack is empty. Visit the shop to acquire wares.'
+                        : 'All of your items are in the sell selection.'}
+                    </p>
                   )}
                 </section>
 
@@ -257,17 +282,18 @@ function App() {
                   <div className="selected-items-list">
                     {selectedItems.length > 0 ? (
                       selectedItems.map(({ item, quantity }) => (
-                        <div className="selected-item" key={item.id}>
-                          <img src={item.image} alt="" />
-                          <span>{item.name}</span>
-                          <b>×{quantity}</b>
-                        </div>
+                        <SellSelectionItem
+                          item={item}
+                          key={item.id}
+                          quantity={quantity}
+                          onRemove={removeSellSelection}
+                        />
                       ))
                     ) : (
                       <p><span aria-hidden="true">✧</span> Select items to offer</p>
                     )}
                   </div>
-                  <p className="estimated-value">Estimated value <strong><span aria-hidden="true">◉</span> {estimatedSellValue}</strong></p>
+                  <p className="estimated-value">Estimated value <strong><img className="buy-coin-icon" src={coinIcon} alt="Gold" /> {estimatedSellValue}</strong></p>
                   <button
                     className="sell-button"
                     type="button"
@@ -281,10 +307,6 @@ function App() {
             )}
           </section>
         </section>
-
-        <footer className="market-footer" aria-hidden="true">
-          ᚱ ᚢ ᚾ ᛖ ᛊ &nbsp; • &nbsp; ᚷ ᛟ ᛚ ᛞ &nbsp; • &nbsp; ᚹ ᚨ ᚱ ᛖ ᛊ
-        </footer>
       </div>
     </main>
   )

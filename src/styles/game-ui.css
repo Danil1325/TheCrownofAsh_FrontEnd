@@ -1,0 +1,26 @@
+/* Reusable interaction effects for game buttons and interactive icons. */
+.game-button {
+  display: block;
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.game-button:hover {
+  transform: scale(1.035);
+  filter: brightness(1.08) drop-shadow(0 0 0.65rem rgba(255, 200, 92, 0.35));
+}
+
+.game-button:active {
+  transform: scale(0.98);
+}
+
+.game-button:focus-visible {
+  outline: 3px solid #ffe09a;
+  outline-offset: 5px;
+  border-radius: 1rem;
+}

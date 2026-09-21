@@ -2,8 +2,8 @@ import type { ItemCategory } from '../data/marketItems'
 
 interface CategoryMenuProps {
   categories: readonly ItemCategory[]
-  selectedCategory: ItemCategory
-  onSelect: (category: ItemCategory) => void
+  selectedCategory: ItemCategory | 'all'
+  onSelect: (category: ItemCategory | 'all') => void
 }
 
 const categoryLabels: Record<ItemCategory, string> = {
@@ -15,7 +15,15 @@ const categoryLabels: Record<ItemCategory, string> = {
 
 export function CategoryMenu({ categories, selectedCategory, onSelect }: CategoryMenuProps) {
   return (
-    <nav className="category-menu" aria-label="Shop categories">
+    <div className="category-menu" role="group" aria-label="Shop categories">
+      <button
+        className={selectedCategory === 'all' ? 'category-button is-selected' : 'category-button'}
+        type="button"
+        aria-pressed={selectedCategory === 'all'}
+        onClick={() => onSelect('all')}
+      >
+        All Wares
+      </button>
       {categories.map((category) => {
         const isSelected = category === selectedCategory
 
@@ -31,6 +39,6 @@ export function CategoryMenu({ categories, selectedCategory, onSelect }: Categor
           </button>
         )
       })}
-    </nav>
+    </div>
   )
 }
