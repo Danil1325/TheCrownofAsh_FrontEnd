@@ -1,6 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ApiError } from '../api/authApi';
+import { getLocationDetails } from '../api/locationApi';
 import * as scenarioApi from '../api/scenarioApi';
+import { backgroundByLocation } from '../assets/scenario/scenarioAssets';
+import { useNotifications } from './useNotifications';
 import type { ScenarioProgress, StoryChoice, StoryScene } from '../types/scenario';
 
 export interface UseScenarioSceneOptions {
@@ -12,6 +15,8 @@ export interface UseScenarioSceneOptions {
   onSceneChange: (scene: StoryScene) => void;
   /** Called with the run's progress when a choice finishes the scenario (`nextSceneId === null`). */
   onScenarioEnd?: (progress: ScenarioProgress) => void;
+  /** Opens the gameplay map from rich location-unlocked notifications when available. */
+  onViewMap?: () => void;
 }
 
 /** What a retry still has to redo after a failure. */
@@ -36,7 +41,9 @@ export function useScenarioScene({
   playerId,
   onSceneChange,
   onScenarioEnd,
+  onViewMap,
 }: UseScenarioSceneOptions) {
+  const notifications = useNotifications();
   const dialogues = useMemo(
     () => (scene ? [...scene.dialogues].sort((a, b) => a.order - b.order) : []),
     [scene],
@@ -83,6 +90,33 @@ export function useScenarioScene({
     error === null &&
     scene.choices.length > 0;
 
+  const notifyUnlockedLocations = useCallback(
+    async (locationIds: number[] | undefined) => {
+      if (!locationIds || locationIds.length === 0) {
+        return;
+      }
+
+      const locationResults = await Promise.allSettled(
+        locationIds.map((locationId) => getLocationDetails(locationId)),
+      );
+
+      locationResults.forEach((result) => {
+        if (result.status !== 'fulfilled') {
+          return;
+        }
+
+        const details = result.value;
+        notifications.locationUnlocked({
+          locationName: details.name,
+          thumbnail: backgroundByLocation[details.id],
+          recommendedLevel: details.recommendedMinimumLevel,
+          onViewMap,
+        });
+      });
+    },
+    [notifications, onViewMap],
+  );
+
   const performChoice = useCallback(
     async (choice: StoryChoice, phase: SceneChoiceAttempt['phase']) => {
       if (activeRequestRef.current || !scene) return;
@@ -95,6 +129,7 @@ export function useScenarioScene({
       try {
         if (phase === 'submit') {
           const progress = await scenarioApi.selectChoice(playerId, scene.id, choice.id);
+          void notifyUnlockedLocations(progress.newLocationIds);
           lastAttemptRef.current = { choice, phase: 'fetchScene', sceneId: scene.id };
           if (choice.nextSceneId === null) {
             lastAttemptRef.current = null;
@@ -117,7 +152,7 @@ export function useScenarioScene({
         setIsTransitioning(false);
       }
     },
-    [playerId, scene, onSceneChange, onScenarioEnd],
+    [playerId, scene, onSceneChange, onScenarioEnd, notifyUnlockedLocations],
   );
 
   const selectChoice = useCallback(

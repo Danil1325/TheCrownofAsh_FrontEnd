@@ -44,6 +44,7 @@ export interface ScenarioProgress {
   companionLoyalty: Record<number, number>;
   questProgress: Record<number, number>;
   storyFlags: Record<string, boolean>;
+  newLocationIds?: number[];
 }
 
 /** Serialized as int by the backend (no JsonStringEnumConverter configured). */

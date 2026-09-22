@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import MainMenu from './pages/MainMenu/MainMenu'
 import SkillTreePage from './pages/SkillTree/SkillTreePage'
 import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
@@ -8,8 +8,10 @@ import buttonPressSound from './assets/Button Press.mp3'
 import CharacterCreation from './pages/CharacterCreation/CharacterCreation'
 import type { CreatedCharacterIdentity } from './pages/CharacterCreation/CharacterCreation'
 import ScenarioPage from './pages/Scenario/ScenarioPage'
+import Map from './pages/Map/Map'
 import { getCurrentUser, logout } from './api/authApi'
 import type { CurrentUser } from './api/authApi'
+import type { StoryScene } from './types/scenario'
 import type {
   ActiveSkillTreeCharacterInput,
   CharacterClass as SkillTreeCharacterClass,
@@ -61,7 +63,40 @@ function App() {
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
   const [gameState, setGameState] = useState<'menu' | 'character-creation' | 'playing'>('menu')
+  const [initialScenarioScene, setInitialScenarioScene] = useState<StoryScene | null>(null)
+  const [travelScenarioScene, setTravelScenarioScene] = useState<{ id: number; scene: StoryScene } | null>(null)
+  const [isGameplayMapOpen, setIsGameplayMapOpen] = useState(false)
+  const nextTravelScenarioSceneId = useRef(0)
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
+  const clearInitialScenarioScene = useCallback(() => setInitialScenarioScene(null), [])
+  const clearTravelScenarioScene = useCallback(() => setTravelScenarioScene(null), [])
+  const startGameplay = useCallback((initialScene: StoryScene | null = null) => {
+    setInitialScenarioScene(initialScene)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
+    setGameState('playing')
+    setIsInitialLoading(initialScene == null)
+  }, [])
+  const startNewGame = useCallback(() => {
+    setInitialScenarioScene(null)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
+    setGameState('character-creation')
+  }, [])
+  const backToMenu = useCallback(() => {
+    setInitialScenarioScene(null)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
+    setGameState('menu')
+  }, [])
+  const openGameplayMap = useCallback(() => setIsGameplayMapOpen(true), [])
+  const closeGameplayMap = useCallback(() => setIsGameplayMapOpen(false), [])
+  const handleGameplayTravel = useCallback((scene: StoryScene) => {
+    nextTravelScenarioSceneId.current += 1
+    setTravelScenarioScene({ id: nextTravelScenarioSceneId.current, scene })
+    setIsGameplayMapOpen(false)
+  }, [])
+  const ignoreMapStartGameplay = useCallback(() => undefined, [])
   const backToMenu = useCallback(() => {
     setApplicationPage('main-menu')
     setGameState('menu')
@@ -103,6 +138,9 @@ function App() {
     void logout().finally(() => {
       setIsAuthenticated(false)
       setCurrentUser(null)
+      setInitialScenarioScene(null)
+      setTravelScenarioScene(null)
+      setIsGameplayMapOpen(false)
       setActiveSkillTreeCharacter(null)
       setApplicationPage('main-menu')
       setGameState('menu')
@@ -161,6 +199,7 @@ function App() {
   }
 
   if (gameState === 'character-creation') {
+    return <CharacterCreation onComplete={startGameplay} />
     return (
       <CharacterCreation
         onComplete={(character) => {
@@ -173,24 +212,51 @@ function App() {
 
   if (gameState === 'playing') {
     return currentUser ? (
-      <ScenarioPage key={currentUser.id} playerId={currentUser.id} onBackToMenu={backToMenu} />
+      <>
+        <ScenarioPage
+          key={currentUser.id}
+          playerId={currentUser.id}
+          initialScene={initialScenarioScene}
+          travelScene={travelScenarioScene?.scene ?? null}
+          travelSceneId={travelScenarioScene?.id ?? null}
+          onInitialSceneConsumed={clearInitialScenarioScene}
+          onTravelSceneConsumed={clearTravelScenarioScene}
+          onBackToMenu={backToMenu}
+          onViewMap={openGameplayMap}
+        />
+        {isGameplayMapOpen && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 60 }}>
+            <Map
+              mode="load"
+              playerId={currentUser.id}
+              closeLabel="Return to game"
+              onClose={closeGameplayMap}
+              onStartGameplay={ignoreMapStartGameplay}
+              onLoadGame={handleGameplayTravel}
+            />
+          </div>
+        )}
+      </>
     ) : null
   }
 
-  return (
+  return currentUser ? (
     <div className="app-page-enter">
       <MainMenu
+        playerId={currentUser.id}
         musicVolume={musicVolume}
         sfxVolume={sfxVolume}
         onMusicVolumeChange={setMusicVolume}
         onSfxVolumeChange={setSfxVolume}
         onPlayButtonSound={playButtonSound}
+        onNewGame={startNewGame}
+        onLoadGame={startGameplay}
         onOpenSkills={() => setApplicationPage('skill-tree')}
         onNewGame={() => setGameState('character-creation')}
         onLogout={handleLogout}
       />
     </div>
-  )
+  ) : null
 }
 
 export default App

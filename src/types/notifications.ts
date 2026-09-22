@@ -15,6 +15,23 @@ export interface GameNotification {
   type: NotificationType;
   /** The short body text (quest name, objective, "+180 EXP", ...). */
   message: string;
+  locationName?: string;
+  thumbnail?: string | null;
+  recommendedLevel?: number | null;
+  action?: NotificationAction;
+}
+
+export interface NotificationAction {
+  label: string;
+  onClick: () => void;
+}
+
+export interface LocationUnlockedNotificationInput {
+  locationName: string;
+  thumbnail?: string | null;
+  recommendedLevel?: number | null;
+  action?: NotificationAction;
+  onViewMap?: () => void;
 }
 
 /**
@@ -34,8 +51,8 @@ export interface NotificationApi {
   expGained(amount: number): void;
   /** "Level Up — Reached level <newLevel>" */
   levelUp(newLevel: number): void;
-  /** "Location Unlocked — <locationName>" */
-  locationUnlocked(locationName: string): void;
+  /** "New Location Unlocked — <locationName>" */
+  locationUnlocked(location: string | LocationUnlockedNotificationInput): void;
   /** "Loyalty Changed — <companionName> +<delta> Loyalty" */
   companionLoyaltyChanged(companionName: string, delta: number): void;
 }
