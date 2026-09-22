@@ -5,6 +5,7 @@ import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
 import Map from '../Map/Map'
 import Shop from '../Shop/Shop'
+import Collection from '../Collection/Collection'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
@@ -14,8 +15,9 @@ import market from '../../assets/MainMenu/Buttons/Market.png'
 import skills from '../../assets/MainMenu/Buttons/Skills.png'
 import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
+import buyButton from '../../assets/Shop/market-assets/buy-button.png'
 
-type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options'
+type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options' | 'collection'
 
 const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'new-game', image: newGame, label: 'New Game' },
@@ -58,6 +60,10 @@ function MainMenu({
 
   if (selectedAction === 'shop') {
     return <Shop onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
+  }
+
+  if (selectedAction === 'collection') {
+    return <Collection onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
   }
 
   return (
@@ -113,6 +119,21 @@ function MainMenu({
         </button>
 
         <div className="corner-actions-right">
+          <button
+            className="game-button collection-button"
+            type="button"
+            aria-label="Collection"
+            onClick={() => {
+              onPlayButtonSound()
+              setSelectedAction('collection')
+            }}
+          >
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+              <img src={buyButton} alt="" />
+              <span className="collection-btn-text">Collection</span>
+            </div>
+          </button>
+
           <button
             className="game-button shop-button"
             type="button"
