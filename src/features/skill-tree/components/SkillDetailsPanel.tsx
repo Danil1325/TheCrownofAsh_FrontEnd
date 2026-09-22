@@ -42,7 +42,15 @@ export function SkillDetailsPanel({
     >
       <div className="skill-details__header">
         <div className="skill-details__icon" aria-hidden="true">
-          <FantasyIcon icon={panelIcon} className="fantasy-icon" />
+          {selectedSkill?.iconImage ? (
+            <img
+              className="skill-details__icon-image"
+              src={selectedSkill.iconImage}
+              alt=""
+            />
+          ) : (
+            <FantasyIcon icon={panelIcon} className="fantasy-icon" />
+          )}
         </div>
 
         <div>
@@ -67,50 +75,58 @@ export function SkillDetailsPanel({
 
       <div className="skill-details__separator" />
 
-      <div className="skill-details__property">
-        <strong>Archetype:</strong>
-        <span>{build.archetype}</span>
-      </div>
-
-      <div className="skill-details__property-grid">
-        <div className="skill-details__property">
-          <strong>Status:</strong>
-          <span>{statusLabel}</span>
+      <section className="skill-details__metadata" aria-label="Skill details">
+        <div className="skill-details__property skill-details__property--wide">
+          <strong>Archetype</strong>
+          <span>{build.archetype}</span>
         </div>
 
-        <div className="skill-details__property">
-          <strong>Category:</strong>
-          <span>{activeCategory.label}</span>
-        </div>
-      </div>
-
-      {selectedSkill && (
         <div className="skill-details__property-grid">
-          <div className="skill-details__property">
-            <strong>Cost:</strong>
-            <span>
-              {selectedSkill.cost} {pointLabel}
-            </span>
+          <div
+            className={[
+              'skill-details__property',
+              'skill-details__property--status',
+              `skill-details__property--${unlockEvaluation.progressionState}`,
+            ].join(' ')}
+          >
+            <strong>Status</strong>
+            <span>{statusLabel}</span>
           </div>
 
-          {selectedSkill.requiredLevel !== undefined && (
-            <div className="skill-details__property">
-              <strong>Required Level:</strong>
-              <span>{selectedSkill.requiredLevel}</span>
-            </div>
-          )}
+          <div className="skill-details__property">
+            <strong>Category</strong>
+            <span>{activeCategory.label}</span>
+          </div>
         </div>
-      )}
 
-      {selectedSkill?.prerequisiteSkillId && (
-        <div className="skill-details__property">
-          <strong>Prerequisite:</strong>
-          <span>
-            {unlockEvaluation.prerequisiteSkillName ??
-              selectedSkill.prerequisiteSkillId}
-          </span>
-        </div>
-      )}
+        {selectedSkill && (
+          <>
+            <div className="skill-details__property skill-details__property--wide skill-details__property--cost">
+              <strong>Cost</strong>
+              <span>
+                {selectedSkill.cost} {pointLabel}
+              </span>
+            </div>
+
+            {selectedSkill.requiredLevel !== undefined && (
+              <div className="skill-details__property skill-details__property--wide">
+                <strong>Required Level</strong>
+                <span>{selectedSkill.requiredLevel}</span>
+              </div>
+            )}
+          </>
+        )}
+
+        {selectedSkill?.prerequisiteSkillId && (
+          <div className="skill-details__property skill-details__property--wide">
+            <strong>Prerequisite</strong>
+            <span>
+              {unlockEvaluation.prerequisiteSkillName ??
+                selectedSkill.prerequisiteSkillId}
+            </span>
+          </div>
+        )}
+      </section>
 
       {unlockEvaluation.disabledReason && (
         <p className="skill-details__reason" role="status">

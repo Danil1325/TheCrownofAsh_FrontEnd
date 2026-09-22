@@ -2045,11 +2045,12 @@
 }
 
 .skill-tree-screen .skill-details__header {
-  min-height: 16.6%;
+  flex: 0 0 auto;
+  min-height: 12.4%;
   display: flex;
   align-items: center;
   gap: 6.5%;
-  padding: 2% 1.5% 4.4%;
+  padding: 1.1% 1.5% 2.2%;
   border-bottom: 1px solid rgba(71, 41, 17, 0.38);
   background:
     radial-gradient(circle at 18% 48%, rgba(255, 240, 184, 0.28), transparent 33%),
@@ -2083,43 +2084,68 @@
   height: 58%;
 }
 
+.skill-tree-screen .skill-details__icon-image {
+  width: 74%;
+  height: 74%;
+  display: block;
+  object-fit: contain;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 3px rgba(20, 8, 2, 0.36));
+}
+
 .skill-tree-screen .skill-details__icon .fantasy-icon path,
 .skill-tree-screen .skill-details__icon .fantasy-icon circle {
   stroke-width: 5.4;
 }
 
 .skill-tree-screen .skill-details h2 {
-  margin: 0 0 6px;
-  color: #2b1608;
-  font-size: clamp(17px, 1.2vw, 24px);
+  margin: 0 0 5px;
+  color: #1f0d03;
+  font-size: clamp(20px, 1.42vw, 28px);
   font-weight: 700;
-  line-height: 1.04;
+  line-height: 1.02;
   overflow-wrap: anywhere;
+  text-shadow:
+    0 1px rgba(255, 238, 190, 0.62),
+    0 2px 0 rgba(93, 46, 15, 0.16),
+    0 5px 8px rgba(62, 28, 9, 0.12);
 }
 
 .skill-tree-screen .skill-details__header span {
-  color: #704622;
-  font-size: clamp(10px, 0.82vw, 14px);
+  color: #321706;
+  font-size: clamp(12px, 0.96vw, 16px);
   font-style: italic;
+  font-weight: 800;
   line-height: 1.2;
+  text-shadow:
+    0 1px rgba(255, 235, 181, 0.58),
+    0 2px rgba(74, 35, 12, 0.08);
 }
 
 .skill-tree-screen .skill-details__description {
-  min-height: 21.5%;
-  padding: 5.4% 2% 3%;
+  flex: 0 0 auto;
+  height: auto;
+  padding: 1.1% 1.7% 0;
+  margin-bottom: clamp(8px, 0.65vw, 12px);
   border-bottom: 1px solid rgba(84, 48, 20, 0.28);
   box-shadow: 0 1px rgba(255, 239, 198, 0.3);
 }
 
 .skill-tree-screen .skill-details__description p {
-  color: #321d0e;
-  font-size: clamp(12px, 0.88vw, 17px);
-  line-height: 1.42;
+  margin: 0;
+  color: #1f0f05;
+  font-size: clamp(13.5px, 0.98vw, 18px);
+  font-weight: 700;
+  line-height: 1.45;
+  text-shadow: 0 1px rgba(255, 239, 194, 0.4);
 }
 
 .skill-tree-screen .skill-card-preview {
-  margin: 3% 2% 2%;
-  padding: 3%;
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: center;
+  margin: 0 0.4% 0.45%;
+  padding: 0.45% 0.65% 0.55%;
   border: 1px solid rgba(87, 50, 20, 0.42);
   border-radius: 4px;
   background:
@@ -2131,16 +2157,24 @@
 }
 
 .skill-tree-screen .skill-card-preview__header {
+  width: min(100%, 194px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 3%;
-  color: #321a09;
-  font-size: clamp(10px, 0.78vw, 14px);
-  font-weight: 700;
+  margin-bottom: 1%;
+  color: #211006;
+  font-size: clamp(10.5px, 0.84vw, 15px);
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 1px rgba(255, 239, 194, 0.54),
+    0 -1px rgba(65, 29, 9, 0.1);
+}
+
+.skill-tree-screen .skill-card-preview__header > span {
+  color: #2f1707;
 }
 
 .skill-tree-screen .skill-card-preview__toggle {
@@ -2152,24 +2186,32 @@
 
 .skill-tree-screen .skill-card-preview__toggle-button {
   min-width: 40px;
-  padding: 3px 7px;
+  padding: 2px 7px;
   border: 0;
-  color: #6a411d;
-  background: rgba(244, 211, 142, 0.46);
+  color: #321806;
+  background: rgba(236, 197, 119, 0.5);
   font: inherit;
-  font-size: clamp(9px, 0.68vw, 12px);
+  font-size: clamp(10px, 0.74vw, 13px);
+  font-weight: 900;
+  text-shadow: 0 1px rgba(255, 236, 183, 0.42);
   cursor: pointer;
 }
 
 .skill-tree-screen .skill-card-preview__toggle-button--active {
-  color: #2b1608;
-  background: linear-gradient(180deg, #f4d99a, #be7d3b);
+  color: #180902;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 244, 196, 0.62), transparent 45%),
+    linear-gradient(180deg, #f0cc82, #a9642e);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 194, 0.34),
+    inset 0 -4px 7px rgba(82, 39, 13, 0.18),
+    0 1px 2px rgba(49, 22, 7, 0.16);
 }
 
 .skill-tree-screen .skill-card-preview__image {
   display: block;
-  width: 100%;
-  max-height: clamp(120px, 17vh, 220px);
+  width: min(100%, clamp(166px, 21.5vh, 194px));
+  height: clamp(208px, 26.9vh, 243px);
   object-fit: contain;
   border: 1px solid rgba(52, 26, 9, 0.42);
   border-radius: 3px;
@@ -2179,7 +2221,7 @@
 
 .skill-tree-screen .skill-details__separator {
   height: 1px;
-  margin: 1% 0 3.5%;
+  margin: 0.25% 0 0.75%;
   background:
     linear-gradient(
       90deg,
@@ -2190,35 +2232,198 @@
   box-shadow: 0 1px rgba(255, 239, 199, 0.3);
 }
 
+.skill-tree-screen .skill-details__metadata {
+  position: relative;
+  margin: 0 0.5% 0.35%;
+  padding: 1% 1.35%;
+  border: 1px solid rgba(78, 43, 16, 0.58);
+  border-radius: 4px;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(255, 244, 207, 0.46), transparent 30%),
+    linear-gradient(90deg, rgba(84, 42, 14, 0.18), transparent 18% 82%, rgba(84, 42, 14, 0.15)),
+    linear-gradient(180deg, rgba(249, 225, 169, 0.54), rgba(168, 98, 40, 0.2));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 239, 195, 0.24),
+    inset 0 2px 8px rgba(255, 244, 205, 0.18),
+    inset 0 -8px 16px rgba(66, 31, 10, 0.16);
+}
+
+.skill-tree-screen .skill-details__metadata::before,
+.skill-tree-screen .skill-details__metadata::after {
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  height: 1px;
+  content: '';
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(83, 45, 16, 0.42),
+      rgba(183, 121, 54, 0.58),
+      rgba(83, 45, 16, 0.42),
+      transparent
+    );
+  box-shadow: 0 1px rgba(255, 237, 185, 0.34);
+  pointer-events: none;
+}
+
+.skill-tree-screen .skill-details__metadata::before {
+  top: 4px;
+}
+
+.skill-tree-screen .skill-details__metadata::after {
+  bottom: 4px;
+}
+
 .skill-tree-screen .skill-details__property {
-  margin-bottom: 2.8%;
-  padding: 0 2%;
+  position: relative;
+  margin-bottom: 0.9%;
+  padding: 2px 8px 3px;
+  border: 1px solid rgba(75, 40, 15, 0.48);
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 240, 195, 0.32), transparent 38%),
+    linear-gradient(90deg, rgba(74, 37, 13, 0.14), transparent 16% 84%, rgba(74, 37, 13, 0.12)),
+    linear-gradient(180deg, rgba(255, 237, 187, 0.48), rgba(148, 82, 35, 0.16));
+  box-shadow:
+    inset 0 1px rgba(255, 241, 201, 0.34),
+    inset 0 -5px 9px rgba(75, 37, 13, 0.12),
+    0 1px rgba(255, 238, 190, 0.12);
+}
+
+.skill-tree-screen .skill-details__property::before {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 1px;
+  content: '';
+  background:
+    linear-gradient(
+      90deg,
+      rgba(72, 38, 14, 0.34),
+      transparent 34% 66%,
+      rgba(72, 38, 14, 0.34)
+    );
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.skill-tree-screen .skill-details__property:last-child {
+  margin-bottom: 0;
 }
 
 .skill-tree-screen .skill-details__property-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8%;
+  gap: 2.4%;
+  margin-bottom: 0.9%;
+}
+
+.skill-tree-screen .skill-details__property-grid:last-child {
+  margin-bottom: 0;
+}
+
+.skill-tree-screen .skill-details__property--wide {
+  grid-column: 1 / -1;
 }
 
 .skill-tree-screen .skill-details__property strong {
+  position: relative;
   display: block;
   margin-bottom: 2px;
-  color: #281305;
-  font-size: clamp(11px, 0.84vw, 16px);
-  text-shadow: 0 1px rgba(255, 236, 183, 0.45);
+  color: #573313;
+  font-size: clamp(10.5px, 0.78vw, 14px);
+  font-weight: 900;
+  letter-spacing: 0.115em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow:
+    0 1px rgba(255, 239, 190, 0.7),
+    0 -1px rgba(47, 21, 6, 0.18),
+    1px 0 rgba(91, 48, 16, 0.08);
+  z-index: 1;
 }
 
 .skill-tree-screen .skill-details__property span {
-  color: #5e3718;
-  font-size: clamp(10.5px, 0.76vw, 14px);
+  position: relative;
+  display: block;
+  color: #1e0d03;
+  font-size: clamp(15px, 1.1vw, 20px);
   font-style: italic;
-  line-height: 1.2;
+  font-weight: 900;
+  line-height: 1.05;
+  text-shadow:
+    0 1px rgba(255, 239, 194, 0.54),
+    0 2px rgba(74, 35, 12, 0.1);
+  z-index: 1;
+}
+
+.skill-tree-screen .skill-details__property--status {
+  border-color: rgba(84, 45, 15, 0.54);
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 237, 183, 0.34), transparent 40%),
+    linear-gradient(90deg, rgba(83, 41, 14, 0.15), transparent 18% 82%, rgba(83, 41, 14, 0.12)),
+    linear-gradient(180deg, rgba(251, 230, 177, 0.5), rgba(151, 84, 35, 0.16));
+}
+
+.skill-tree-screen .skill-details__property--available span {
+  color: #271204;
+  text-shadow:
+    0 1px rgba(255, 239, 194, 0.58),
+    0 0 6px rgba(181, 117, 43, 0.18);
+}
+
+.skill-tree-screen .skill-details__property--unlocked span {
+  color: #4e160b;
+}
+
+.skill-tree-screen .skill-details__property--locked span {
+  color: #2f291f;
+}
+
+.skill-tree-screen .skill-details__property--cost {
+  border-color: rgba(88, 49, 18, 0.64);
+  background:
+    radial-gradient(circle at 9% 50%, rgba(245, 207, 128, 0.44), transparent 31%),
+    linear-gradient(90deg, rgba(91, 46, 16, 0.19), transparent 18% 82%, rgba(91, 46, 16, 0.16)),
+    linear-gradient(180deg, rgba(253, 229, 168, 0.56), rgba(187, 116, 46, 0.22));
+  box-shadow:
+    inset 0 1px rgba(255, 244, 205, 0.38),
+    inset 0 -6px 10px rgba(77, 38, 12, 0.14),
+    0 1px rgba(255, 238, 190, 0.14);
+}
+
+.skill-tree-screen .skill-details__property--cost::after {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  content: '';
+  border: 1px solid rgba(79, 42, 14, 0.44);
+  background:
+    linear-gradient(180deg, rgba(246, 213, 141, 0.86), rgba(154, 87, 34, 0.74));
+  box-shadow:
+    inset 0 0 3px rgba(255, 240, 190, 0.36),
+    0 1px 2px rgba(51, 24, 8, 0.22);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.skill-tree-screen .skill-details__property--cost span {
+  color: #190902;
+  font-size: clamp(15.5px, 1.16vw, 21px);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-shadow:
+    0 1px rgba(255, 237, 186, 0.66),
+    0 0 7px rgba(172, 105, 35, 0.18);
 }
 
 .skill-tree-screen .skill-details__reason {
   min-height: 1.4em;
-  margin: 1.5% 5% 2%;
+  margin: 0.7% 5% 0.9%;
   color: #613513;
   font-size: clamp(10px, 0.78vw, 14px);
   font-style: italic;
@@ -2231,7 +2436,7 @@
 .skill-tree-screen .unlock-button {
   position: relative;
   width: 92%;
-  min-height: clamp(38px, 2.86vw, 56px);
+  min-height: clamp(36px, 2.74vw, 54px);
   margin: auto auto 0;
   border: 2px solid #5b3117;
   border-radius: 4px;
@@ -2288,7 +2493,7 @@
 }
 
 .skill-tree-screen .skill-details__quote {
-  margin: 3.4% 4% 0;
+  margin: 0.55% 4% 0;
   color: #623d1d;
   font-size: clamp(9px, 0.68vw, 12px);
   font-style: italic;
