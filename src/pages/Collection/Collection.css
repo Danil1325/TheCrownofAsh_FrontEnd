@@ -44,13 +44,22 @@
 
   border: min(1vw, 1.5svh) solid transparent;
   border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
+  padding: 1.5rem 1.1rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.collection-sidebar-left::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background-image: url('../../assets/Inventory/Pergament texture.png') !important;
   background-size: cover !important;
   background-position: center;
   box-shadow: inset 0 0 1.8rem rgba(108, 59, 27, 0.3);
-
-  padding: 1.5rem 1.1rem 1rem;
-  box-sizing: border-box;
+  transform: rotate(180deg);
 }
 
 .collection-controls-header {

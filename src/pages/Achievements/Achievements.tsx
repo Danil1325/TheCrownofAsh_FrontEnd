@@ -51,12 +51,27 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   
   const shownAchievements = useMemo(() => {
-    return achievementsData.filter((achievement) => {
+    let filtered = achievementsData.filter((achievement) => {
       const isCompleted = achievement.progress >= achievement.total;
       if (activeCategory === 'Completed') return isCompleted;
       if (activeCategory === 'In Progress') return !isCompleted;
       return true;
     });
+
+    filtered.sort((a, b) => {
+      const aCompleted = a.progress >= a.total;
+      const bCompleted = b.progress >= b.total;
+      
+      const score = (ach: Achievement, isComp: boolean) => {
+        if (isComp) return 3;
+        if (ach.progress === 0) return 2;
+        return 1;
+      };
+      
+      return score(a, aCompleted) - score(b, bCompleted);
+    });
+
+    return filtered;
   }, [activeCategory]);
 
   const categories: Category[] = ['All', 'Completed', 'In Progress'];

@@ -12,11 +12,13 @@ import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
 import newGame from '../../assets/MainMenu/Buttons/New Game.png'
 import loadGame from '../../assets/MainMenu/Buttons/Load Game.png'
-import market from '../../assets/MainMenu/Buttons/Market.png'
 import skills from '../../assets/MainMenu/Buttons/Skills.png'
-import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
-import buyButton from '../../assets/Shop/market-assets/buy-button.png'
+
+import achievementsBtn from '../../assets/MainMenu/Buttons/Achievements.png'
+import collectionBtn from '../../assets/MainMenu/Buttons/Collection.png'
+import shopBtn from '../../assets/MainMenu/Buttons/Shop.png'
+import logOutBtn from '../../assets/MainMenu/Buttons/LogOut.png'
 
 type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options' | 'collection' | 'achievements'
 
@@ -113,10 +115,7 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               setSelectedAction('achievements')
             }}
           >
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-              <img src={buyButton} alt="" />
-              <span className="collection-btn-text">Achievements</span>
-            </div>
+            <img src={achievementsBtn} alt="Achievements" />
           </button>
 
           <button
@@ -128,10 +127,7 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               setSelectedAction('collection')
             }}
           >
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-              <img src={buyButton} alt="" />
-              <span className="collection-btn-text">Collection</span>
-            </div>
+            <img src={collectionBtn} alt="Collection" />
           </button>
 
           <button
@@ -143,7 +139,7 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               setSelectedAction('shop')
             }}
           >
-            <img src={market} alt="" />
+            <img src={shopBtn} alt="Shop" />
           </button>
 
           <button
@@ -155,7 +151,7 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               onLogout()
             }}
           >
-            <img src={logOut} alt="" />
+            <img src={logOutBtn} alt="Log Out" />
           </button>
         </div>
       </div>
