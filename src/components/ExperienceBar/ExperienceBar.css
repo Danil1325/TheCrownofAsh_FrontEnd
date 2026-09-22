@@ -1,10 +1,10 @@
 .experience-bar {
   display: grid;
-  grid-template-columns: auto minmax(10rem, 18rem);
-  gap: 4px 10px;
+  grid-template-columns: auto minmax(6rem, 18rem);
+  gap: 2px 10px;
   width: min(25rem, calc(100vw - 2rem));
   min-height: 86px;
-  padding: 18px 28px;
+  padding: 40px 50px;
   border: 0;
   background: url('../../assets/EXPLvlUp/EXPBarBackground.png') center/100% 100% no-repeat;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.55));
@@ -47,7 +47,7 @@
   display: flex;
   justify-content: space-between;
   color: #ffe3a5;
-  font-size: 11px;
+  font-size: 13px;
   text-shadow: 0 2px 3px #251006;
 }
 .experience-bar__numbers b {
