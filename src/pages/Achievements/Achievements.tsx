@@ -16,6 +16,10 @@ import manaCluster from '../../assets/Battle/icons/mana_cluster.png';
 import orcCard from '../../assets/Battle/characters/orc_card.png';
 import goblin from '../../assets/Battle/characters/goblin.png';
 
+import commonBg from '../../assets/Achievements/Common Achievement.png';
+import rareBg from '../../assets/Achievements/Rare Achievement.png';
+import legendaryBg from '../../assets/Achievements/Legendary Achievement.png';
+
 type Category = 'All' | 'Completed' | 'In Progress';
 
 export type Achievement = {
@@ -64,10 +68,10 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
           {/* Left Sidebar - Navigation */}
           <aside className="achievements-sidebar-left">
             <div className="achievements-controls-header">
-              <h2 className="achievements-heading" style={{ margin: 0, fontSize: '1.8rem' }}>✦ ACHIEVEMENTS ✦</h2>
+              <h2 className="achievements-heading" style={{ margin: 0, fontSize: '1.4rem' }}>✦ ACHIEVEMENTS ✦</h2>
             </div>
             
-            <h2 className="achievements-heading" style={{ fontSize: '1.4rem', marginTop: '10px' }}>FILTERS</h2>
+            <h2 className="achievements-heading" style={{ fontSize: '1.2rem', marginTop: '10px' }}>FILTERS</h2>
             <nav className="achievements-menu">
               {categories.map(cat => (
                 <button
@@ -107,6 +111,10 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
                    const isCompleted = achievement.progress >= achievement.total;
                    const progressPercent = Math.min(100, Math.round((achievement.progress / achievement.total) * 100));
                    
+                   let bgTexture = commonBg;
+                   if (isCompleted) bgTexture = legendaryBg;
+                   else if (achievement.progress > 0) bgTexture = rareBg;
+                   
                    return (
                      <motion.div 
                        key={achievement.id}
@@ -116,21 +124,21 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
                        transition={{ duration: 0.2 }}
                        layout
                        className={`achievement-card ${isCompleted ? 'completed' : 'in-progress'}`}
+                       style={{ backgroundImage: `url('${bgTexture}')` }}
                      >
                        <div className="achievement-icon-wrapper">
                          <img src={achievement.icon} alt={achievement.title} className="achievement-icon" />
-                         {isCompleted && <div className="achievement-checkmark">✓</div>}
                        </div>
                        
                        <div className="achievement-details">
                          <h3 className="achievement-title">{achievement.title}</h3>
                          <p className="achievement-description">{achievement.description}</p>
                          
-                         <div className="achievement-progress-bar-container">
-                           <div className="achievement-progress-bar" style={{ width: `${progressPercent}%` }}></div>
-                         </div>
                          <div className="achievement-progress-text">
                            {achievement.progress} / {achievement.total}
+                         </div>
+                         <div className="achievement-progress-bar-container">
+                           <div className="achievement-progress-bar" style={{ width: `${progressPercent}%` }}></div>
                          </div>
                        </div>
 

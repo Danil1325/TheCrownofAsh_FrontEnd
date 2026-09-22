@@ -104,7 +104,7 @@
 .collection-page-btn-text {
   font-size: 1.1rem;
   margin: 0;
-  transform: translate(2px, -1px);
+  transform: translate(2px, 3px);
 }
 
 .collection-back-button-container {

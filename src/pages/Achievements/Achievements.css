@@ -66,44 +66,46 @@
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 15px;
+  padding: 5px 0;
+  min-height: 68px;
   cursor: pointer;
   transition: transform 0.2s, filter 0.2s;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #321b0d;
 }
 
 .achievements-menu button:hover {
-  transform: scale(1.05);
+  transform: translateX(5px);
   filter: brightness(1.1);
 }
 
 .achievements-menu button.active {
-  filter: brightness(1.2) drop-shadow(0 0 5px rgba(217, 186, 123, 0.5));
+  color: #ffffff;
+  filter: brightness(1.1);
 }
 
 .achievements-page-btn-text {
-  color: #fff1ad;
-  font-family: Cinzel, Georgia, serif;
-  font-size: 1rem;
-  text-shadow: 1px 1px 2px #000;
+  font-family: Cinzel, Garamond, Georgia, serif;
+  font-size: 1.1rem;
   letter-spacing: 0.05em;
+  transform: translate(2px, 3px);
+  margin: 0;
 }
 
 .achievements-progress-summary {
-  background: rgba(72, 36, 15, 0.1);
-  border: 1px solid rgba(118, 81, 39, 0.5);
-  border-radius: 8px;
+  background: transparent;
+  border: none;
   padding: 15px;
   text-align: center;
   margin-bottom: 20px;
 }
 
 .summary-title {
-  color: #67421e;
-  font-size: 0.9rem;
-  font-weight: bold;
+  color: #321b0d;
+  font-size: 1.1rem;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -196,12 +198,15 @@
   align-items: center;
   gap: 20px;
   padding: 15px 20px;
-  background: url('../../assets/ui/Sell content.png') center / 100% 100% no-repeat;
   border: 0;
   box-shadow: none;
   min-height: 110px;
+  width: 55%;
   position: relative;
   transition: transform 0.2s, filter 0.2s;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .achievement-card:hover {
@@ -226,10 +231,10 @@
   width: 80px;
   height: 80px;
   flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  padding: 10px;
-  border: 2px solid #765127;
+  background: transparent;
+  padding: 5px;
+  border: none;
+  margin-left: 15px;
 }
 
 .achievement-icon {
@@ -286,7 +291,7 @@
   height: 8px;
   background: rgba(72, 36, 15, 0.3);
   border-radius: 4px;
-  margin-top: 5px;
+  margin-top: 2px;
   overflow: hidden;
   border: 1px solid rgba(118, 81, 39, 0.5);
 }
@@ -299,11 +304,12 @@
 }
 
 .achievement-progress-text {
-  font-size: 0.75rem;
-  color: #79572f;
+  font-size: 0.95rem;
+  color: #48240f;
   text-align: right;
   font-family: Arial, sans-serif;
-  font-weight: bold;
+  font-weight: 800;
+  margin-top: 8px;
 }
 
 .achievement-reward {
@@ -313,6 +319,7 @@
   justify-content: center;
   min-width: 120px;
   padding-left: 15px;
+  margin-right: 25px;
   border-left: 1px dashed rgba(118, 81, 39, 0.4);
 }
 
