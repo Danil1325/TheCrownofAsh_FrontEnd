@@ -39,6 +39,7 @@ export interface Skill {
   name: string
   description: string
   icon: FantasyIconId
+  iconImage?: string
   cost: number
   card?: SkillCardAssets
   requiredLevel?: number

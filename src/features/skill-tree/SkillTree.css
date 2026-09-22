@@ -1291,6 +1291,12 @@
   shape-rendering: geometricPrecision;
 }
 
+.skill-tree-screen .tree-node__icon-image {
+  display: block;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
 .skill-tree-screen .tree-node__icon .node-icon__outline {
   color: rgba(35, 13, 4, 0.94);
   opacity: 0.98;

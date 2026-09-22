@@ -56,11 +56,20 @@ export function SkillNode({
         <span className="tree-node__engraving" aria-hidden="true" />
         <span className="tree-node__sigils" aria-hidden="true" />
         <span className="tree-node__notch" aria-hidden="true" />
-        <FantasyIcon
-          icon={skill?.icon ?? 'lock'}
-          className="fantasy-icon tree-node__icon"
-          variant="node"
-        />
+        {skill?.iconImage ? (
+          <img
+            className="tree-node__icon tree-node__icon-image"
+            src={skill.iconImage}
+            alt=""
+            aria-hidden="true"
+          />
+        ) : (
+          <FantasyIcon
+            icon={skill?.icon ?? 'lock'}
+            className="fantasy-icon tree-node__icon"
+            variant="node"
+          />
+        )}
         <span className="tree-node__glint" aria-hidden="true" />
       </span>
 
