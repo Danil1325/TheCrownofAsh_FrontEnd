@@ -42,8 +42,8 @@ type MainMenuProps = {
   onLogout: () => void
 }
 
-function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLoadGame, onLogout }: MainMenuProps) {
 function MainMenu({
+  playerId,
   musicVolume,
   sfxVolume,
   onMusicVolumeChange,
@@ -51,6 +51,7 @@ function MainMenu({
   onPlayButtonSound,
   onOpenSkills,
   onNewGame,
+  onLoadGame,
   onLogout,
 }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
@@ -99,26 +100,14 @@ function MainMenu({
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
-                if (item.action === 'new-game') {
-                  setMapMode('new')
-                } else if (item.action === 'load-game') {
-                  setMapMode('load')
-                } else {
-                  setSelectedAction(item.action)
-                  onNewGame()
+                if (item.action === 'new-game' || item.action === 'load-game') {
+                  setMapMode(item.action === 'new-game' ? 'new' : 'load')
                   return
                 }
-
-                if (item.action === 'load-game') {
-                  setIsMapOpen(true)
-                  return
-                }
-
                 if (item.action === 'skills') {
                   onOpenSkills()
                   return
                 }
-
                 setSelectedAction(item.action)
               }}
             >
