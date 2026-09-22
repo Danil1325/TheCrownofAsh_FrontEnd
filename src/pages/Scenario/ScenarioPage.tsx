@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { BookOpen, Crown, Home, Loader2, RotateCcw, ScrollText, TrendingUp } from 'lucide-react';
+import { BookOpen, Crown, Home, Loader2, RotateCcw, ScrollText } from 'lucide-react';
 import * as scenarioApi from '../../api/scenarioApi';
 import { ApiError } from '../../api/authApi';
 import type { ScenarioProgress, StoryChoice, StoryScene } from '../../types/scenario';
@@ -7,6 +7,8 @@ import ScenarioBackground from '../../components/ScenarioBackground/ScenarioBack
 import DialogueBox from '../../components/DialogueBox/DialogueBox';
 import ChoiceBox from '../../components/ChoiceBox/ChoiceBox';
 import QuestJournal from '../../components/QuestJournal/QuestJournal';
+import ExperienceBar from '../../components/ExperienceBar/ExperienceBar';
+import LevelUpModal from '../../components/LevelUpModal/LevelUpModal';
 import { useScenarioScene } from '../../hooks/useScenarioScene';
 import { useScenarioProgression } from '../../hooks/useScenarioProgression';
 import './ScenarioPage.css';
@@ -47,6 +49,7 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
   const [endProgress, setEndProgress] = useState<ScenarioProgress | null>(null);
   const [isJournalOpen, setIsJournalOpen] = useState(false);
   const [selectedChoiceId, setSelectedChoiceId] = useState<number | null>(null);
+  const [levelUpLevel, setLevelUpLevel] = useState<number | null>(null);
 
   const { progression, refresh: refreshProgression } = useScenarioProgression(playerId);
 
@@ -120,6 +123,10 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
     [refreshProgression],
   );
 
+  const handleLevelUp = useCallback((level: number) => {
+    setLevelUpLevel(level);
+  }, []);
+
   const {
     currentDialogue,
     hasNextDialogue,
@@ -134,6 +141,7 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
     playerId,
     onSceneChange: handleSceneChange,
     onScenarioEnd: handleScenarioEnd,
+    onLevelUp: handleLevelUp,
   });
 
   const handleChoice = useCallback(
@@ -151,6 +159,14 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
     ? Object.values(endProgress.companionLoyalty).reduce((sum, value) => sum + value, 0)
     : 0;
   const questCount = endProgress ? Object.keys(endProgress.questProgress).length : 0;
+  const displayProgression = progression ?? {
+    level: 1,
+    currentExperience: 0,
+    experienceForCurrentLevel: 0,
+    experienceForNextLevel: 100,
+    experienceProgressPercentage: 0,
+    availableSkillPoints: 0,
+  };
 
   return (
     <main className="scenario-page">
@@ -163,37 +179,7 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
 
       <header className="scenario-hud">
         <div className="scenario-hud-left">
-          {progression != null && (
-            <div className="scenario-hud-progression">
-              <span className="scenario-hud-level">
-                Level <b>{progression.level}</b>
-              </span>
-              <div
-                className="exp-bar"
-                role="progressbar"
-                aria-label="Experience progress"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={Math.round(progression.experienceProgressPercentage)}
-              >
-                <div
-                  className="exp-bar-fill"
-                  style={{ width: `${progression.experienceProgressPercentage}%` }}
-                />
-              </div>
-              <span className="exp-bar-text">
-                {progression.currentExperience}
-                {progression.experienceForNextLevel != null && (
-                  <> / {progression.experienceForNextLevel} EXP</>
-                )}
-              </span>
-              {progression.availableSkillPoints > 0 && (
-                <span className="exp-bar-skill-points">
-                  <TrendingUp size={13} aria-hidden="true" /> +{progression.availableSkillPoints} SP
-                </span>
-              )}
-            </div>
-          )}
+          <ExperienceBar progression={displayProgression} onPreviewLevelUp={() => setLevelUpLevel(displayProgression.level + 1)} />
         </div>
 
         <nav className="scenario-hud-right" aria-label="Scenario options">
@@ -329,6 +315,9 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
 
       {isJournalOpen && (
         <QuestJournal playerId={playerId} onClose={() => setIsJournalOpen(false)} />
+      )}
+      {levelUpLevel != null && (
+        <LevelUpModal level={levelUpLevel} onContinue={() => setLevelUpLevel(null)} />
       )}
     </main>
   );
