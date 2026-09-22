@@ -1,0 +1,184 @@
+.collection-overlay {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1a0d08;
+  overflow: hidden;
+}
+
+.collection-container {
+  width: 100%;
+  height: 100%;
+  background: url('../../assets/Inventory/Pergament type B.png') center/cover, #27160f;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fade-in 0.3s ease-out;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  color: #27160f;
+  padding: 0;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.collection-body {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+/* Sidebar styling matching inventory-sidebar-left */
+.collection-sidebar-left {
+  width: max(270px, 15.5vw);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  flex-shrink: 0;
+
+  border: min(1vw, 1.5svh) solid transparent;
+  border-image: url('../../assets/Battle/ui/panel_information.png') 80 / 1 stretch;
+  padding: 1.5rem 1.1rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.collection-sidebar-left::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url('../../assets/Inventory/Pergament texture.png') !important;
+  background-size: cover !important;
+  background-position: center;
+  box-shadow: inset 0 0 1.8rem rgba(108, 59, 27, 0.3);
+  transform: rotate(180deg);
+}
+
+.collection-controls-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.collection-heading {
+  margin: 0;
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.collection-menu {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 10px;
+}
+
+.collection-menu button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 68px;
+  padding: 5px 0;
+  border: 0;
+  background-color: transparent;
+  background-size: 100% 100%;
+  color: #321b0d;
+  cursor: pointer;
+  transition: filter 0.16s, transform 0.16s;
+}
+
+.collection-menu button:hover,
+.collection-menu button.active {
+  transform: translateX(5px);
+  filter: brightness(1.1);
+}
+
+.collection-menu button.active {
+  color: #ffffff;
+  text-shadow: none;
+}
+
+.collection-page-btn-text {
+  font-size: 1.1rem;
+  margin: 0;
+  transform: translate(2px, 3px);
+}
+
+.collection-back-button-container {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.collection-back-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.collection-back-btn img {
+  height: 3.8rem;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.5));
+}
+
+.collection-back-btn span {
+  position: absolute;
+  color: #351a0d;
+  font: 800 clamp(0.7rem, 0.9vw, 0.95rem) Georgia, serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.collection-back-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.collection-center {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 30px;
+}
+
+.collection-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* Custom scrollbar for center area */
+.collection-center::-webkit-scrollbar {
+  width: 8px;
+}
+.collection-center::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+.collection-center::-webkit-scrollbar-thumb {
+  background: rgba(87, 43, 21, 0.6);
+  border-radius: 4px;
+}
+.collection-center::-webkit-scrollbar-thumb:hover {
+  background: rgba(87, 43, 21, 0.8);
+}

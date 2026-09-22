@@ -1,10 +1,12 @@
 import { useCallback, useReducer, useState } from 'react'
 import './Shop.css'
 import shopHeader from '../../assets/ui/ShopHeader.png'
-import buyButton from '../../assets/Buttons/Buy.png'
-import sellButton from '../../assets/Buttons/Sell.png'
+import buyIcon from '../../assets/ui/Buy Icon.png'
+import sellIcon from '../../assets/ui/Sell Icon.png'
 import exitIcon from '../../assets/Icons/Exit Icon.png'
 import coinIcon from '../../assets/Icons/Coin.png'
+import pouchIcon from '../../assets/ui/Pouch Icon.png'
+import chestIcon from '../../assets/ui/Chest Icon.png'
 import { MarketToast, type MarketNotification } from '../../components/MarketToast'
 import { CategoryMenu } from '../../components/CategoryMenu'
 import { InventoryItemCard } from '../../components/InventoryItemCard'
@@ -86,9 +88,10 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
   }
 }
 
-const navigation: ReadonlyArray<{ id: MarketView; label: string }> = [
-  { id: 'shop', label: 'Buy' },
-  { id: 'sell', label: 'Sell Items' },
+const navigation: ReadonlyArray<{ id: MarketView | 'back'; label: string; icon: string }> = [
+  { id: 'shop', label: 'Buy Items', icon: buyIcon },
+  { id: 'sell', label: 'Sell Items', icon: sellIcon },
+  { id: 'back', label: 'Back', icon: exitIcon },
 ]
 
 interface ShopProps {
@@ -132,10 +135,16 @@ function Shop({ onBack, onPlayButtonSound }: ShopProps) {
     dispatchPlayerAction({ type: 'buy', item })
   }
 
-  function handleShopNavigation() {
+  function handleNavigation(id: MarketView | 'back') {
     onPlayButtonSound()
-    setActiveView('shop')
-    setSelectedCategory('all')
+    if (id === 'back') {
+      onBack()
+      return
+    }
+    setActiveView(id)
+    if (id === 'shop') {
+      setSelectedCategory('all')
+    }
   }
 
   function addSellSelection(itemId: string) {
@@ -169,15 +178,6 @@ function Shop({ onBack, onPlayButtonSound }: ShopProps) {
 
   return (
     <main className="market-page">
-      <button
-        className="market-exit-button"
-        type="button"
-        aria-label="Return to main menu"
-        title="Main menu"
-        onClick={() => { onPlayButtonSound(); onBack() }}
-      >
-        <img src={exitIcon} alt="" />
-      </button>
       <div className="market-frame">
         <header className="market-header">
           <div className="market-heading-wrap">
@@ -187,36 +187,34 @@ function Shop({ onBack, onPlayButtonSound }: ShopProps) {
         </header>
 
         <section className="market-workspace" aria-label="Market">
-          <nav className="market-navigation" aria-label="Market sections">
-            <div className="navigation-options">
-              {navigation.map((item) => (
-                <div className="market-nav-group" key={item.id}>
+          <aside className="market-sidebar">
+            <nav className="market-navigation" aria-label="Market sections">
+              <div className="navigation-options">
+                {navigation.map((item) => (
                   <button
-                    className={activeView === item.id ? 'market-nav-button market-nav-image-button is-active' : 'market-nav-button market-nav-image-button'}
+                    key={item.id}
+                    className={activeView === item.id ? 'market-nav-button is-active' : 'market-nav-button'}
                     type="button"
                     aria-pressed={activeView === item.id}
-                    aria-expanded={item.id === 'shop' ? activeView === 'shop' : undefined}
                     aria-label={item.label}
-                    onClick={() => item.id === 'shop' ? handleShopNavigation() : setActiveView(item.id)}
+                    onClick={() => handleNavigation(item.id)}
                   >
-                    <img
-                      className="market-nav-button-image"
-                      src={item.id === 'shop' ? buyButton : sellButton}
-                      alt=""
-                    />
-                    {item.id === 'shop' && <b className="shop-disclosure" aria-hidden="true">−</b>}
+                    <img className="nav-icon" src={item.icon} alt="" />
+                    <span>{item.label}</span>
                   </button>
-                  {item.id === 'shop' && activeView === 'shop' && (
-                    <CategoryMenu
-                      categories={itemCategories}
-                      selectedCategory={selectedCategory}
-                      onSelect={setSelectedCategory}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </nav>
+                ))}
+              </div>
+            </nav>
+            {activeView === 'shop' && (
+              <div className="market-categories-panel">
+                <CategoryMenu
+                  categories={itemCategories}
+                  selectedCategory={selectedCategory}
+                  onSelect={setSelectedCategory}
+                />
+              </div>
+            )}
+          </aside>
 
           <section className={activeView === 'sell' ? 'market-content is-selling' : 'market-content'} aria-labelledby="market-content-title">
             <div className="gold-balance" aria-label={`Current gold balance: ${player.gold} gold`}>
@@ -240,9 +238,8 @@ function Shop({ onBack, onPlayButtonSound }: ShopProps) {
               <div className="sell-panel">
                 <section className="your-items-panel" aria-labelledby="your-items-heading">
                   <div className="sell-section-heading">
-                    <span aria-hidden="true">✦</span>
+                    <img className="heading-icon" src={chestIcon} alt="" />
                     <h3 id="your-items-heading">Your Items</h3>
-                    <span aria-hidden="true">✦</span>
                   </div>
                   {availableItems.length > 0 ? (
                     <div className="item-scroll">
@@ -267,11 +264,6 @@ function Shop({ onBack, onPlayButtonSound }: ShopProps) {
                 </section>
 
                 <aside className="sell-selection-panel" aria-labelledby="sell-selection-heading">
-                  <div className="sell-section-heading">
-                    <span aria-hidden="true">✦</span>
-                    <h3 id="sell-selection-heading">Sell Selection</h3>
-                    <span aria-hidden="true">✦</span>
-                  </div>
                   <div className="selected-items-list">
                     {selectedItems.length > 0 ? (
                       selectedItems.map(({ item, quantity }) => (
@@ -283,18 +275,23 @@ function Shop({ onBack, onPlayButtonSound }: ShopProps) {
                         />
                       ))
                     ) : (
-                      <p><span aria-hidden="true">✧</span> Select items to offer</p>
+                      <div className="empty-sell-selection">
+                        <img className="empty-state-icon" src={pouchIcon} alt="" />
+                        <p>Add your items here to sell them</p>
+                      </div>
                     )}
                   </div>
-                  <p className="estimated-value">Estimated value <strong><img className="buy-coin-icon" src={coinIcon} alt="Gold" /> {estimatedSellValue}</strong></p>
-                  <button
-                    className="sell-button"
-                    type="button"
-                    disabled={selectedItems.length === 0}
-                    onClick={handleSell}
-                  >
-                    Sell
-                  </button>
+                  <div className="sell-footer">
+                    <p className="estimated-value">Estimated value <strong><img className="buy-coin-icon" src={coinIcon} alt="Gold" /> {estimatedSellValue}</strong></p>
+                    <button
+                      className="sell-button"
+                      type="button"
+                      disabled={selectedItems.length === 0}
+                      onClick={handleSell}
+                    >
+                      Sell
+                    </button>
+                  </div>
                 </aside>
               </div>
             )}

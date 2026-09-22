@@ -41,6 +41,7 @@
 .menu-button img,
 .options-button img,
 .shop-button img,
+.collection-button img,
 .logout-button img {
   display: block;
   width: 100%;
@@ -74,8 +75,21 @@
 }
 
 .shop-button,
+.collection-button,
 .logout-button {
   width: min(24vw, 29vh, 24rem);
+}
+
+.collection-btn-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #351a0d;
+  font: 800 clamp(0.9rem, 1.4vw, 1.4rem) Georgia, serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
 }
 
 .action-feedback {

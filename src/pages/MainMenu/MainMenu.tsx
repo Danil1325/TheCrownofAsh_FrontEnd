@@ -6,17 +6,22 @@ import LoadingScreen from '../LoadingScreen/LoadingScreen'
 import Map from '../Map/Map'
 import Shop from '../Shop/Shop'
 import type { StoryScene } from '../../types/scenario'
+import Collection from '../Collection/Collection'
+import Achievements from '../Achievements/Achievements'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
 import newGame from '../../assets/MainMenu/Buttons/New Game.png'
 import loadGame from '../../assets/MainMenu/Buttons/Load Game.png'
-import market from '../../assets/MainMenu/Buttons/Market.png'
 import skills from '../../assets/MainMenu/Buttons/Skills.png'
-import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
 
-type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options'
+import achievementsBtn from '../../assets/MainMenu/Buttons/Achievements.png'
+import collectionBtn from '../../assets/MainMenu/Buttons/Collection.png'
+import shopBtn from '../../assets/MainMenu/Buttons/Shop.png'
+import logOutBtn from '../../assets/MainMenu/Buttons/LogOut.png'
+
+type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options' | 'collection' | 'achievements'
 
 const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'new-game', image: newGame, label: 'New Game' },
@@ -31,18 +36,28 @@ type MainMenuProps = {
   onMusicVolumeChange: (value: number) => void
   onSfxVolumeChange: (value: number) => void
   onPlayButtonSound: () => void
+  onOpenSkills: () => void
   onNewGame: () => void
   onLoadGame: (scene: StoryScene) => void
   onLogout: () => void
 }
 
 function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLoadGame, onLogout }: MainMenuProps) {
+function MainMenu({
+  musicVolume,
+  sfxVolume,
+  onMusicVolumeChange,
+  onSfxVolumeChange,
+  onPlayButtonSound,
+  onOpenSkills,
+  onNewGame,
+  onLogout,
+}: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
   const [mapMode, setMapMode] = useState<'new' | 'load' | null>(null)
 
   if (selectedAction === 'new-game' || selectedAction === 'load-game') {
-
     return <LoadingScreen musicVolume={musicVolume} onComplete={onNewGame} />
   }
 
@@ -60,6 +75,14 @@ function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfx
 
   if (selectedAction === 'shop') {
     return <Shop onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
+  }
+
+  if (selectedAction === 'collection') {
+    return <Collection onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
+  }
+
+  if (selectedAction === 'achievements') {
+    return <Achievements onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
   }
 
   return (
@@ -82,7 +105,21 @@ function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfx
                   setMapMode('load')
                 } else {
                   setSelectedAction(item.action)
+                  onNewGame()
+                  return
                 }
+
+                if (item.action === 'load-game') {
+                  setIsMapOpen(true)
+                  return
+                }
+
+                if (item.action === 'skills') {
+                  onOpenSkills()
+                  return
+                }
+
+                setSelectedAction(item.action)
               }}
             >
               <img src={item.image} alt="" />
@@ -107,6 +144,30 @@ function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfx
 
         <div className="corner-actions-right">
           <button
+            className="game-button collection-button"
+            type="button"
+            aria-label="Achievements"
+            onClick={() => {
+              onPlayButtonSound()
+              setSelectedAction('achievements')
+            }}
+          >
+            <img src={achievementsBtn} alt="Achievements" />
+          </button>
+
+          <button
+            className="game-button collection-button"
+            type="button"
+            aria-label="Collection"
+            onClick={() => {
+              onPlayButtonSound()
+              setSelectedAction('collection')
+            }}
+          >
+            <img src={collectionBtn} alt="Collection" />
+          </button>
+
+          <button
             className="game-button shop-button"
             type="button"
             aria-label="Shop"
@@ -115,7 +176,7 @@ function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfx
               setSelectedAction('shop')
             }}
           >
-            <img src={market} alt="" />
+            <img src={shopBtn} alt="Shop" />
           </button>
 
           <button
@@ -127,16 +188,10 @@ function MainMenu({ playerId, musicVolume, sfxVolume, onMusicVolumeChange, onSfx
               onLogout()
             }}
           >
-            <img src={logOut} alt="" />
+            <img src={logOutBtn} alt="Log Out" />
           </button>
         </div>
       </div>
-
-      {selectedAction && selectedAction !== 'options' && (
-        <div className="action-feedback" role="status" aria-live="polite">
-          {selectedAction === 'skills' && 'Skills selected'}
-        </div>
-      )}
 
       {isOptionsOpen && (
         <OptionsMenu
