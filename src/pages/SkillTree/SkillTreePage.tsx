@@ -1,13 +1,21 @@
 import SkillTree from '../../features/skill-tree/SkillTree'
+import type { ActiveSkillTreeCharacterInput } from '../../features/skill-tree/types/skillTree'
 
 type SkillTreePageProps = {
+  activeCharacter?: ActiveSkillTreeCharacterInput
   onBackToMainMenu: () => void
 }
 
-function SkillTreePage({ onBackToMainMenu }: SkillTreePageProps) {
+function SkillTreePage({
+  activeCharacter,
+  onBackToMainMenu,
+}: SkillTreePageProps) {
   return (
     <div className="skill-tree-screen">
-      <SkillTree onBackToMap={onBackToMainMenu} />
+      <SkillTree
+        activeCharacter={activeCharacter}
+        onBackToMap={onBackToMainMenu}
+      />
     </div>
   )
 }

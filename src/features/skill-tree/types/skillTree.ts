@@ -81,3 +81,9 @@ export interface ActiveSkillTreeCharacter {
   className: CharacterClass
   level: number
 }
+
+export type ActiveSkillTreeCharacterInput = Pick<
+  ActiveSkillTreeCharacter,
+  'race' | 'className'
+> &
+  Partial<Pick<ActiveSkillTreeCharacter, 'level'>>

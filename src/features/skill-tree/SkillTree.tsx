@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { CategoryMenu } from './components/CategoryMenu'
 import { FantasyIcon } from './components/FantasyIcon'
 import { SkillDetailsPanel } from './components/SkillDetailsPanel'
@@ -6,13 +6,15 @@ import { SkillNode } from './components/SkillNode'
 import { TreeConnections } from './components/TreeConnections'
 import {
   getSkillBuildForCharacter,
-  TEMPORARY_ACTIVE_SKILL_TREE_CHARACTER,
+  SKILL_TREE_FALLBACK_ACTIVE_CHARACTER,
 } from './config/skillProgression'
 import { skillCategories, skillTreeData } from './data/skillTreeData'
 import { useSkillProgression } from './hooks/useSkillProgression'
 import type {
   RenderedSkillState,
   Skill,
+  ActiveSkillTreeCharacter,
+  ActiveSkillTreeCharacterInput,
   SkillBuild,
   SkillCategoryId,
   SkillTreeNode,
@@ -20,17 +22,17 @@ import type {
 import './SkillTree.css'
 
 interface SkillTreeProps {
+  activeCharacter?: ActiveSkillTreeCharacterInput
   onBackToMap?: () => void
 }
 
-const CURRENT_CHARACTER = TEMPORARY_ACTIVE_SKILL_TREE_CHARACTER
-const CURRENT_BUILD =
-  getSkillBuildForCharacter(skillTreeData, CURRENT_CHARACTER) ??
+const FALLBACK_BUILD =
+  getSkillBuildForCharacter(skillTreeData, SKILL_TREE_FALLBACK_ACTIVE_CHARACTER) ??
   skillTreeData[0]
-const FIRST_SKILL = CURRENT_BUILD?.skills[0]
+const FALLBACK_FIRST_SKILL = FALLBACK_BUILD?.skills[0]
 const FALLBACK_CATEGORY = skillCategories[0]
 
-if (!CURRENT_BUILD || !FIRST_SKILL || !FALLBACK_CATEGORY) {
+if (!FALLBACK_BUILD || !FALLBACK_FIRST_SKILL || !FALLBACK_CATEGORY) {
   throw new Error('Skill tree data is missing its default build.')
 }
 
@@ -64,6 +66,53 @@ function getCategory(categoryId: SkillCategoryId) {
     skillCategories.find((category) => category.id === categoryId) ??
     FALLBACK_CATEGORY
   )
+}
+
+function getResolvedCharacter(
+  activeCharacter: ActiveSkillTreeCharacterInput | undefined,
+): ActiveSkillTreeCharacter {
+  if (!activeCharacter) {
+    return SKILL_TREE_FALLBACK_ACTIVE_CHARACTER
+  }
+
+  return {
+    ...SKILL_TREE_FALLBACK_ACTIVE_CHARACTER,
+    ...activeCharacter,
+    level:
+      activeCharacter.level ?? SKILL_TREE_FALLBACK_ACTIVE_CHARACTER.level,
+  }
+}
+
+function getEmptyCategorySkillIds() {
+  return skillCategories.reduce((categorySkillIds, category) => {
+    categorySkillIds[category.id] = []
+
+    return categorySkillIds
+  }, {} as SkillBuild['categorySkillIds'])
+}
+
+function getEmptySkillSlots() {
+  return skillCategories.reduce((skillSlots, category) => {
+    skillSlots[category.id] = {}
+
+    return skillSlots
+  }, {} as SkillBuild['skillSlots'])
+}
+
+function getEmptyBuildForCharacter(
+  character: ActiveSkillTreeCharacter,
+  layoutBuild: SkillBuild,
+): SkillBuild {
+  return {
+    ...layoutBuild,
+    race: character.race,
+    className: character.className,
+    archetype: `${character.race} ${character.className}`,
+    quote: 'No approved abilities have been inscribed for this path yet.',
+    categorySkillIds: getEmptyCategorySkillIds(),
+    skillSlots: getEmptySkillSlots(),
+    skills: [],
+  }
 }
 
 function getNodeMap(nodes: SkillTreeNode[]) {
@@ -180,14 +229,30 @@ function getRenderedNodes(
   })
 }
 
-function SkillTree({ onBackToMap }: SkillTreeProps) {
-  const currentBuild = CURRENT_BUILD
+function SkillTree({ activeCharacter, onBackToMap }: SkillTreeProps) {
+  const currentCharacter = useMemo(() => {
+    return getResolvedCharacter(activeCharacter)
+  }, [activeCharacter])
+  const currentBuild = useMemo(() => {
+    const configuredBuild = getSkillBuildForCharacter(
+      skillTreeData,
+      currentCharacter,
+    )
+
+    if (configuredBuild) {
+      return configuredBuild
+    }
+
+    return activeCharacter
+      ? getEmptyBuildForCharacter(currentCharacter, FALLBACK_BUILD)
+      : FALLBACK_BUILD
+  }, [activeCharacter, currentCharacter])
   const {
     availableSkillPoints,
     getUnlockEvaluation,
     skillById,
     unlockSkill,
-  } = useSkillProgression(currentBuild, CURRENT_CHARACTER)
+  } = useSkillProgression(currentBuild, currentCharacter)
   const categorySkillCounts = getCategorySkillCounts(currentBuild)
 
   const [activeCategoryId, setActiveCategoryId] = useState(

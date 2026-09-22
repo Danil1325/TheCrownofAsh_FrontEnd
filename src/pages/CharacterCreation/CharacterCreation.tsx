@@ -13,7 +13,14 @@ import Attributes from '../../components/CharacterCreation/Attributes'
 import { default as CharacterDisplayMenu } from '../../components/CharacterCreation/DisplayMenu'
 import { classes, combineAttributes, races, type CharacterClass, type Race, wrapIndex } from './characterCreationData'
 
-type CharacterCreationProps = { onComplete: () => void }
+export interface CreatedCharacterIdentity {
+  race: string
+  className: string
+}
+
+type CharacterCreationProps = {
+  onComplete: (character: CreatedCharacterIdentity) => void
+}
 type CreationStep = 'race' | 'class'
 type CarouselItem = Race | CharacterClass
 type CarouselMotion = 'center-to-left' | 'right-to-center' | 'enter-right' | 'enter-left' | 'left-to-center' | 'center-to-right'
@@ -85,7 +92,7 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
         <CharacterDisplayMenu race={selectedRace} characterClass={step === 'class' ? selectedClass : undefined} name={characterName} onNameChange={setCharacterName} />
         <div className={`creation-navigation creation-navigation--${step}`}>
           <button className="game-button creation-navigation__button creation-navigation__back" type="button" onClick={() => setStep('race')} disabled={step === 'race'} aria-hidden={step === 'race'}><img src={backButton} alt="Back" /></button>
-          <button className="game-button creation-navigation__button creation-navigation__continue" type="button" onClick={() => { if (step === 'race') setStep('class'); else onComplete() }}><img src={continueButton} alt="Continue" /></button>
+          <button className="game-button creation-navigation__button creation-navigation__continue" type="button" onClick={() => { if (step === 'race') setStep('class'); else onComplete({ race: selectedRace.name, className: selectedClass.name }) }}><img src={continueButton} alt="Continue" /></button>
         </div>
       </section>
       <Attributes attributes={attributes} />

@@ -8,8 +8,8 @@ export const LEVEL_WITHOUT_GAINED_SKILL_POINTS = 1
 export const STANDARD_SKILL_COST = 1
 export const TERMINAL_SKILL_COST = 2
 
-// TODO: Replace this with the active character/backend progression source.
-export const TEMPORARY_ACTIVE_SKILL_TREE_CHARACTER: ActiveSkillTreeCharacter = {
+// TODO: Use this only until active character/backend progression state is available.
+export const SKILL_TREE_FALLBACK_ACTIVE_CHARACTER: ActiveSkillTreeCharacter = {
   race: 'Human',
   className: 'Mage',
   level: 3,

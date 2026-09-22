@@ -6,15 +6,54 @@ import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
 import CharacterCreation from './pages/CharacterCreation/CharacterCreation'
+import type { CreatedCharacterIdentity } from './pages/CharacterCreation/CharacterCreation'
 import ScenarioPage from './pages/Scenario/ScenarioPage'
 import { getCurrentUser, logout } from './api/authApi'
 import type { CurrentUser } from './api/authApi'
+import type {
+  ActiveSkillTreeCharacterInput,
+  CharacterClass as SkillTreeCharacterClass,
+  Race as SkillTreeRace,
+} from './features/skill-tree/types/skillTree'
 
 type ApplicationPage = 'main-menu' | 'skill-tree'
+
+const CHARACTER_CREATION_RACE_TO_SKILL_TREE_RACE: Record<string, SkillTreeRace> = {
+  Human: 'Human',
+  Orc: 'Orc',
+  Dwarf: 'Dwarf',
+  Elf: 'Elf',
+}
+
+const CHARACTER_CREATION_CLASS_TO_SKILL_TREE_CLASS: Record<
+  string,
+  SkillTreeCharacterClass
+> = {
+  Warrior: 'Warrior',
+  Bard: 'Bard',
+  Magician: 'Mage',
+  Healer: 'Healer',
+}
+
+function toSkillTreeCharacter(
+  character: CreatedCharacterIdentity,
+): ActiveSkillTreeCharacterInput | null {
+  const race = CHARACTER_CREATION_RACE_TO_SKILL_TREE_RACE[character.race]
+  const className =
+    CHARACTER_CREATION_CLASS_TO_SKILL_TREE_CLASS[character.className]
+
+  if (!race || !className) {
+    return null
+  }
+
+  return { race, className }
+}
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null)
+  const [activeSkillTreeCharacter, setActiveSkillTreeCharacter] =
+    useState<ActiveSkillTreeCharacterInput | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [authenticationPage, setAuthenticationPage] = useState<'login' | 'signup'>('login')
   const [applicationPage, setApplicationPage] = useState<ApplicationPage>('main-menu')
@@ -64,6 +103,7 @@ function App() {
     void logout().finally(() => {
       setIsAuthenticated(false)
       setCurrentUser(null)
+      setActiveSkillTreeCharacter(null)
       setApplicationPage('main-menu')
       setGameState('menu')
     })
@@ -84,6 +124,7 @@ function App() {
           onSignUp={(user) => {
             setCurrentUser(user)
             setIsAuthenticated(true)
+            setActiveSkillTreeCharacter(null)
             setApplicationPage('main-menu')
             setGameState('menu')
             setIsInitialLoading(true)
@@ -98,6 +139,7 @@ function App() {
         onLogin={(user) => {
           setCurrentUser(user)
           setIsAuthenticated(true)
+          setActiveSkillTreeCharacter(null)
           setApplicationPage('main-menu')
           setGameState('menu')
           setIsInitialLoading(true)
@@ -110,13 +152,23 @@ function App() {
   if (applicationPage === 'skill-tree') {
     return (
       <div className="app-page-enter">
-        <SkillTreePage onBackToMainMenu={() => setApplicationPage('main-menu')} />
+        <SkillTreePage
+          activeCharacter={activeSkillTreeCharacter ?? undefined}
+          onBackToMainMenu={() => setApplicationPage('main-menu')}
+        />
       </div>
     )
   }
 
   if (gameState === 'character-creation') {
-    return <CharacterCreation onComplete={() => setGameState('playing')} />
+    return (
+      <CharacterCreation
+        onComplete={(character) => {
+          setActiveSkillTreeCharacter(toSkillTreeCharacter(character))
+          setGameState('playing')
+        }}
+      />
+    )
   }
 
   if (gameState === 'playing') {

@@ -74,7 +74,12 @@ function MainMenu({
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
-                if (item.action === 'new-game' || item.action === 'load-game') {
+                if (item.action === 'new-game') {
+                  onNewGame()
+                  return
+                }
+
+                if (item.action === 'load-game') {
                   setIsMapOpen(true)
                   return
                 }
