@@ -6,6 +6,7 @@ import LoadingScreen from '../LoadingScreen/LoadingScreen'
 import Map from '../Map/Map'
 import Shop from '../Shop/Shop'
 import Collection from '../Collection/Collection'
+import Achievements from '../Achievements/Achievements'
 
 import background from '../../assets/MainMenu/Main Menu Background.png'
 import logo from '../../assets/MainMenu/The Crown Of Ash Logo.png'
@@ -17,7 +18,7 @@ import logOut from '../../assets/Buttons/Log Out.png'
 import options from '../../assets/Icons/Options.png'
 import buyButton from '../../assets/Shop/market-assets/buy-button.png'
 
-type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options' | 'collection'
+type MenuAction = 'new-game' | 'load-game' | 'shop' | 'skills' | 'options' | 'collection' | 'achievements'
 
 const menuItems: Array<{ action: MenuAction; image: string; label: string }> = [
   { action: 'new-game', image: newGame, label: 'New Game' },
@@ -55,6 +56,10 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
 
   if (selectedAction === 'collection') {
     return <Collection onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
+  }
+
+  if (selectedAction === 'achievements') {
+    return <Achievements onBack={() => setSelectedAction(null)} onPlayButtonSound={onPlayButtonSound} />
   }
 
   return (
@@ -99,6 +104,21 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
         </button>
 
         <div className="corner-actions-right">
+          <button
+            className="game-button collection-button"
+            type="button"
+            aria-label="Achievements"
+            onClick={() => {
+              onPlayButtonSound()
+              setSelectedAction('achievements')
+            }}
+          >
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+              <img src={buyButton} alt="" />
+              <span className="collection-btn-text">Achievements</span>
+            </div>
+          </button>
+
           <button
             className="game-button collection-button"
             type="button"
