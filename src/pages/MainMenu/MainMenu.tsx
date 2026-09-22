@@ -34,17 +34,26 @@ type MainMenuProps = {
   onMusicVolumeChange: (value: number) => void
   onSfxVolumeChange: (value: number) => void
   onPlayButtonSound: () => void
+  onOpenSkills: () => void
   onNewGame: () => void
   onLogout: () => void
 }
 
-function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange, onPlayButtonSound, onNewGame, onLogout }: MainMenuProps) {
+function MainMenu({
+  musicVolume,
+  sfxVolume,
+  onMusicVolumeChange,
+  onSfxVolumeChange,
+  onPlayButtonSound,
+  onOpenSkills,
+  onNewGame,
+  onLogout,
+}: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
   const [isMapOpen, setIsMapOpen] = useState(false)
 
   if (selectedAction === 'new-game' || selectedAction === 'load-game') {
-
     return <LoadingScreen musicVolume={musicVolume} onComplete={onNewGame} />
   }
 
@@ -78,11 +87,22 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
-                if (item.action === 'new-game' || item.action === 'load-game') {
-                  setIsMapOpen(true)
-                } else {
-                  setSelectedAction(item.action)
+                if (item.action === 'new-game') {
+                  onNewGame()
+                  return
                 }
+
+                if (item.action === 'load-game') {
+                  setIsMapOpen(true)
+                  return
+                }
+
+                if (item.action === 'skills') {
+                  onOpenSkills()
+                  return
+                }
+
+                setSelectedAction(item.action)
               }}
             >
               <img src={item.image} alt="" />
@@ -155,12 +175,6 @@ function MainMenu({ musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChan
           </button>
         </div>
       </div>
-
-      {selectedAction && selectedAction !== 'options' && (
-        <div className="action-feedback" role="status" aria-live="polite">
-          {selectedAction === 'skills' && 'Skills selected'}
-        </div>
-      )}
 
       {isOptionsOpen && (
         <OptionsMenu
