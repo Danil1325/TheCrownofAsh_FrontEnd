@@ -83,12 +83,6 @@ function App() {
     setIsGameplayMapOpen(false)
     setGameState('character-creation')
   }, [])
-  const backToMenu = useCallback(() => {
-    setInitialScenarioScene(null)
-    setTravelScenarioScene(null)
-    setIsGameplayMapOpen(false)
-    setGameState('menu')
-  }, [])
   const openGameplayMap = useCallback(() => setIsGameplayMapOpen(true), [])
   const closeGameplayMap = useCallback(() => setIsGameplayMapOpen(false), [])
   const handleGameplayTravel = useCallback((scene: StoryScene) => {
@@ -98,6 +92,9 @@ function App() {
   }, [])
   const ignoreMapStartGameplay = useCallback(() => undefined, [])
   const backToMenu = useCallback(() => {
+    setInitialScenarioScene(null)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
     setApplicationPage('main-menu')
     setGameState('menu')
   }, [])
@@ -199,7 +196,6 @@ function App() {
   }
 
   if (gameState === 'character-creation') {
-    return <CharacterCreation onComplete={startGameplay} />
     return (
       <CharacterCreation
         onComplete={(character) => {
@@ -252,7 +248,6 @@ function App() {
         onNewGame={startNewGame}
         onLoadGame={startGameplay}
         onOpenSkills={() => setApplicationPage('skill-tree')}
-        onNewGame={() => setGameState('character-creation')}
         onLogout={handleLogout}
       />
     </div>
