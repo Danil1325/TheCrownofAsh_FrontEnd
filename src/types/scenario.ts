@@ -44,6 +44,11 @@ export interface ScenarioProgress {
   companionLoyalty: Record<number, number>;
   questProgress: Record<number, number>;
   storyFlags: Record<string, boolean>;
+  /** Present on choice responses when the player crossed a level threshold. */
+  DidLevelUp?: boolean;
+  didLevelUp?: boolean;
+  Level?: number;
+  level?: number;
 }
 
 /** Serialized as int by the backend (no JsonStringEnumConverter configured). */

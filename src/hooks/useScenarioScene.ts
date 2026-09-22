@@ -12,6 +12,7 @@ export interface UseScenarioSceneOptions {
   onSceneChange: (scene: StoryScene) => void;
   /** Called with the run's progress when a choice finishes the scenario (`nextSceneId === null`). */
   onScenarioEnd?: (progress: ScenarioProgress) => void;
+  onLevelUp?: (level: number) => void;
 }
 
 /** What a retry still has to redo after a failure. */
@@ -36,6 +37,7 @@ export function useScenarioScene({
   playerId,
   onSceneChange,
   onScenarioEnd,
+  onLevelUp,
 }: UseScenarioSceneOptions) {
   const dialogues = useMemo(
     () => (scene ? [...scene.dialogues].sort((a, b) => a.order - b.order) : []),
@@ -95,6 +97,9 @@ export function useScenarioScene({
       try {
         if (phase === 'submit') {
           const progress = await scenarioApi.selectChoice(playerId, scene.id, choice.id);
+          const didLevelUp = progress.DidLevelUp ?? progress.didLevelUp ?? false;
+          const level = progress.Level ?? progress.level;
+          if (didLevelUp && level != null) onLevelUp?.(level);
           lastAttemptRef.current = { choice, phase: 'fetchScene', sceneId: scene.id };
           if (choice.nextSceneId === null) {
             lastAttemptRef.current = null;
@@ -117,7 +122,7 @@ export function useScenarioScene({
         setIsTransitioning(false);
       }
     },
-    [playerId, scene, onSceneChange, onScenarioEnd],
+    [playerId, scene, onSceneChange, onScenarioEnd, onLevelUp],
   );
 
   const selectChoice = useCallback(
