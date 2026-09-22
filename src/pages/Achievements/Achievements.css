@@ -68,6 +68,12 @@
   flex-direction: column;
   gap: 10px;
   flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.achievements-menu::-webkit-scrollbar {
+  display: none;
 }
 
 .achievements-menu button {
@@ -108,9 +114,10 @@
 .achievements-progress-summary {
   background: transparent;
   border: none;
-  padding: 15px;
+  padding: 10px 15px 5px 15px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: auto;
+  margin-bottom: 0;
 }
 
 .summary-title {
@@ -126,32 +133,37 @@
   font-size: 2rem;
   font-weight: 900;
   margin-top: 5px;
+  transform: translateX(10px);
   text-shadow: 1px 1px 0px rgba(255, 241, 173, 0.8);
 }
 
 .achievements-back-button-container {
-  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  padding-top: 0px;
 }
 
 .achievements-back-btn {
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  transition: filter 0.2s;
+  transition: transform 0.2s, filter 0.2s;
 }
 
 .achievements-back-btn:hover {
+  transform: translateY(-2px);
   filter: brightness(1.1);
 }
 
 .achievements-back-btn img {
-  width: 100%;
-  height: auto;
+  height: 3.8rem;
+  width: auto;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.5));
 }
 
 .achievements-back-btn span {

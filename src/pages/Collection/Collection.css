@@ -80,9 +80,17 @@
 }
 
 .collection-menu {
-  display: grid;
-  gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-top: 10px;
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.collection-menu::-webkit-scrollbar {
+  display: none;
 }
 
 .collection-menu button {
@@ -120,6 +128,8 @@
   margin-top: auto;
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
+  padding-top: 10px;
 }
 
 .collection-back-btn {
