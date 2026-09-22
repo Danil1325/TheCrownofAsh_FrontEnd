@@ -50,15 +50,19 @@
   isolation: isolate;
   color: var(--ash-ink);
   font-family: Garamond, Georgia, 'Times New Roman', serif;
-  background: #d6a763;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(255, 231, 169, 0.18), transparent 58%),
+    linear-gradient(135deg, #4f260f, #d6a763 16% 84%, #552711);
   box-shadow:
     inset 0 0 0 4px #130803,
     inset 0 0 0 10px #4b210b,
     inset 0 0 0 16px #c4863e,
     inset 0 0 0 24px #241005,
-    inset 0 0 0 31px rgba(228, 171, 84, 0.4),
-    inset 0 0 58px rgba(255, 228, 161, 0.18),
-    inset 0 0 130px rgba(21, 8, 2, 0.7),
+    inset 0 0 0 31px rgba(228, 171, 84, 0.46),
+    inset 0 0 0 38px rgba(44, 17, 5, 0.2),
+    inset 0 0 68px rgba(255, 228, 161, 0.21),
+    inset 0 0 150px rgba(21, 8, 2, 0.74),
+    0 0 0 1px rgba(248, 210, 127, 0.28),
     0 26px 76px rgba(0, 0, 0, 0.72);
 }
 
@@ -102,7 +106,7 @@
   inset: 4.35% 3.95%;
   z-index: 1;
   content: '';
-  border: 2px solid rgba(43, 20, 7, 0.78);
+  border: 2px solid rgba(43, 20, 7, 0.86);
   border-radius: 2px;
   background:
     radial-gradient(circle at 11% 83%, rgba(72, 41, 18, 0.16), transparent 16%),
@@ -124,8 +128,9 @@
     );
   box-shadow:
     inset 0 0 0 1px rgba(255, 238, 178, 0.28),
+    inset 0 0 0 7px rgba(84, 43, 14, 0.08),
     inset 0 0 36px rgba(39, 18, 6, 0.28),
-    inset 0 0 82px rgba(255, 224, 149, 0.12),
+    inset 0 0 82px rgba(255, 224, 149, 0.16),
     0 0 0 1px rgba(246, 222, 167, 0.18),
     0 0 0 5px rgba(50, 23, 7, 0.1);
   pointer-events: none;
@@ -333,11 +338,13 @@
     );
   box-shadow:
     inset 0 0 0 1px rgba(255, 244, 207, 0.44),
+    inset 0 0 0 2px rgba(65, 31, 9, 0.12),
     inset 0 0 0 5px rgba(89, 47, 16, 0.14),
     inset 0 0 26px rgba(49, 22, 7, 0.34),
     inset 0 -13px 22px rgba(84, 39, 12, 0.23),
-    0 3px 0 rgba(62, 27, 8, 0.38),
-    0 12px 22px var(--ash-shadow);
+    0 3px 0 rgba(62, 27, 8, 0.42),
+    0 12px 22px var(--ash-shadow),
+    0 0 0 1px rgba(229, 171, 86, 0.12);
 }
 
 .skill-tree-screen .back-button {
@@ -407,10 +414,10 @@
 
 .skill-tree-screen .skill-tree-title {
   position: absolute;
-  left: 32%;
+  left: 29.2%;
   top: 1.5%;
   z-index: 7;
-  width: 36%;
+  width: 41.6%;
   height: 8.6%;
   display: flex;
   align-items: center;
@@ -486,7 +493,7 @@
   align-items: center;
   margin: 0;
   color: #241004;
-  font-size: clamp(36px, 3.38vw, 66px);
+  font-size: clamp(30px, 2.72vw, 52px);
   font-weight: 700;
   line-height: 1;
   text-shadow:
@@ -498,10 +505,10 @@
 
 .skill-tree-screen .skill-tree-subtitle {
   position: absolute;
-  left: 36.15%;
+  left: 35.45%;
   top: 11.6%;
   z-index: 6;
-  width: 27.7%;
+  width: 29.1%;
   height: 2.05%;
   min-height: 0;
   display: flex;
@@ -539,6 +546,12 @@
   pointer-events: auto;
   border-width: 3px;
   clip-path: polygon(8% 0, 92% 0, 100% 15%, 97% 100%, 3% 100%, 0 15%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 244, 207, 0.5),
+    inset 0 0 0 5px rgba(87, 44, 14, 0.16),
+    inset 0 -16px 23px rgba(91, 43, 13, 0.25),
+    0 4px 0 rgba(59, 25, 7, 0.42),
+    0 13px 22px rgba(22, 8, 2, 0.42);
 }
 
 .skill-tree-screen .skill-points::after {
@@ -582,9 +595,11 @@
   width: 15.2%;
   height: 50.6%;
   padding: 1.15% 0.8%;
+  border-color: rgba(50, 23, 7, 0.96);
   clip-path: polygon(3% 0, 97% 0, 100% 3%, 100% 97%, 97% 100%, 3% 100%, 0 97%, 0 3%);
   box-shadow:
     inset 0 0 0 1px rgba(255, 244, 209, 0.48),
+    inset 0 0 0 4px rgba(67, 32, 10, 0.1),
     inset 13px 0 31px rgba(87, 45, 17, 0.24),
     inset -15px 0 29px rgba(74, 36, 11, 0.28),
     inset 0 -28px 36px rgba(117, 62, 24, 0.24),
@@ -631,7 +646,7 @@
   background: transparent;
   color: #2a1508;
   font-size: clamp(15px, 1.16vw, 23px);
-  font-weight: 700;
+  font-weight: 800;
   text-align: left;
   cursor: pointer;
   text-shadow:
@@ -648,9 +663,11 @@
   inset: 9% 3%;
   content: '';
   border-radius: 5px;
+  border: 1px solid rgba(86, 47, 18, 0.24);
   background:
-    radial-gradient(circle at 17% 50%, rgba(255, 231, 164, 0.24), transparent 30%),
-    linear-gradient(90deg, rgba(255, 238, 193, 0.28), transparent 62%);
+    radial-gradient(circle at 17% 50%, rgba(255, 231, 164, 0.32), transparent 30%),
+    linear-gradient(90deg, rgba(255, 238, 193, 0.34), transparent 62%),
+    linear-gradient(180deg, rgba(83, 43, 15, 0.08), rgba(119, 66, 26, 0.12));
   opacity: 0;
   pointer-events: none;
   transition: opacity 160ms ease;
@@ -662,7 +679,8 @@
 
 .skill-tree-screen .category-button:hover {
   background:
-    linear-gradient(90deg, rgba(255, 235, 188, 0.48), rgba(152, 83, 37, 0.18));
+    linear-gradient(90deg, rgba(255, 235, 188, 0.52), rgba(152, 83, 37, 0.2));
+  box-shadow: inset 0 0 14px rgba(91, 46, 16, 0.14);
 }
 
 .skill-tree-screen .category-button:hover::before,
@@ -678,8 +696,8 @@
   border: 2px solid #5c2414;
   border-radius: 4px;
   background:
-    radial-gradient(circle at 18% 50%, rgba(255, 230, 164, 0.52), transparent 34%),
-    linear-gradient(90deg, rgba(89, 31, 14, 0.34), transparent 20% 88%, rgba(84, 35, 14, 0.28)),
+    radial-gradient(circle at 18% 50%, rgba(255, 230, 164, 0.58), transparent 34%),
+    linear-gradient(90deg, rgba(80, 29, 12, 0.4), transparent 20% 88%, rgba(84, 35, 14, 0.3)),
     linear-gradient(
       90deg,
       rgba(157, 61, 35, 0.58),
@@ -687,7 +705,9 @@
     );
   box-shadow:
     inset 0 0 0 1px rgba(255, 232, 170, 0.48),
-    inset 0 0 20px rgba(92, 32, 13, 0.34),
+    inset 0 0 0 4px rgba(83, 35, 12, 0.08),
+    inset 0 0 20px rgba(92, 32, 13, 0.38),
+    inset 0 6px 12px rgba(255, 225, 151, 0.13),
     0 2px 0 rgba(72, 29, 10, 0.32),
     0 5px 10px rgba(43, 18, 5, 0.26);
 }
@@ -748,20 +768,24 @@
   position: relative;
   z-index: 1;
   min-width: 0;
-  text-shadow: 0 1px rgba(247, 224, 174, 0.45);
+  text-shadow:
+    0 1px rgba(247, 224, 174, 0.52),
+    0 2px rgba(72, 33, 10, 0.1);
 }
 
 .skill-tree-screen .sidebar-quote {
-  margin: 8% 7% 0;
-  padding-top: 7%;
-  border-top: 1px solid rgba(71, 41, 17, 0.38);
-  color: #5d3a1a;
+  margin: 7% 7% 0;
+  padding-top: 6%;
+  border-top: 1px solid rgba(71, 41, 17, 0.48);
+  color: #4f2d12;
   font-size: clamp(12px, 0.98vw, 18px);
   font-style: italic;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.38;
   text-align: center;
-  text-transform: uppercase;
+  text-shadow:
+    0 1px rgba(250, 229, 181, 0.48),
+    0 2px rgba(69, 31, 10, 0.08);
 }
 
 .skill-tree-screen .skill-tree-center {
@@ -798,15 +822,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7%;
+  gap: 6%;
   color: #2b1608;
   font-size: clamp(17px, 1.34vw, 26px);
-  font-weight: 700;
+  font-weight: 800;
   border-width: 3px;
   text-shadow: 0 1px rgba(255, 237, 188, 0.62);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 199, 0.48),
-    inset 0 -11px 18px rgba(104, 52, 17, 0.22),
+    inset 0 0 0 5px rgba(87, 42, 14, 0.08),
+    inset 0 -12px 19px rgba(104, 52, 17, 0.24),
     0 4px 0 rgba(61, 27, 8, 0.3),
     0 12px 17px rgba(35, 15, 4, 0.36);
 }
@@ -843,6 +868,7 @@
   width: clamp(25px, 1.95vw, 35px);
   height: clamp(25px, 1.95vw, 35px);
   color: #51270d;
+  filter: drop-shadow(0 1px rgba(255, 232, 172, 0.34));
 }
 
 .skill-tree-screen .tree-canvas {
@@ -933,12 +959,12 @@
 }
 
 .skill-tree-screen .tree-connection__line {
-  stroke: rgba(217, 145, 43, 0.96);
+  stroke: rgba(224, 154, 49, 0.96);
   stroke-width: 4.4;
 }
 
 .skill-tree-screen .tree-connection__shine {
-  stroke: rgba(255, 230, 151, 0.54);
+  stroke: rgba(255, 235, 165, 0.6);
   stroke-dasharray: 1.1 6.6;
   stroke-width: 1.35;
 }
@@ -2511,7 +2537,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3.4%;
+  gap: 3%;
   padding: 0 2%;
   clip-path: polygon(2% 0, 98% 0, 100% 10%, 100% 90%, 98% 100%, 2% 100%, 0 90%, 0 10%);
   background:
@@ -2521,6 +2547,7 @@
     linear-gradient(180deg, rgba(255, 236, 194, 0.98), rgba(211, 157, 76, 0.98));
   box-shadow:
     inset 0 0 0 1px rgba(255, 241, 202, 0.46),
+    inset 0 0 0 5px rgba(87, 42, 14, 0.08),
     inset 0 -10px 15px rgba(91, 45, 15, 0.2),
     0 3px 0 rgba(55, 24, 7, 0.34),
     0 10px 16px rgba(26, 10, 3, 0.32);
@@ -2544,9 +2571,10 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #2d1809;
+  color: #291407;
   font-size: clamp(9px, 0.72vw, 14px);
-  font-weight: 700;
+  font-weight: 800;
+  text-shadow: 0 1px rgba(250, 229, 181, 0.45);
   white-space: nowrap;
 }
 

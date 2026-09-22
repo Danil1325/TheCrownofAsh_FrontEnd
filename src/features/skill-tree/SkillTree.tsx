@@ -368,13 +368,13 @@ function SkillTree({ activeCharacter, onBackToMap }: SkillTreeProps) {
           <button
             type="button"
             className="back-button"
-            aria-label="Back to Map"
+            aria-label="Back to Menu"
             onClick={handleBackToMap}
           >
             <span className="back-button__arrow" aria-hidden="true">
               {'\u2190'}
             </span>
-            <span>BACK TO MAP</span>
+            <span>BACK TO MENU</span>
           </button>
 
           <div className="skill-tree-title">
@@ -382,7 +382,7 @@ function SkillTree({ activeCharacter, onBackToMap }: SkillTreeProps) {
               <FantasyIcon icon="arcane-star" className="fantasy-icon" />
             </span>
 
-            <h1>SKILL TREE</h1>
+            <h1>PATHS OF MASTERY</h1>
 
             <span className="title-decoration" aria-hidden="true">
               <FantasyIcon icon="arcane-star" className="fantasy-icon" />
