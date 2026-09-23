@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { CheckCircle2, Heart, MapPin, ScrollText, Sparkles, Target, X, XCircle, Zap } from 'lucide-react';
+import { CheckCircle2, Heart, MapPin, ScrollText, Sparkles, Target, Trophy, X, XCircle, Zap } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { NotificationsContext } from '../../hooks/useNotifications';
 import type {
@@ -31,6 +31,7 @@ const NOTIFICATION_META: Record<NotificationType, NotificationMeta> = {
   'level-up': { title: 'Level Up!', icon: Sparkles, tone: 'purple', duration: 3800 },
   'location-unlocked': { title: 'New Location Unlocked', icon: MapPin, tone: 'teal', duration: 6200 },
   'loyalty-changed': { title: 'Loyalty Changed', icon: Heart, tone: 'rose', duration: 3000 },
+  'achievement-unlocked': { title: 'Achievement Unlocked', icon: Trophy, tone: 'purple', duration: 4200 },
 };
 
 type NotificationDraft = Omit<GameNotification, 'id'>;
@@ -263,6 +264,9 @@ function NotificationsProvider({ children }: NotificationsProviderProps) {
       companionLoyaltyChanged(companionName, delta) {
         const sign = delta > 0 ? '+' : '';
         push('loyalty-changed', `${companionName} ${sign}${delta} Loyalty`);
+      },
+      achievementUnlocked(achievementTitle) {
+        push('achievement-unlocked', achievementTitle);
       },
     }),
     [push, queueLocationUnlock],

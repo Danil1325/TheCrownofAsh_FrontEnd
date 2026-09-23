@@ -11,6 +11,7 @@ import ExperienceBar from '../../components/ExperienceBar/ExperienceBar'
 import LevelUpModal from '../../components/LevelUpModal/LevelUpModal'
 import { useScenarioScene } from '../../hooks/useScenarioScene'
 import { useScenarioProgression } from '../../hooks/useScenarioProgression'
+import { useAchievementProgression } from '../../hooks/useAchievementProgression'
 import './ScenarioPage.css'
 
 interface ScenarioPageProps {
@@ -44,10 +45,10 @@ interface ScenarioPageProps {
  *     choices only after the last line).
  *  3. Choosing posts POST /api/scenario/choice, then the following scene is
  *     loaded from the backend and the flow restarts for it.
- *  4. After every scene advance the progression/quest endpoints are re-read and
- *     their differences (EXP gained, level-ups, quest/objective updates) are
- *     surfaced as notifications — the numbers come from the backend, never a
- *     frontend calculation.
+ *  4. After every scene advance the progression/quest/achievement endpoints are
+ *     re-read and their differences (EXP gained, level-ups, quest/objective
+ *     updates, newly unlocked achievements) are surfaced as notifications — the
+ *     numbers come from the backend, never a frontend calculation.
  *  5. The scenario-end overlay uses the progress returned by the choice POST.
  */
 function ScenarioPage({
@@ -71,7 +72,8 @@ function ScenarioPage({
   const [selectedChoiceId, setSelectedChoiceId] = useState<number | null>(null);
   const [levelUpLevel, setLevelUpLevel] = useState<number | null>(null);
 
-  const { progression, refresh: refreshProgression } = useScenarioProgression(playerId)
+const { progression, refresh: refreshProgression } = useScenarioProgression(playerId)
+  const { refresh: refreshAchievements } = useAchievementProgression()
 
   const loadTaskRef = useRef(0);
   const usedInitialSceneRef = useRef(hasInitialScene);
@@ -170,8 +172,9 @@ function ScenarioPage({
       setScene(nextScene)
       setSelectedChoiceId(null)
       void refreshProgression()
+      void refreshAchievements()
     },
-    [refreshProgression],
+    [refreshProgression, refreshAchievements],
   )
 
   const handleScenarioEnd = useCallback(
@@ -179,8 +182,9 @@ function ScenarioPage({
       setEndProgress(progress)
       setIsScenarioEnded(true)
       void refreshProgression()
+      void refreshAchievements()
     },
-    [refreshProgression],
+    [refreshProgression, refreshAchievements],
   )
 
   const handleLevelUp = useCallback((level: number) => {
