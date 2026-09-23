@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import '../../styles/game-ui.css'
 import '../../styles/animations/carousel.css'
 import './CharacterCreation.css'
@@ -19,6 +19,8 @@ export interface CreatedCharacterIdentity {
   name: string
   race: string
   className: string
+  playerId: number
+  characterId: number
 }
 
 const MINIMUM_NAME_LENGTH = 2
@@ -41,13 +43,14 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
   const [exitingCard, setExitingCard] = useState<{ item: CarouselItem; direction: -1 | 1 } | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const saveInFlightRef = useRef(false)
   const selectedRace = races[raceIndex]
   const selectedClass = classes[classIndex]
   const attributes = useMemo(() => step === 'class' ? combineAttributes(selectedRace, selectedClass) : selectedRace.attributes, [step, selectedRace, selectedClass])
   const cards = step === 'race' ? races : classes
   const selectedIndex = step === 'race' ? raceIndex : classIndex
   const handleCreateCharacter = async () => {
-    if (isSaving) return
+    if (saveInFlightRef.current) return
 
     const name = characterName.trim()
     if (name.length < MINIMUM_NAME_LENGTH || name.length > MAXIMUM_NAME_LENGTH) {
@@ -55,14 +58,16 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
       return
     }
 
+    saveInFlightRef.current = true
     setSaveError('')
     setIsSaving(true)
     try {
-      await createCharacter({ name, race: selectedRace.raceType, classId: selectedClass.classId })
-      onComplete({ name, race: selectedRace.name, className: selectedClass.name })
+      const character = await createCharacter({ name, race: selectedRace.raceType, classId: selectedClass.classId })
+      onComplete({ name, race: selectedRace.name, className: selectedClass.name, playerId: character.playerId, characterId: character.characterId })
     } catch (error) {
       setSaveError(error instanceof ApiError ? error.message : 'Unable to save your character. Please try again.')
     } finally {
+      saveInFlightRef.current = false
       setIsSaving(false)
     }
   }

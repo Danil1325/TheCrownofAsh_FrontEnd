@@ -54,6 +54,7 @@ function toSkillTreeCharacter(
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null)
+  const [activeCharacter, setActiveCharacter] = useState<CreatedCharacterIdentity | null>(null)
   const [activeSkillTreeCharacter, setActiveSkillTreeCharacter] =
     useState<ActiveSkillTreeCharacterInput | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
@@ -135,6 +136,7 @@ function App() {
     void logout().finally(() => {
       setIsAuthenticated(false)
       setCurrentUser(null)
+      setActiveCharacter(null)
       setInitialScenarioScene(null)
       setTravelScenarioScene(null)
       setIsGameplayMapOpen(false)
@@ -159,6 +161,7 @@ function App() {
           onSignUp={(user) => {
             setCurrentUser(user)
             setIsAuthenticated(true)
+            setActiveCharacter(null)
             setActiveSkillTreeCharacter(null)
             setApplicationPage('main-menu')
             setGameState('menu')
@@ -174,6 +177,7 @@ function App() {
         onLogin={(user) => {
           setCurrentUser(user)
           setIsAuthenticated(true)
+          setActiveCharacter(null)
           setActiveSkillTreeCharacter(null)
           setApplicationPage('main-menu')
           setGameState('menu')
@@ -195,10 +199,13 @@ function App() {
     )
   }
 
+  const activePlayerId = activeCharacter?.playerId ?? (currentUser?.id ?? 0)
+
   if (gameState === 'character-creation') {
     return (
       <CharacterCreation
         onComplete={(character) => {
+          setActiveCharacter(character)
           setActiveSkillTreeCharacter(toSkillTreeCharacter(character))
           setGameState('playing')
         }}
@@ -211,7 +218,7 @@ function App() {
       <>
         <ScenarioPage
           key={currentUser.id}
-          playerId={currentUser.id}
+          playerId={activePlayerId}
           initialScene={initialScenarioScene}
           travelScene={travelScenarioScene?.scene ?? null}
           travelSceneId={travelScenarioScene?.id ?? null}
@@ -224,7 +231,7 @@ function App() {
           <div style={{ position: 'fixed', inset: 0, zIndex: 60 }}>
             <Map
               mode="load"
-              playerId={currentUser.id}
+              playerId={activePlayerId}
               closeLabel="Return to game"
               onClose={closeGameplayMap}
               onStartGameplay={ignoreMapStartGameplay}
@@ -239,7 +246,7 @@ function App() {
   return currentUser ? (
     <div className="app-page-enter">
       <MainMenu
-        playerId={currentUser.id}
+        playerId={activePlayerId}
         musicVolume={musicVolume}
         sfxVolume={sfxVolume}
         onMusicVolumeChange={setMusicVolume}

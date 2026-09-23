@@ -29,4 +29,6 @@ export interface NewGameCharacterRequest {
 export interface NewGameCharacterResponse {
   /** The owning player, resolved server-side via ICurrentPlayerService. */
   playerId: number
+  /** The created player character. */
+  characterId: number
 }
