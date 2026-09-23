@@ -1,30 +1,166 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import MainMenu from './pages/MainMenu/MainMenu'
+import SkillTreePage from './pages/SkillTree/SkillTreePage'
 import LoadingScreen from './pages/LoadingScreen/LoadingScreen'
 import Login from './pages/Authentication/Login'
 import SignUp from './pages/Authentication/SignUp'
 import buttonPressSound from './assets/Button Press.mp3'
-import MockGameplay from './pages/MockGameplay/MockGameplay'
 import CharacterCreation from './pages/CharacterCreation/CharacterCreation'
+import {
+  characterResponseToIdentity,
+  type CreatedCharacterIdentity,
+} from './pages/CharacterCreation/characterCreationData'
+import CharacterGate from './components/CharacterGate/CharacterGate'
 import ScenarioPage from './pages/Scenario/ScenarioPage'
-import { getCurrentUser, logout } from './api/authApi'
+import Map from './pages/Map/Map'
+import { ApiError, getCurrentUser, logout } from './api/authApi'
 import type { CurrentUser } from './api/authApi'
+import { getCurrentCharacter } from './api/characterApi'
+import type { StoryScene } from './types/scenario'
+import type {
+  ActiveSkillTreeCharacterInput,
+  CharacterClass as SkillTreeCharacterClass,
+  Race as SkillTreeRace,
+} from './features/skill-tree/types/skillTree'
+
+type ApplicationPage = 'main-menu' | 'skill-tree'
+
+const CHARACTER_CREATION_RACE_TO_SKILL_TREE_RACE: Record<string, SkillTreeRace> = {
+  Human: 'Human',
+  Orc: 'Orc',
+  Dwarf: 'Dwarf',
+  Elf: 'Elf',
+}
+
+const CHARACTER_CREATION_CLASS_TO_SKILL_TREE_CLASS: Record<
+  string,
+  SkillTreeCharacterClass
+> = {
+  Warrior: 'Warrior',
+  Bard: 'Bard',
+  Magician: 'Mage',
+  Healer: 'Healer',
+}
+
+function toSkillTreeCharacter(
+  character: CreatedCharacterIdentity,
+): ActiveSkillTreeCharacterInput | null {
+  const race = CHARACTER_CREATION_RACE_TO_SKILL_TREE_RACE[character.race]
+  const className =
+    CHARACTER_CREATION_CLASS_TO_SKILL_TREE_CLASS[character.className]
+
+  if (!race || !className) {
+    return null
+  }
+
+  return { race, className }
+}
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null)
+  const [activeCharacter, setActiveCharacter] = useState<CreatedCharacterIdentity | null>(null)
+  const [characterLoadState, setCharacterLoadState] = useState<
+    'idle' | 'loading' | 'ready' | 'no-character' | 'error'
+  >('idle')
+  const [characterLoadError, setCharacterLoadError] = useState<string | null>(null)
+  const [activeSkillTreeCharacter, setActiveSkillTreeCharacter] =
+    useState<ActiveSkillTreeCharacterInput | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [authenticationPage, setAuthenticationPage] = useState<'login' | 'signup'>('login')
+  const [applicationPage, setApplicationPage] = useState<ApplicationPage>('main-menu')
   const [isInitialLoading, setIsInitialLoading] = useState(false)
   const [musicVolume, setMusicVolume] = useState(70)
   const [sfxVolume, setSfxVolume] = useState(70)
   const [gameState, setGameState] = useState<'menu' | 'character-creation' | 'playing'>('menu')
+  const [initialScenarioScene, setInitialScenarioScene] = useState<StoryScene | null>(null)
+  const [travelScenarioScene, setTravelScenarioScene] = useState<{ id: number; scene: StoryScene } | null>(null)
+  const [isGameplayMapOpen, setIsGameplayMapOpen] = useState(false)
+  const nextTravelScenarioSceneId = useRef(0)
+  const gameStateRef = useRef(gameState)
+  const characterBootAutoResumeRef = useRef(false)
+  useEffect(() => {
+    gameStateRef.current = gameState
+  }, [gameState])
   const finishInitialLoading = useCallback(() => setIsInitialLoading(false), [])
-  const startGameplay = useCallback(() => {
-    setGameState('playing')
-    setIsInitialLoading(true)
+  const clearInitialScenarioScene = useCallback(() => setInitialScenarioScene(null), [])
+  const clearTravelScenarioScene = useCallback(() => setTravelScenarioScene(null), [])
+  /** Loads the player's character from the backend, resolving the three states
+   *  that gate the scenario: found (returns true), none yet (404), or error. */
+  const loadActiveCharacter = useCallback(async (): Promise<boolean> => {
+    setCharacterLoadState('loading')
+    setCharacterLoadError(null)
+    try {
+      const character = await getCurrentCharacter()
+      const identity = characterResponseToIdentity(character)
+      setActiveCharacter(identity)
+      setActiveSkillTreeCharacter(toSkillTreeCharacter(identity))
+      setCharacterLoadState('ready')
+      return true
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) {
+        setActiveCharacter(null)
+        setCharacterLoadState('no-character')
+      } else {
+        setCharacterLoadError(
+          error instanceof ApiError
+            ? error.message
+            : 'Unable to load your character. Please try again.',
+        )
+        setCharacterLoadState('error')
+      }
+      return false
+    }
   }, [])
-  const backToMenu = useCallback(() => setGameState('menu'), [])
+
+  const startGameplay = useCallback((initialScene: StoryScene | null = null) => {
+    setInitialScenarioScene(initialScene)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
+    setGameState('playing')
+    setIsInitialLoading(initialScene == null)
+    if (activeCharacter == null && characterLoadState === 'idle') {
+      void loadActiveCharacter()
+    }
+  }, [activeCharacter, characterLoadState, loadActiveCharacter])
+  const startNewGame = useCallback(() => {
+    setInitialScenarioScene(null)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
+    setCharacterLoadError(null)
+    setCharacterLoadState('idle')
+    setGameState('character-creation')
+  }, [])
+  const openGameplayMap = useCallback(() => setIsGameplayMapOpen(true), [])
+  const closeGameplayMap = useCallback(() => setIsGameplayMapOpen(false), [])
+  const handleGameplayTravel = useCallback((scene: StoryScene) => {
+    nextTravelScenarioSceneId.current += 1
+    setTravelScenarioScene({ id: nextTravelScenarioSceneId.current, scene })
+    setIsGameplayMapOpen(false)
+  }, [])
+  const ignoreMapStartGameplay = useCallback(() => undefined, [])
+  const backToMenu = useCallback(() => {
+    setInitialScenarioScene(null)
+    setTravelScenarioScene(null)
+    setIsGameplayMapOpen(false)
+    setApplicationPage('main-menu')
+    setCharacterLoadError(null)
+    setCharacterLoadState('idle')
+    setGameState('menu')
+  }, [])
+
+  // After the session is restored (page refresh, login), auto-resume straight
+  // into the scenario when the player already owns a character.
+  useEffect(() => {
+    if (isCheckingSession || !isAuthenticated) return
+    if (gameStateRef.current !== 'menu' || characterLoadState !== 'idle') return
+    if (characterBootAutoResumeRef.current) return
+    characterBootAutoResumeRef.current = true
+    void loadActiveCharacter().then((found) => {
+      if (found && gameStateRef.current === 'menu') setGameState('playing')
+    })
+  }, [isCheckingSession, isAuthenticated, characterLoadState, loadActiveCharacter])
+
   const playButtonSound = useCallback(() => {
     if (sfxVolume === 0) return
 
@@ -34,7 +170,7 @@ function App() {
   }, [sfxVolume])
 
   // On load, ask the backend whether the HttpOnly session cookie (if any) is
-  // still valid — without this, a real login would appear to work but not
+  // still valid - without this, a real login would appear to work but not
   // survive a page refresh. Rejects (401, no useful body) simply means "not
   // logged in", not an error worth showing.
   useEffect(() => {
@@ -44,6 +180,7 @@ function App() {
         if (isMounted) {
           setCurrentUser(user)
           setIsAuthenticated(true)
+          setApplicationPage('main-menu')
         }
       })
       .catch(() => {
@@ -61,6 +198,15 @@ function App() {
     void logout().finally(() => {
       setIsAuthenticated(false)
       setCurrentUser(null)
+      setActiveCharacter(null)
+      setCharacterLoadState('idle')
+      setCharacterLoadError(null)
+      characterBootAutoResumeRef.current = false
+      setInitialScenarioScene(null)
+      setTravelScenarioScene(null)
+      setIsGameplayMapOpen(false)
+      setActiveSkillTreeCharacter(null)
+      setApplicationPage('main-menu')
       setGameState('menu')
     })
   }, [])
@@ -77,7 +223,18 @@ function App() {
     if (authenticationPage === 'signup') {
       return (
         <SignUp
-          onSignUp={(user) => { setCurrentUser(user); setIsAuthenticated(true); setIsInitialLoading(true) }}
+          onSignUp={(user) => {
+            setCurrentUser(user)
+            setIsAuthenticated(true)
+            setActiveCharacter(null)
+            setCharacterLoadState('idle')
+            setCharacterLoadError(null)
+            characterBootAutoResumeRef.current = false
+            setActiveSkillTreeCharacter(null)
+            setApplicationPage('main-menu')
+            setGameState('menu')
+            setIsInitialLoading(true)
+          }}
           onBackToLogin={() => setAuthenticationPage('login')}
         />
       )
@@ -85,35 +242,127 @@ function App() {
 
     return (
       <Login
-        onLogin={(user) => { setCurrentUser(user); setIsAuthenticated(true); setIsInitialLoading(true) }}
+        onLogin={(user) => {
+          setCurrentUser(user)
+          setIsAuthenticated(true)
+          setActiveCharacter(null)
+          setCharacterLoadState('idle')
+          setCharacterLoadError(null)
+          characterBootAutoResumeRef.current = false
+          setActiveSkillTreeCharacter(null)
+          setApplicationPage('main-menu')
+          setGameState('menu')
+          setIsInitialLoading(true)
+        }}
         onCreateAccount={() => setAuthenticationPage('signup')}
       />
     )
   }
 
+  if (gameState === 'menu' && characterLoadState === 'loading') {
+    return <CharacterGate status="loading" />
+  }
+
+  if (applicationPage === 'skill-tree') {
+    return (
+      <div className="app-page-enter">
+        <SkillTreePage
+          activeCharacter={activeSkillTreeCharacter ?? undefined}
+          onBackToMainMenu={() => setApplicationPage('main-menu')}
+        />
+      </div>
+    )
+  }
+
+  const activePlayerId = activeCharacter?.playerId ?? (currentUser?.id ?? 0)
+
   if (gameState === 'character-creation') {
-    return <CharacterCreation onComplete={() => setGameState('playing')} />
+    return (
+      <CharacterCreation
+        onComplete={(character) => {
+          setActiveCharacter(character)
+          setActiveSkillTreeCharacter(toSkillTreeCharacter(character))
+          setGameState('playing')
+        }}
+      />
+    )
   }
 
   if (gameState === 'playing') {
+    if (characterLoadState === 'loading') {
+      return <CharacterGate status="loading" />
+    }
+
+    if (characterLoadState === 'no-character') {
+      return (
+        <CharacterGate
+          status="no-character"
+          onCreateCharacter={startNewGame}
+          onBackToMenu={backToMenu}
+        />
+      )
+    }
+
+    if (characterLoadState === 'error') {
+      return (
+        <CharacterGate
+          status="error"
+          message={characterLoadError ?? undefined}
+          onRetry={() => void loadActiveCharacter()}
+          onBackToMenu={backToMenu}
+        />
+      )
+    }
+
+    if (characterLoadState !== 'ready' && activeCharacter == null) {
+      return <CharacterGate status="loading" />
+    }
+
     return currentUser ? (
-      <ScenarioPage key={currentUser.id} playerId={currentUser.id} onBackToMenu={backToMenu} />
+      <>
+        <ScenarioPage
+          key={currentUser.id}
+          playerId={activePlayerId}
+          initialScene={initialScenarioScene}
+          travelScene={travelScenarioScene?.scene ?? null}
+          travelSceneId={travelScenarioScene?.id ?? null}
+          onInitialSceneConsumed={clearInitialScenarioScene}
+          onTravelSceneConsumed={clearTravelScenarioScene}
+          onBackToMenu={backToMenu}
+          onViewMap={openGameplayMap}
+        />
+        {isGameplayMapOpen && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 60 }}>
+            <Map
+              mode="load"
+              playerId={activePlayerId}
+              closeLabel="Return to game"
+              onClose={closeGameplayMap}
+              onStartGameplay={ignoreMapStartGameplay}
+              onLoadGame={handleGameplayTravel}
+            />
+          </div>
+        )}
+      </>
     ) : null
   }
 
-  return (
+  return currentUser ? (
     <div className="app-page-enter">
       <MainMenu
+        playerId={activePlayerId}
         musicVolume={musicVolume}
         sfxVolume={sfxVolume}
         onMusicVolumeChange={setMusicVolume}
         onSfxVolumeChange={setSfxVolume}
         onPlayButtonSound={playButtonSound}
-        onNewGame={() => setGameState('character-creation')}
+        onNewGame={startNewGame}
+        onLoadGame={startGameplay}
+        onOpenSkills={() => setApplicationPage('skill-tree')}
         onLogout={handleLogout}
       />
     </div>
-  )
+  ) : null
 }
 
 export default App

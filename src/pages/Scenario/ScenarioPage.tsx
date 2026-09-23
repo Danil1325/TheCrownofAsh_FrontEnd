@@ -1,20 +1,32 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { BookOpen, Crown, Home, Loader2, RotateCcw, ScrollText, TrendingUp } from 'lucide-react';
-import * as scenarioApi from '../../api/scenarioApi';
-import { ApiError } from '../../api/authApi';
-import type { ScenarioProgress, StoryChoice, StoryScene } from '../../types/scenario';
-import ScenarioBackground from '../../components/ScenarioBackground/ScenarioBackground';
-import DialogueBox from '../../components/DialogueBox/DialogueBox';
-import ChoiceBox from '../../components/ChoiceBox/ChoiceBox';
-import QuestJournal from '../QuestJournal/QuestJournalModal';
-import { useScenarioScene } from '../../hooks/useScenarioScene';
-import { useScenarioProgression } from '../../hooks/useScenarioProgression';
-import './ScenarioPage.css';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { BookOpen, Crown, Home, Loader2, RotateCcw, ScrollText } from 'lucide-react'
+import * as scenarioApi from '../../api/scenarioApi'
+import { ApiError } from '../../api/authApi'
+import type { ScenarioProgress, StoryChoice, StoryScene } from '../../types/scenario'
+import ScenarioBackground from '../../components/ScenarioBackground/ScenarioBackground'
+import DialogueBox from '../../components/DialogueBox/DialogueBox'
+import ChoiceBox from '../../components/ChoiceBox/ChoiceBox'
+import QuestJournal from '../QuestJournal/QuestJournalModal'
+import ExperienceBar from '../../components/ExperienceBar/ExperienceBar'
+import LevelUpModal from '../../components/LevelUpModal/LevelUpModal'
+import { useScenarioScene } from '../../hooks/useScenarioScene'
+import { useScenarioProgression } from '../../hooks/useScenarioProgression'
+import './ScenarioPage.css'
 
 interface ScenarioPageProps {
   /** The player whose scenario run is being played. Passed down to every API call. */
   playerId: number;
+  /** Optional scene already returned by another backend flow, such as location travel. */
+  initialScene?: StoryScene | null;
+  /** One-shot scene returned by map travel while this page is already mounted. */
+  travelScene?: StoryScene | null;
+  travelSceneId?: number | null;
+  /** Lets the parent clear one-shot initial scene state after this page takes ownership. */
+  onInitialSceneConsumed?: () => void;
+  /** Lets the parent clear one-shot travel scene state after this page applies it. */
+  onTravelSceneConsumed?: () => void;
   onBackToMenu: () => void;
+  onViewMap?: () => void;
 }
 
 /**
@@ -38,87 +50,142 @@ interface ScenarioPageProps {
  *     frontend calculation.
  *  5. The scenario-end overlay uses the progress returned by the choice POST.
  */
-function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
-  const [scene, setScene] = useState<StoryScene | null>(null);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+function ScenarioPage({
+  playerId,
+  initialScene = null,
+  travelScene = null,
+  travelSceneId = null,
+  onInitialSceneConsumed,
+  onTravelSceneConsumed,
+  onBackToMenu,
+  onViewMap,
+}: ScenarioPageProps) {
+  const hasInitialScene = initialScene != null;
+  const [scene, setScene] = useState<StoryScene | null>(() => initialScene);
+  const [isInitialLoading, setIsInitialLoading] = useState(!hasInitialScene);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isBackgroundTransitioning, setIsBackgroundTransitioning] = useState(false);
   const [isScenarioEnded, setIsScenarioEnded] = useState(false);
   const [endProgress, setEndProgress] = useState<ScenarioProgress | null>(null);
   const [isJournalOpen, setIsJournalOpen] = useState(false);
   const [selectedChoiceId, setSelectedChoiceId] = useState<number | null>(null);
+  const [levelUpLevel, setLevelUpLevel] = useState<number | null>(null);
 
-  const { progression, refresh: refreshProgression } = useScenarioProgression(playerId);
+  const { progression, refresh: refreshProgression } = useScenarioProgression(playerId)
 
   const loadTaskRef = useRef(0);
+  const usedInitialSceneRef = useRef(hasInitialScene);
+  const appliedTravelSceneIdRef = useRef<number | null>(null);
 
   const loadCurrentScene = useCallback(async () => {
-    const task = ++loadTaskRef.current;
-    setIsInitialLoading(true);
-    setLoadError(null);
+    const task = ++loadTaskRef.current
+    setIsInitialLoading(true)
+    setLoadError(null)
     try {
-      let loadedScene: StoryScene;
+      let loadedScene: StoryScene
       try {
-        loadedScene = await scenarioApi.getCurrentScene(playerId);
+        loadedScene = await scenarioApi.getCurrentScene(playerId)
       } catch (initialError) {
         // No run in progress yet — start one. The backend decides the first scene.
         if (!(initialError instanceof ApiError) || initialError.status !== 404) {
-          throw initialError;
+          throw initialError
         }
-        await scenarioApi.startScenario(playerId);
-        loadedScene = await scenarioApi.getCurrentScene(playerId);
+        await scenarioApi.startScenario(playerId)
+        loadedScene = await scenarioApi.getCurrentScene(playerId)
       }
       if (task !== loadTaskRef.current) {
-        return;
+        return
       }
-      setScene(loadedScene);
-      setSelectedChoiceId(null);
-      setIsScenarioEnded(false);
-      setEndProgress(null);
+      setScene(loadedScene)
+      setSelectedChoiceId(null)
+      setIsScenarioEnded(false)
+      setEndProgress(null)
     } catch (err) {
       if (task !== loadTaskRef.current) {
-        return;
+        return
       }
       setLoadError(
         err instanceof ApiError ? err.message : 'Unable to load the story. Please try again.',
-      );
+      )
     } finally {
       if (task === loadTaskRef.current) {
-        setIsInitialLoading(false);
+        setIsInitialLoading(false)
       }
     }
-  }, [playerId]);
+  }, [playerId])
 
   useEffect(() => {
+    if (usedInitialSceneRef.current) {
+      onInitialSceneConsumed?.();
+      return;
+    }
+
     let cancelled = false;
     const timer = window.setTimeout(() => {
       if (!cancelled) {
-        void loadCurrentScene();
+        void loadCurrentScene()
       }
-    }, 0);
+    }, 0)
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [loadCurrentScene]);
+  }, [loadCurrentScene, onInitialSceneConsumed]);
+
+  useEffect(() => {
+    if (!travelScene || travelSceneId == null) {
+      return;
+    }
+
+    if (appliedTravelSceneIdRef.current === travelSceneId) {
+      return;
+    }
+
+    let isCancelled = false;
+    const nextScene = travelScene;
+    const nextTravelSceneId = travelSceneId;
+
+    queueMicrotask(() => {
+      if (isCancelled || appliedTravelSceneIdRef.current === nextTravelSceneId) {
+        return;
+      }
+
+      appliedTravelSceneIdRef.current = nextTravelSceneId;
+      setScene(nextScene);
+      setSelectedChoiceId(null);
+      setIsInitialLoading(false);
+      setLoadError(null);
+      setIsScenarioEnded(false);
+      setEndProgress(null);
+      onTravelSceneConsumed?.();
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [travelScene, travelSceneId, onTravelSceneConsumed]);
 
   const handleSceneChange = useCallback(
     (nextScene: StoryScene) => {
-      setScene(nextScene);
-      setSelectedChoiceId(null);
-      void refreshProgression();
+      setScene(nextScene)
+      setSelectedChoiceId(null)
+      void refreshProgression()
     },
     [refreshProgression],
-  );
+  )
 
   const handleScenarioEnd = useCallback(
     (progress: ScenarioProgress) => {
-      setEndProgress(progress);
-      setIsScenarioEnded(true);
-      void refreshProgression();
+      setEndProgress(progress)
+      setIsScenarioEnded(true)
+      void refreshProgression()
     },
     [refreshProgression],
-  );
+  )
+
+  const handleLevelUp = useCallback((level: number) => {
+    setLevelUpLevel(level)
+  }, [])
 
   const {
     currentDialogue,
@@ -134,23 +201,33 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
     playerId,
     onSceneChange: handleSceneChange,
     onScenarioEnd: handleScenarioEnd,
+    onLevelUp: handleLevelUp,
+    onViewMap,
   });
 
   const handleChoice = useCallback(
     (choice: StoryChoice) => {
-      setSelectedChoiceId(choice.id);
-      selectChoice(choice);
+      setSelectedChoiceId(choice.id)
+      selectChoice(choice)
     },
     [selectChoice],
-  );
+  )
 
   const hideNarrative =
-    isInitialLoading || isBackgroundTransitioning || isSubmittingChoice || scene === null;
+    isInitialLoading || isBackgroundTransitioning || isSubmittingChoice || scene === null
 
   const loyaltyTotal = endProgress
     ? Object.values(endProgress.companionLoyalty).reduce((sum, value) => sum + value, 0)
-    : 0;
-  const questCount = endProgress ? Object.keys(endProgress.questProgress).length : 0;
+    : 0
+  const questCount = endProgress ? Object.keys(endProgress.questProgress).length : 0
+  const displayProgression = progression ?? {
+    level: 1,
+    currentExperience: 0,
+    experienceForCurrentLevel: 0,
+    experienceForNextLevel: 100,
+    experienceProgressPercentage: 0,
+    availableSkillPoints: 0,
+  }
 
   return (
     <main className="scenario-page">
@@ -163,37 +240,10 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
 
       <header className="scenario-hud">
         <div className="scenario-hud-left">
-          {progression != null && (
-            <div className="scenario-hud-progression">
-              <span className="scenario-hud-level">
-                Level <b>{progression.level}</b>
-              </span>
-              <div
-                className="exp-bar"
-                role="progressbar"
-                aria-label="Experience progress"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={Math.round(progression.experienceProgressPercentage)}
-              >
-                <div
-                  className="exp-bar-fill"
-                  style={{ width: `${progression.experienceProgressPercentage}%` }}
-                />
-              </div>
-              <span className="exp-bar-text">
-                {progression.currentExperience}
-                {progression.experienceForNextLevel != null && (
-                  <> / {progression.experienceForNextLevel} EXP</>
-                )}
-              </span>
-              {progression.availableSkillPoints > 0 && (
-                <span className="exp-bar-skill-points">
-                  <TrendingUp size={13} aria-hidden="true" /> +{progression.availableSkillPoints} SP
-                </span>
-              )}
-            </div>
-          )}
+          <ExperienceBar
+            progression={displayProgression}
+            onPreviewLevelUp={() => setLevelUpLevel(displayProgression.level + 1)}
+          />
         </div>
 
         <nav className="scenario-hud-right" aria-label="Scenario options">
@@ -272,15 +322,18 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
       )}
 
       {isScenarioEnded && endProgress != null && (
-        <section className="scenario-end" role="dialog" aria-modal="true" aria-label="Scenario complete">
+        <section
+          className="scenario-end"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Scenario complete"
+        >
           <div className="scenario-end-card">
             <span className="scenario-end-icon" aria-hidden="true">
               <Crown size={26} strokeWidth={2} />
             </span>
             <h2 className="scenario-end-title">Chapter complete</h2>
-            <p className="scenario-end-subtitle">
-              Your choices echo through the Crown of Ash.
-            </p>
+            <p className="scenario-end-subtitle">Your choices echo through the Crown of Ash.</p>
             <dl className="scenario-end-stats">
               <div className="scenario-end-stat">
                 <dt>Ash Clock</dt>
@@ -330,8 +383,11 @@ function ScenarioPage({ playerId, onBackToMenu }: ScenarioPageProps) {
       {isJournalOpen && (
         <QuestJournal playerId={playerId} onClose={() => setIsJournalOpen(false)} />
       )}
+      {levelUpLevel != null && (
+        <LevelUpModal level={levelUpLevel} onContinue={() => setLevelUpLevel(null)} />
+      )}
     </main>
-  );
+  )
 }
 
-export default ScenarioPage;
+export default ScenarioPage

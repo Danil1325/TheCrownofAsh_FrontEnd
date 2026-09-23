@@ -35,6 +35,13 @@
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
 }
 
+.notification--location {
+  align-items: stretch;
+  gap: 0.7rem;
+  padding: 0.65rem;
+  cursor: default;
+}
+
 .notification--leaving {
   animation: notification-out 260ms ease forwards;
 }
@@ -107,6 +114,71 @@
   white-space: nowrap;
 }
 
+.notification-location-thumbnail {
+  flex: 0 0 auto;
+  width: 4.4rem;
+  height: 4.4rem;
+  border: 1px solid rgba(97, 46, 21, 0.42);
+  border-radius: 0.28rem;
+  object-fit: cover;
+  background: rgba(97, 46, 21, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 247, 228, 0.22);
+}
+
+.notification-location-fallback {
+  margin-top: 0.2rem;
+}
+
+.notification-location-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.notification-location-name {
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #24130d;
+}
+
+.notification-location-level {
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #5e2d15;
+}
+
+.notification-action {
+  align-self: flex-start;
+  margin-top: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(97, 46, 21, 0.48);
+  border-radius: 0.28rem;
+  background: linear-gradient(180deg, #d4a43f, #a7782c);
+  color: #24130d;
+  font-family: Garamond, Georgia, 'Times New Roman', serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: filter 150ms ease, transform 150ms ease;
+}
+
+.notification-action:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.notification-action:focus-visible {
+  outline: 2px solid #5e2d15;
+  outline-offset: 2px;
+}
+
 .notification-dismiss {
   flex: 0 0 auto;
   display: inline-flex;
@@ -131,6 +203,10 @@
 .notification-dismiss:focus-visible {
   outline: 2px solid #d4a43f;
   outline-offset: 2px;
+}
+
+.notification--location .notification-dismiss {
+  align-self: flex-start;
 }
 
 @keyframes notification-in {
@@ -164,6 +240,14 @@
   .notification:hover {
     transform: none;
   }
+
+  .notification-action {
+    transition: none;
+  }
+
+  .notification-action:hover {
+    transform: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -171,5 +255,14 @@
     top: 0.75rem;
     right: 0.75rem;
     width: min(18rem, calc(100vw - 1.5rem));
+  }
+
+  .notification--location {
+    gap: 0.55rem;
+  }
+
+  .notification-location-thumbnail {
+    width: 3.6rem;
+    height: 3.6rem;
   }
 }
