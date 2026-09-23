@@ -6,7 +6,7 @@ import type { ScenarioProgress, StoryChoice, StoryScene } from '../../types/scen
 import ScenarioBackground from '../../components/ScenarioBackground/ScenarioBackground'
 import DialogueBox from '../../components/DialogueBox/DialogueBox'
 import ChoiceBox from '../../components/ChoiceBox/ChoiceBox'
-import QuestJournal from '../../components/QuestJournal/QuestJournal'
+import QuestJournal from '../QuestJournal/QuestJournalModal'
 import ExperienceBar from '../../components/ExperienceBar/ExperienceBar'
 import LevelUpModal from '../../components/LevelUpModal/LevelUpModal'
 import { useScenarioScene } from '../../hooks/useScenarioScene'

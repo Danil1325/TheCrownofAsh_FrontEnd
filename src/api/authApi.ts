@@ -71,7 +71,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     throw new ApiError(
       response.status,
       errorBody?.errorCode ?? 'UNKNOWN_ERROR',
-      errorBody?.message ?? 'Something went wrong. Please try again.',
+      errorBody?.message ?? 'Request could not be completed.',
     )
   }
 
