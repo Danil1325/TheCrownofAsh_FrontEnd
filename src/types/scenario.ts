@@ -44,6 +44,11 @@ export interface ScenarioProgress {
   companionLoyalty: Record<number, number>;
   questProgress: Record<number, number>;
   storyFlags: Record<string, boolean>;
+  /** Present on choice responses when the player crossed a level threshold. */
+  DidLevelUp?: boolean;
+  didLevelUp?: boolean;
+  Level?: number;
+  level?: number;
   newLocationIds?: number[];
 }
 
@@ -76,6 +81,18 @@ export interface QuestSummary {
   possibleLocationIds: number[];
   isOptional: boolean;
   experienceReward: number;
+  /** Optional fields supported by newer quest endpoints. */
+  status?: QuestStatus | string;
+  location?: string | null;
+  objectives?: QuestObjective[];
+}
+
+export interface QuestObjective {
+  id: number;
+  description: string;
+  target?: number;
+  progress?: number;
+  completed?: boolean;
 }
 
 /** One player's progress on one quest within a game session (QuestProgressView). */
@@ -90,6 +107,12 @@ export interface PlayerQuest {
   objectiveProgress: Record<number, number>;
   startedAt: string | null;
   completedAt: string | null;
+  description?: string;
+  recommendedLevel?: number;
+  location?: string | null;
+  questType?: QuestType;
+  experienceReward?: number;
+  objectives?: QuestObjective[];
 }
 
 /** Character level/experience state (CharacterProgressionDto). */
