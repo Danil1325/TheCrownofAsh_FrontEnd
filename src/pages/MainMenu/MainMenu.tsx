@@ -2,7 +2,6 @@ import { useState } from 'react'
 import '../../styles/game-ui.css'
 import './MainMenu.css'
 import OptionsMenu from '../../components/OptionsMenu/OptionsMenu'
-import LoadingScreen from '../LoadingScreen/LoadingScreen'
 import Map from '../Map/Map'
 import Shop from '../Shop/Shop'
 import type { StoryScene } from '../../types/scenario'
@@ -56,11 +55,7 @@ function MainMenu({
 }: MainMenuProps) {
   const [selectedAction, setSelectedAction] = useState<MenuAction | null>(null)
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
-  const [mapMode, setMapMode] = useState<'new' | 'load' | null>(null)
-
-  if (selectedAction === 'new-game' || selectedAction === 'load-game') {
-    return <LoadingScreen musicVolume={musicVolume} onComplete={onNewGame} />
-  }
+  const [mapMode, setMapMode] = useState<'load' | null>(null)
 
   if (mapMode) {
     return (
@@ -100,8 +95,12 @@ function MainMenu({
               aria-label={item.label}
               onClick={() => {
                 onPlayButtonSound()
-                if (item.action === 'new-game' || item.action === 'load-game') {
-                  setMapMode(item.action === 'new-game' ? 'new' : 'load')
+                if (item.action === 'new-game') {
+                  onNewGame()
+                  return
+                }
+                if (item.action === 'load-game') {
+                  setMapMode('load')
                   return
                 }
                 if (item.action === 'skills') {

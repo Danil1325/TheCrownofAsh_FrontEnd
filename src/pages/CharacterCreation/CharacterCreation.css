@@ -34,6 +34,9 @@
 .creation-navigation--class .creation-navigation__continue { left: 53.5%; }
 .creation-navigation--class .creation-navigation__back { left: 18.5%; opacity: 1; filter: blur(0); pointer-events: auto; }
 .creation-navigation__button:disabled { cursor: default; }
+.creation-navigation__status { position: absolute; top: -46%; left: 0; right: 0; margin: 0; font-family: Garamond, Georgia, 'Times New Roman', serif; font-size: clamp(.8rem, 1.35vw, 1.1rem); line-height: 1.2; text-align: center; text-shadow: 0 .08em .08em rgba(55, 25, 9, .38); }
+.creation-navigation__status--error { color: #7b1f14; font-weight: 700; }
+.creation-navigation__status--saving { color: #704529; font-style: italic; }
 .attributes-panel { position: absolute; top: 1%; right: .8%; width: 26.5%; height: 98%; box-sizing: border-box; overflow: hidden; background-size: 100% 100%; background-repeat: no-repeat; padding: 12% 8% 7%; text-shadow: 0 .08em .08em rgba(55, 25, 9, .38); }
 .attribute-labels { position: absolute; top: 14%; left: 31%; right: 10%; height: 50%; display: grid; grid-template-rows: repeat(5, 1fr); align-items: center; pointer-events: none;}
 

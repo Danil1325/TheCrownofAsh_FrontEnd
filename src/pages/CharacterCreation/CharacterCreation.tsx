@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import '../../styles/game-ui.css'
 import '../../styles/animations/carousel.css'
 import './CharacterCreation.css'
+import { ApiError } from '../../api/authApi'
+import { createCharacter } from '../../api/characterApi'
 import background from '../../assets/CharacterCreation/UI/CharacterCreationBackground.png'
 import banner from '../../assets/CharacterCreation/UI/CreateYourCharacterBanner.png'
 import leftArrow from '../../assets/CharacterCreation/UI/LeftArrow.png'
@@ -14,9 +16,13 @@ import { default as CharacterDisplayMenu } from '../../components/CharacterCreat
 import { classes, combineAttributes, races, type CharacterClass, type Race, wrapIndex } from './characterCreationData'
 
 export interface CreatedCharacterIdentity {
+  name: string
   race: string
   className: string
 }
+
+const MINIMUM_NAME_LENGTH = 2
+const MAXIMUM_NAME_LENGTH = 40
 
 type CharacterCreationProps = {
   onComplete: (character: CreatedCharacterIdentity) => void
@@ -33,13 +39,39 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
   const [characterName, setCharacterName] = useState('')
   const [rotationDirection, setRotationDirection] = useState<-1 | 1 | null>(null)
   const [exitingCard, setExitingCard] = useState<{ item: CarouselItem; direction: -1 | 1 } | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const selectedRace = races[raceIndex]
   const selectedClass = classes[classIndex]
   const attributes = useMemo(() => step === 'class' ? combineAttributes(selectedRace, selectedClass) : selectedRace.attributes, [step, selectedRace, selectedClass])
   const cards = step === 'race' ? races : classes
   const selectedIndex = step === 'race' ? raceIndex : classIndex
+  const handleCreateCharacter = async () => {
+    if (isSaving) return
+
+    const name = characterName.trim()
+    if (name.length < MINIMUM_NAME_LENGTH || name.length > MAXIMUM_NAME_LENGTH) {
+      setSaveError(`Choose a name between ${MINIMUM_NAME_LENGTH} and ${MAXIMUM_NAME_LENGTH} characters.`)
+      return
+    }
+
+    setSaveError('')
+    setIsSaving(true)
+    try {
+      await createCharacter({ name, race: selectedRace.raceType, classId: selectedClass.classId })
+      onComplete({ name, race: selectedRace.name, className: selectedClass.name })
+    } catch (error) {
+      setSaveError(error instanceof ApiError ? error.message : 'Unable to save your character. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+  const advanceStep = () => {
+    if (step === 'race') setStep('class')
+    else void handleCreateCharacter()
+  }
   const move = (direction: -1 | 1) => {
-    if (rotationDirection) return
+    if (rotationDirection || isSaving) return
 
     setRotationDirection(direction)
     setExitingCard({
@@ -80,19 +112,22 @@ function CharacterCreation({ onComplete }: CharacterCreationProps) {
       <section className="character-creation__main" aria-label="Character creation">
         <img className="character-creation__banner" src={banner} alt="Create Your Character" />
         <section className="creation-carousel" aria-label={`${step} selection`}>
-          <button className="game-button carousel-arrow carousel-arrow--left" type="button" aria-label="Previous" onClick={() => move(-1)} disabled={Boolean(rotationDirection)}><img src={leftArrow} alt="" /></button>
+          <button className="game-button carousel-arrow carousel-arrow--left" type="button" aria-label="Previous" onClick={() => move(-1)} disabled={Boolean(rotationDirection) || isSaving}><img src={leftArrow} alt="" /></button>
           <div className={`carousel-cards${rotationDirection ? ` carousel-cards--rotating carousel-cards--${rotationDirection === 1 ? 'forward' : 'backward'}` : ''}`}>
             {exitingCard && <CarouselCard item={exitingCard.item} position="side" direction={exitingCard.direction === 1 ? 'left' : 'right'} motion={exitingCard.direction === 1 ? 'exit-left' : 'exit-right'} exiting />}
             <CarouselCard key={cards[wrapIndex(selectedIndex - 1, cards.length)].id} item={cards[wrapIndex(selectedIndex - 1, cards.length)]} position="side" direction="left" selectedFrame={frameFor('left') ? selectedFrame : undefined} frameState={frameFor('left')} motion={motionFor('left')} />
             <CarouselCard key={cards[selectedIndex].id} item={cards[selectedIndex]} position="center" direction="center" selectedFrame={selectedFrame} frameState={frameFor('center')} motion={motionFor('center')} />
             <CarouselCard key={cards[wrapIndex(selectedIndex + 1, cards.length)].id} item={cards[wrapIndex(selectedIndex + 1, cards.length)]} position="side" direction="right" selectedFrame={frameFor('right') ? selectedFrame : undefined} frameState={frameFor('right')} motion={motionFor('right')} />
           </div>
-          <button className="game-button carousel-arrow carousel-arrow--right" type="button" aria-label="Next" onClick={() => move(1)} disabled={Boolean(rotationDirection)}><img src={rightArrow} alt="" /></button>
+          <button className="game-button carousel-arrow carousel-arrow--right" type="button" aria-label="Next" onClick={() => move(1)} disabled={Boolean(rotationDirection) || isSaving}><img src={rightArrow} alt="" /></button>
         </section>
         <CharacterDisplayMenu race={selectedRace} characterClass={step === 'class' ? selectedClass : undefined} name={characterName} onNameChange={setCharacterName} />
         <div className={`creation-navigation creation-navigation--${step}`}>
-          <button className="game-button creation-navigation__button creation-navigation__back" type="button" onClick={() => setStep('race')} disabled={step === 'race'} aria-hidden={step === 'race'}><img src={backButton} alt="Back" /></button>
-          <button className="game-button creation-navigation__button creation-navigation__continue" type="button" onClick={() => { if (step === 'race') setStep('class'); else onComplete({ race: selectedRace.name, className: selectedClass.name }) }}><img src={continueButton} alt="Continue" /></button>
+          <button className="game-button creation-navigation__button creation-navigation__back" type="button" onClick={() => setStep('race')} disabled={step === 'race' || isSaving} aria-hidden={step === 'race'}><img src={backButton} alt="Back" /></button>
+          <button className="game-button creation-navigation__button creation-navigation__continue" type="button" onClick={advanceStep} disabled={isSaving}><img src={continueButton} alt="Continue" /></button>
+          {(saveError || isSaving) && (
+            <p className={`creation-navigation__status${saveError ? ' creation-navigation__status--error' : ' creation-navigation__status--saving'}`} role={saveError ? 'alert' : 'status'} aria-live="polite">{saveError || 'Saving your character...'}</p>
+          )}
         </div>
       </section>
       <Attributes attributes={attributes} />
