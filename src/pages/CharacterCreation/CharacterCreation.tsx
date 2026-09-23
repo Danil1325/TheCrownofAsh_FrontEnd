@@ -14,14 +14,7 @@ import continueButton from '../../assets/CharacterCreation/UI/ConfirmButton.png'
 import Attributes from '../../components/CharacterCreation/Attributes'
 import { default as CharacterDisplayMenu } from '../../components/CharacterCreation/DisplayMenu'
 import { classes, combineAttributes, races, type CharacterClass, type Race, wrapIndex } from './characterCreationData'
-
-export interface CreatedCharacterIdentity {
-  name: string
-  race: string
-  className: string
-  playerId: number
-  characterId: number
-}
+import type { CreatedCharacterIdentity } from './characterCreationData'
 
 const MINIMUM_NAME_LENGTH = 2
 const MAXIMUM_NAME_LENGTH = 40

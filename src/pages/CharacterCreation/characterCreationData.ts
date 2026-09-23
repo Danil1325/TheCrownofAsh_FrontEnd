@@ -15,6 +15,34 @@ import bardSymbol from '../../assets/CharacterCreation/Class/ClassSymbols/Bard.p
 import magicianSymbol from '../../assets/CharacterCreation/Class/ClassSymbols/Magician.png'
 import healerSymbol from '../../assets/CharacterCreation/Class/ClassSymbols/Healer.png'
 import { CharacterClassId, RaceType } from '../../types/character'
+import type { CharacterResponseDto } from '../../types/character'
+
+/** Identity of the player's character, as used across the app. */
+export interface CreatedCharacterIdentity {
+  name: string
+  race: string
+  className: string
+  playerId: number
+  characterId: number
+}
+
+/** Maps a backend CharacterResponseDto back to the in-app character identity. */
+export function characterResponseToIdentity(
+  character: CharacterResponseDto,
+): CreatedCharacterIdentity {
+  const race = races.find((raceEntry) => raceEntry.raceType === character.race)
+  const characterClass = classes.find(
+    (classEntry) => classEntry.classId === character.classId,
+  )
+
+  return {
+    name: character.name,
+    race: race?.name ?? String(character.race),
+    className: characterClass?.name ?? String(character.classId),
+    playerId: character.playerId,
+    characterId: character.characterId,
+  }
+}
 
 export type AttributeKey = 'health' | 'strength' | 'dexterity' | 'intelligence' | 'charisma'
 export type AttributeValues = Record<AttributeKey, number>

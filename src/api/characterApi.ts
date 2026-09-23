@@ -6,6 +6,7 @@
 
 import { apiFetch } from './authApi'
 import type {
+  CharacterResponseDto,
   NewGameCharacterRequest,
   NewGameCharacterResponse,
 } from '../types/character'
@@ -21,4 +22,12 @@ export function createCharacter(
     method: 'POST',
     body: JSON.stringify(request),
   })
+}
+
+/**
+ * GET /api/character/current — the signed-in player's active character.
+ * Rejects with 404 (ApiError) when the player has not created a character yet.
+ */
+export function getCurrentCharacter(): Promise<CharacterResponseDto> {
+  return apiFetch<CharacterResponseDto>('/api/character/current')
 }

@@ -25,10 +25,16 @@ export interface NewGameCharacterRequest {
   classId: CharacterClassId
 }
 
-/** Response body for POST /api/character/new-game (CharacterResponseDto). */
-export interface NewGameCharacterResponse {
+/** Response body for the character endpoints (CharacterResponseDto). */
+export interface CharacterResponseDto {
   /** The owning player, resolved server-side via ICurrentPlayerService. */
   playerId: number
   /** The created player character. */
   characterId: number
+  name: string
+  race: RaceType
+  classId: CharacterClassId
 }
+
+/** Response body for POST /api/character/new-game (CharacterResponseDto). */
+export type NewGameCharacterResponse = CharacterResponseDto
