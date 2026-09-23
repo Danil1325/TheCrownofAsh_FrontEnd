@@ -1,34 +1,34 @@
-import { useEffect, useState } from 'react';
-import { BookOpen, Loader2, ScrollText, X } from 'lucide-react';
-import * as scenarioApi from '../../api/scenarioApi';
-import { ApiError } from '../../api/authApi';
-import { QuestStatus } from '../../types/scenario';
-import type { PlayerQuest, QuestSummary } from '../../types/scenario';
-import './QuestJournal.css';
+import { useEffect, useState } from 'react'
+import { BookOpen, Loader2, ScrollText, X } from 'lucide-react'
+import * as scenarioApi from '../../api/scenarioApi'
+import { ApiError } from '../../api/authApi'
+import { QuestStatus } from '../../types/scenario'
+import type { PlayerQuest, QuestSummary } from '../../types/scenario'
+import './QuestJournal.css'
 
 interface QuestJournalProps {
   /** The player whose quests are listed — everything is fetched from the backend. */
-  playerId: number;
-  onClose: () => void;
+  playerId: number
+  onClose: () => void
 }
 
 interface QuestJournalState {
-  active: PlayerQuest[];
-  available: QuestSummary[];
-  completed: PlayerQuest[];
+  active: PlayerQuest[]
+  available: QuestSummary[]
+  completed: PlayerQuest[]
 }
 
 const STATUS_LABEL: Partial<Record<QuestStatus, string>> = {
   [QuestStatus.Active]: 'In Progress',
   [QuestStatus.Completed]: 'Completed',
   [QuestStatus.Available]: 'Available',
-};
+}
 
 const STATUS_CLASS: Partial<Record<QuestStatus, string>> = {
   [QuestStatus.Active]: 'quest-journal-badge--active',
   [QuestStatus.Completed]: 'quest-journal-badge--completed',
   [QuestStatus.Available]: 'quest-journal-badge--available',
-};
+}
 
 /**
  * Quest Journal drawer. Opens to the right side of the scenario and lists the
@@ -36,11 +36,11 @@ const STATUS_CLASS: Partial<Record<QuestStatus, string>> = {
  * backend quest endpoints — the frontend only renders what the API returns.
  */
 function QuestJournal({ playerId, onClose }: QuestJournalProps) {
-  const [state, setState] = useState<QuestJournalState | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<QuestJournalState | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
 
     Promise.all([
       scenarioApi.getActiveQuests(playerId),
@@ -49,30 +49,24 @@ function QuestJournal({ playerId, onClose }: QuestJournalProps) {
     ])
       .then(([active, completed, available]) => {
         if (isMounted) {
-          setState({ active, available, completed });
+          setState({ active, available, completed })
         }
       })
       .catch((err) => {
         if (isMounted) {
           setError(
-            err instanceof ApiError
-              ? err.message
-              : 'Unable to load the journal. Please try again.',
-          );
+            err instanceof ApiError ? err.message : 'Unable to load the journal. Please try again.',
+          )
         }
-      });
+      })
 
     return () => {
-      isMounted = false;
-    };
-  }, [playerId]);
+      isMounted = false
+    }
+  }, [playerId])
 
   const renderPlayerQuest = (quest: PlayerQuest) => (
-    <li
-      className="quest-journal-item"
-      key={`${quest.questId}-${quest.status}`}
-      role="listitem"
-    >
+    <li className="quest-journal-item" key={`${quest.questId}-${quest.status}`} role="listitem">
       <div className="quest-journal-item-head">
         <h4 className="quest-journal-item-title">{quest.title}</h4>
         <span className={`quest-journal-badge ${STATUS_CLASS[quest.status] ?? ''}`}>
@@ -93,7 +87,7 @@ function QuestJournal({ playerId, onClose }: QuestJournalProps) {
         </p>
       )}
     </li>
-  );
+  )
 
   const renderSummary = (quest: QuestSummary) => (
     <li className="quest-journal-item" key={quest.id} role="listitem">
@@ -115,11 +109,11 @@ function QuestJournal({ playerId, onClose }: QuestJournalProps) {
         )}
       </div>
     </li>
-  );
+  )
 
-  const entriesActive = state?.active ?? [];
-  const entriesAvailable = state?.available ?? [];
-  const entriesCompleted = state?.completed ?? [];
+  const entriesActive = state?.active ?? []
+  const entriesAvailable = state?.available ?? []
+  const entriesCompleted = state?.completed ?? []
 
   return (
     <>
@@ -199,7 +193,7 @@ function QuestJournal({ playerId, onClose }: QuestJournalProps) {
         )}
       </aside>
     </>
-  );
+  )
 }
 
-export default QuestJournal;
+export default QuestJournal

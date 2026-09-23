@@ -1,31 +1,32 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { ApiError } from '../api/authApi';
-import { getLocationDetails } from '../api/locationApi';
-import * as scenarioApi from '../api/scenarioApi';
-import { backgroundByLocation } from '../assets/scenario/scenarioAssets';
-import { useNotifications } from './useNotifications';
-import type { ScenarioProgress, StoryChoice, StoryScene } from '../types/scenario';
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { ApiError } from '../api/authApi'
+import { getLocationDetails } from '../api/locationApi'
+import * as scenarioApi from '../api/scenarioApi'
+import { backgroundByLocation } from '../assets/scenario/scenarioAssets'
+import { useNotifications } from './useNotifications'
+import type { ScenarioProgress, StoryChoice, StoryScene } from '../types/scenario'
 
 export interface UseScenarioSceneOptions {
   /** The scene currently displayed — controlled by the parent. */
-  scene: StoryScene | null;
+  scene: StoryScene | null
   /** The player whose scenario run is advancing. */
-  playerId: number;
+  playerId: number
   /** Receives the freshly loaded next scene after a successful choice. */
-  onSceneChange: (scene: StoryScene) => void;
+  onSceneChange: (scene: StoryScene) => void
   /** Called with the run's progress when a choice finishes the scenario (`nextSceneId === null`). */
-  onScenarioEnd?: (progress: ScenarioProgress) => void;
+  onScenarioEnd?: (progress: ScenarioProgress) => void
+  onLevelUp?: (level: number) => void
   /** Opens the gameplay map from rich location-unlocked notifications when available. */
-  onViewMap?: () => void;
+  onViewMap?: () => void
 }
 
 /** What a retry still has to redo after a failure. */
 interface SceneChoiceAttempt {
   /** The scene the attempt belonged to, so a retry never replays a stale one. */
-  sceneId: number;
-  choice: StoryChoice;
+  sceneId: number
+  choice: StoryChoice
   /** `fetchScene` means the choice was already accepted by the server. */
-  phase: 'submit' | 'fetchScene';
+  phase: 'submit' | 'fetchScene'
 }
 
 /**
@@ -41,27 +42,28 @@ export function useScenarioScene({
   playerId,
   onSceneChange,
   onScenarioEnd,
+  onLevelUp,
   onViewMap,
 }: UseScenarioSceneOptions) {
-  const notifications = useNotifications();
+  const notifications = useNotifications()
   const dialogues = useMemo(
     () => (scene ? [...scene.dialogues].sort((a, b) => a.order - b.order) : []),
     [scene],
-  );
+  )
 
-  const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
+  const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0)
   // Covers the whole transition between scenes: the choice POST plus loading
   // the next scene. Exposed to the parent both as `isSubmittingChoice` and as
   // `isLoading`, since both describe the same in-flight window.
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Synchronous guard: an extra click in the same batch cannot start a second
   // request while one choice submission is still in flight.
-  const activeRequestRef = useRef(false);
+  const activeRequestRef = useRef(false)
   // Kept on failure so `retry` can replay the attempt without re-submitting a
   // choice the server already accepted.
-  const lastAttemptRef = useRef<SceneChoiceAttempt | null>(null);
+  const lastAttemptRef = useRef<SceneChoiceAttempt | null>(null)
 
   // A changed scene means the run moved to the next scene — reset the dialogue
   // reader and any leftover failure state. Adjusted during render (React's
@@ -69,18 +71,18 @@ export function useScenarioScene({
   // The request refs are intentionally left untouched: an in-flight submission
   // keeps owning `activeRequestRef` until it settles, and `lastAttemptRef`
   // carries the `sceneId` it belongs to.
-  const [previousSceneId, setPreviousSceneId] = useState(scene?.id);
+  const [previousSceneId, setPreviousSceneId] = useState(scene?.id)
   if (previousSceneId !== scene?.id) {
-    setPreviousSceneId(scene?.id);
-    setCurrentDialogueIndex(0);
-    setError(null);
-    setIsTransitioning(false);
+    setPreviousSceneId(scene?.id)
+    setCurrentDialogueIndex(0)
+    setError(null)
+    setIsTransitioning(false)
   }
 
-  const allDialoguesRead = dialogues.length === 0 || currentDialogueIndex >= dialogues.length;
+  const allDialoguesRead = dialogues.length === 0 || currentDialogueIndex >= dialogues.length
   const currentDialogue =
-    scene != null && !allDialoguesRead ? (dialogues[currentDialogueIndex] ?? null) : null;
-  const hasNextDialogue = currentDialogueIndex < dialogues.length - 1;
+    scene != null && !allDialoguesRead ? (dialogues[currentDialogueIndex] ?? null) : null
+  const hasNextDialogue = currentDialogueIndex < dialogues.length - 1
 
   // Choices appear only after the last dialogue line has been consumed.
   const showChoices =
@@ -88,90 +90,91 @@ export function useScenarioScene({
     allDialoguesRead &&
     !isTransitioning &&
     error === null &&
-    scene.choices.length > 0;
+    scene.choices.length > 0
 
   const notifyUnlockedLocations = useCallback(
     async (locationIds: number[] | undefined) => {
       if (!locationIds || locationIds.length === 0) {
-        return;
+        return
       }
 
       const locationResults = await Promise.allSettled(
         locationIds.map((locationId) => getLocationDetails(locationId)),
-      );
+      )
 
       locationResults.forEach((result) => {
         if (result.status !== 'fulfilled') {
-          return;
+          return
         }
 
-        const details = result.value;
+        const details = result.value
         notifications.locationUnlocked({
           locationName: details.name,
           thumbnail: backgroundByLocation[details.id],
           recommendedLevel: details.recommendedMinimumLevel,
           onViewMap,
-        });
-      });
+        })
+      })
     },
     [notifications, onViewMap],
-  );
+  )
 
   const performChoice = useCallback(
     async (choice: StoryChoice, phase: SceneChoiceAttempt['phase']) => {
-      if (activeRequestRef.current || !scene) return;
+      if (activeRequestRef.current || !scene) return
 
-      setError(null);
-      setIsTransitioning(true);
-      activeRequestRef.current = true;
-      lastAttemptRef.current = { sceneId: scene.id, choice, phase };
+      setError(null)
+      setIsTransitioning(true)
+      activeRequestRef.current = true
+      lastAttemptRef.current = { sceneId: scene.id, choice, phase }
 
       try {
         if (phase === 'submit') {
-          const progress = await scenarioApi.selectChoice(playerId, scene.id, choice.id);
-          void notifyUnlockedLocations(progress.newLocationIds);
-          lastAttemptRef.current = { choice, phase: 'fetchScene', sceneId: scene.id };
+          const progress = await scenarioApi.selectChoice(playerId, scene.id, choice.id)
+          const didLevelUp = progress.DidLevelUp ?? progress.didLevelUp ?? false
+          const level = progress.Level ?? progress.level
+          if (didLevelUp && level != null) onLevelUp?.(level)
+          void notifyUnlockedLocations(progress.newLocationIds)
+          lastAttemptRef.current = { choice, phase: 'fetchScene', sceneId: scene.id }
           if (choice.nextSceneId === null) {
-            lastAttemptRef.current = null;
-            onScenarioEnd?.(progress);
-            return;
+            lastAttemptRef.current = null
+            onScenarioEnd?.(progress)
+            return
           }
         }
 
-        const nextScene = await scenarioApi.getCurrentScene(playerId);
-        lastAttemptRef.current = null;
-        onSceneChange(nextScene);
+        const nextScene = await scenarioApi.getCurrentScene(playerId)
+        lastAttemptRef.current = null
+        onSceneChange(nextScene)
       } catch (err) {
         setError(
-          err instanceof ApiError
-            ? err.message
-            : 'Unable to submit the choice. Please try again.',
-        );
+          err instanceof ApiError ? err.message : 'Unable to submit the choice. Please try again.',
+        )
       } finally {
-        activeRequestRef.current = false;
-        setIsTransitioning(false);
+        activeRequestRef.current = false
+        setIsTransitioning(false)
       }
     },
-    [playerId, scene, onSceneChange, onScenarioEnd, notifyUnlockedLocations],
-  );
+    [playerId, scene, onSceneChange, onScenarioEnd, onLevelUp, notifyUnlockedLocations],
+  )
 
   const selectChoice = useCallback(
     (choice: StoryChoice) => {
-      void performChoice(choice, 'submit');
+      void performChoice(choice, 'submit')
     },
     [performChoice],
-  );
+  )
 
   const retry = useCallback(() => {
-    const attempt = lastAttemptRef.current;
+    const attempt = lastAttemptRef.current
     if (attempt && attempt.sceneId === scene?.id) {
-      void performChoice(attempt.choice, attempt.phase);
+      void performChoice(attempt.choice, attempt.phase)
     }
-  }, [performChoice, scene]);
+  }, [performChoice, scene])
 
   const nextDialogue = useCallback(() => {
-    setCurrentDialogueIndex((index) => (index < dialogues.length ? index + 1 : index));
-  }, [dialogues.length]);
+    setCurrentDialogueIndex((index) => (index < dialogues.length ? index + 1 : index))
+  }, [dialogues.length])
 
   return {
     currentDialogueIndex,
@@ -184,5 +187,5 @@ export function useScenarioScene({
     isLoading: isTransitioning,
     error,
     retry,
-  };
+  }
 }
