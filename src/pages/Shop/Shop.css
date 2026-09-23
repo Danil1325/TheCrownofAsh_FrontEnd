@@ -125,6 +125,7 @@
 
 .market-navigation {
   min-height: 0;
+  flex-shrink: 0;
 }
 
 .navigation-options {

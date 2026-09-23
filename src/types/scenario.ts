@@ -49,6 +49,7 @@ export interface ScenarioProgress {
   didLevelUp?: boolean;
   Level?: number;
   level?: number;
+  newLocationIds?: number[];
 }
 
 /** Serialized as int by the backend (no JsonStringEnumConverter configured). */
