@@ -16,6 +16,11 @@ import buyButton from '../../assets/Shop/market-assets/buy-button.png';
 // Icons for achievements (frontend presentation only — progress always comes from the backend)
 import chestIcon from '../../assets/ui/Chest Icon.png';
 import slashSword from '../../assets/Battle/icons/slash_sword.png';
+import crossedSwords from '../../assets/Battle/items/crossed_swords.png';
+import boots from '../../assets/Battle/items/boots.png';
+import scrolls from '../../assets/Shop/category-menu/scrolls.png';
+import mapIcon from '../../assets/Battle/icons/map.png';
+import theSword from '../../assets/items/weapons/TheSword.png';
 
 import commonBg from '../../assets/Achievements/Common Achievement.png';
 import rareBg from '../../assets/Achievements/Rare Achievement.png';
@@ -28,6 +33,12 @@ type LoadState = 'loading' | 'ready' | 'no-character' | 'error';
 /** Presentation-only icon per backend achievement code; unknown codes fall back. */
 const ACHIEVEMENT_ICON_BY_CODE: Record<string, string> = {
   A_HERO_IS_BORN: slashSword,
+  FIRST_STEPS: boots,
+  QUEST_CONQUEROR: scrolls,
+  FIRST_BLOOD: crossedSwords,
+  VICTORIOUS_WARRIOR: theSword,
+  WANDERER: mapIcon,
+  EXPLORER: mapIcon,
 };
 
 function iconFor(code: string): string {
@@ -165,11 +176,20 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
               </div>
             )}
 
-            {loadState === 'ready' && overview != null && (
+            {loadState === 'ready' && overview != null && shownAchievements.length === 0 && (
+              <div className="achievements-status" role="status">
+                <p className="achievements-status-text">
+                  No achievements to show here yet. Complete quests and battles to unlock some.
+                </p>
+              </div>
+            )}
+
+            {loadState === 'ready' && overview != null && shownAchievements.length > 0 && (
               <div className="achievements-list">
                 <AnimatePresence mode="wait">
                   {shownAchievements.map((achievement) => {
                     const isCompleted = achievement.isCompleted;
+                    const isStarted = achievement.currentAmount > 0;
                     const progressPercent = Math.min(
                       100,
                       Math.round((achievement.currentAmount / achievement.targetAmount) * 100),
@@ -177,7 +197,21 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
 
                     let bgTexture = commonBg;
                     if (isCompleted) bgTexture = legendaryBg;
-                    else if (achievement.currentAmount > 0) bgTexture = rareBg;
+                    else if (isStarted) bgTexture = rareBg;
+
+                    let cardState = 'locked';
+                    if (isCompleted) cardState = 'completed';
+                    else if (isStarted) cardState = 'in-progress';
+
+                    let statusLabel = 'LOCKED';
+                    let statusClass = 'badge-locked';
+                    if (isCompleted) {
+                      statusLabel = 'UNLOCKED';
+                      statusClass = 'badge-unlocked';
+                    } else if (isStarted) {
+                      statusLabel = 'IN PROGRESS';
+                      statusClass = 'badge-in-progress';
+                    }
 
                     return (
                       <motion.div
@@ -187,7 +221,7 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.2 }}
                         layout
-                        className={`achievement-card ${isCompleted ? 'completed' : 'in-progress'}`}
+                        className={`achievement-card ${cardState}`}
                         style={{ backgroundImage: `url('${bgTexture}')` }}
                       >
                         <div className="achievement-icon-wrapper">
@@ -204,6 +238,8 @@ function Achievements({ onBack, onPlayButtonSound }: AchievementsProps) {
                           <div className="achievement-progress-bar-container">
                             <div className="achievement-progress-bar" style={{ width: `${progressPercent}%` }}></div>
                           </div>
+
+                          <span className={`achievement-status-badge ${statusClass}`}>{statusLabel}</span>
                         </div>
                       </motion.div>
                     )

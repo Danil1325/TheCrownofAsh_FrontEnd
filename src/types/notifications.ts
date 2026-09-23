@@ -7,7 +7,8 @@ export type NotificationType =
   | 'exp-gained'
   | 'level-up'
   | 'location-unlocked'
-  | 'loyalty-changed';
+  | 'loyalty-changed'
+  | 'achievement-unlocked';
 
 /** One transient toast in the game notification feed. */
 export interface GameNotification {
@@ -55,4 +56,6 @@ export interface NotificationApi {
   locationUnlocked(location: string | LocationUnlockedNotificationInput): void;
   /** "Loyalty Changed — <companionName> +<delta> Loyalty" */
   companionLoyaltyChanged(companionName: string, delta: number): void;
+  /** "Achievement Unlocked — <achievementTitle>" */
+  achievementUnlocked(achievementTitle: string): void;
 }

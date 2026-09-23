@@ -256,6 +256,50 @@
   filter: grayscale(40%) brightness(1);
 }
 
+.achievement-card.locked {
+  filter: grayscale(65%) brightness(0.85);
+}
+
+.achievement-card.locked:hover {
+  filter: grayscale(55%) brightness(0.95);
+}
+
+.achievement-status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 3px 10px;
+  border: 1px solid rgba(72, 36, 15, 0.5);
+  border-radius: 4px;
+  font-family: Cinzel, Georgia, serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(255, 241, 173, 0.25);
+  color: #48240f;
+}
+
+.achievement-status-badge.badge-unlocked {
+  background: rgba(76, 92, 49, 0.85);
+  color: #e4ecbf;
+  border-color: #202b11;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.achievement-status-badge.badge-in-progress {
+  background: rgba(166, 124, 59, 0.9);
+  color: #fff4cf;
+  border-color: #5c3a13;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.achievement-status-badge.badge-locked {
+  background: rgba(0, 0, 0, 0.35);
+  color: #cbb68d;
+  border-color: rgba(72, 36, 15, 0.6);
+}
+
 .achievement-icon-wrapper {
   position: relative;
   width: 80px;
